@@ -1,0 +1,51 @@
+Package: lightMLFlow
+Title: A lightweight R wrapper for the MLFlow REST API
+Version: 0.1.0
+Authors@R: 
+    person(given = "Matt",
+           family = "Kaye",
+           role = c("aut", "cre"),
+           email = "mrkaye97@gmail.com")
+Description: This package provides a lightweight R wrapper for the MLFlow
+    REST API. It makes some assumtions (notably, that you already have
+    MLFlow installed wherever this package is being used), but, in return,
+    you get some benefits: A simpler API, not needing `reticulate`,
+    relying on `aws.s3` where possible, etc.
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports:
+    aws.s3,
+    base64enc,
+    forge,
+    fs,
+    git2r,
+    glue,
+    httr,
+    jsonlite,
+    magrittr,
+    purrr,
+    rlang,
+    stringr,
+    tibble,
+    withr,
+    yaml
+Collate: 
+    'client.R'
+    'experiments.R'
+    'observer.R'
+    'globals.R'
+    'mlflow-package.R'
+    'model-crate.R'
+    'model.R'
+    'rest.R'
+    'runs.R'
+    'server.R'
+    'utils-pipe.R'
+    'utils.R'
+License: Apache License (>= 2)
+Suggests: 
+    testthat (>= 3.0.0),
+    covr
+Config/testthat/edition: 3
