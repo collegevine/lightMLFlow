@@ -6,7 +6,7 @@
 A lightweight R wrapper for the MLFlow REST API
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/collegevine/lightMLFlow/workflows/R-CMD-check/badge.svg)](https://github.com/mrkaye97/lightMLFlow/actions)
+[![R-CMD-check](https://github.com/collegevine/lightMLFlow/workflows/R-CMD-check/badge.svg)](https://github.com/collegevine/lightMLFlow/actions)
 <!-- badges: end -->
 
 # Setup
