@@ -38,3 +38,6 @@ rsconnect/
 
 .DS_Store
 docs
+
+## tests
+tests/test-setup.R
