@@ -76,7 +76,7 @@ log_metric <- function(key, value, timestamp = NULL, step = NULL, run_id = NULL,
 #' @param tags Additional tags to supply for the run
 #' @param experiment_id The ID of the experiment to register the run under.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-create_run <- function(start_time = NULL, tags = NULL, experiment_id = NULL, client) {
+create_run <- function(start_time = NULL, tags = list(), experiment_id = NULL, client) {
   experiment_id <- resolve_experiment_id(experiment_id)
 
   # Read user_id from tags
@@ -191,7 +191,7 @@ get_run <- function(run_id = NULL, client = NULL) {
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @export
-log_batch <- function(metrics = NULL, params = NULL, tags = NULL, run_id = NULL,
+log_batch <- function(metrics = NULL, params = NULL, tags = list(), run_id = NULL,
                              client = NULL) {
   validate_batch_input("metrics", metrics, c("key", "value", "step", "timestamp"))
   metrics$value <- unlist(lapply(metrics$value, metric_value_to_rest))
@@ -653,7 +653,7 @@ record_logged_model <- function(model_spec, run_id = NULL, client = NULL) {
 #' @param nested Controls whether the run to be started is nested in a parent run. `TRUE` creates a nest run.
 #'
 #' @export
-start_run <- function(run_id = NULL, experiment_id = NULL, start_time = NULL, tags = NULL, client = NULL, nested = FALSE) {
+start_run <- function(run_id = NULL, experiment_id = NULL, start_time = NULL, tags = list(), client = NULL, nested = FALSE) {
 
   # When `client` is provided, this function acts as a wrapper for `runs/create` and does not register
   #  an active run.
