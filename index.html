@@ -74,10 +74,10 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"mrkaye97/lightMLFlow"</span><span class="op">)</span></code></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"collegevine/lightMLFlow"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level1">
-<h1 id="the-package">The package<a class="anchor" aria-label="anchor" href="#the-package"></a>
+<h1 id="the-package">The Package<a class="anchor" aria-label="anchor" href="#the-package"></a>
 </h1>
 <p>This package differs from the CRAN <code>mlflow</code> package in a few important ways.</p>
 <p>First, there are some things that the full CRAN <code>mlflow</code> package has that this package doesn’t:</p>
@@ -96,7 +96,7 @@
 <li>
 <code>lightMLFlow</code> fixes some bugs in <code>mlflow</code>’s API wrapping functions.</li>
 <li>
-<code>lightMLFlow</code> is significantly more lightweight than <code>mlflow</code>. It doesn’t depend on <code>httpuv</code>, <code>reticulate</code>, or <code>swagger</code>, and has a far more minimal footprint in general.</li>
+<code>lightMLFlow</code> is significantly more lightweight than <code>mlflow</code>. It doesn’t depend on <code>httpuv</code>, <code>reticulate</code>, or <code>swagger</code>, and has a more minimal footprint in general.</li>
 <li>
 <code>lightMLFlow</code> uses <code>aws.s3</code> to put and save objects to and from S3, which means you don’t need to have a <code>boto3</code> install on your machine running your <code>MLFlow</code> code. This is an essential change, as it means that <code>lightMLFlow</code> does not require <em>any</em> Python infrastructure, as opposed to <code>mlflow</code>, which does.</li>
 </ul>
