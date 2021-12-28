@@ -61,7 +61,7 @@ log_model <- function(model, path, ...) {
       record_logged_model(model_spec)
     },
     error = function(e) {
-      warning(paste("Logging model metadata to the tracking server has failed, possibly due to older",
+      warn(paste("Logging model metadata to the tracking server has failed, possibly due to older",
         "server version. The model artifacts have been logged successfully.",
         "In addition to exporting model artifacts, MLflow clients 1.7.0 and above",
         "attempt to record model metadata to the  tracking store. If logging to a",

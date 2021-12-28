@@ -56,6 +56,7 @@ get_rest_config <- function(host_creds) {
 
 #' @importFrom httr GET POST PATCH DELETE add_headers config content
 #' @importFrom jsonlite fromJSON
+#' @importFrom rlang warn
 mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", version = "2.0",
                         max_rate_limit_interval = 60) {
 
@@ -129,46 +130,65 @@ mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", ve
 
   while (response$status_code == 429 && time_left > 0) {
     time_left <- time_left - sleep_for
-    warning(paste("Request returned with status code 429 (Rate limit exceeded). Retrying after ",
-      sleep_for, " seconds. Will continue to retry 429s for up to ", time_left,
-      " second.",
-      sep = ""
-    ))
+    warn(
+      paste(
+        "Request returned with status code 429 (Rate limit exceeded). Retrying after",
+        sleep_for,
+        "seconds. Will continue to retry 429s for up to",
+        time_left,
+        "second."
+      )
+    )
+
     Sys.sleep(sleep_for)
     sleep_for <- min(time_left, sleep_for * 2)
     response <- get_response()
   }
 
-  if (response$status_code != 200) {
-    message_body <- tryCatch(
-      paste(
-        content(
-          response,
-          "parsed",
-          type = "application/json"
-        ),
-        collapse = "; "
-      ),
-      error = function(e) {
-        try_parse_response_as_text(response)
-      }
-    )
-    msg <- paste0(
-      "API request to endpoint '",
-      paste(args, collapse = "/"),
-      "' failed with error code ",
-      response$status_code,
-      ". Reponse body: '",
-      message_body,
-      "'"
-    )
-    stop(msg, call. = FALSE)
-  }
+  stop_for_status(response)
 
   content(
     x = response,
     as = "parsed",
-    type = "application/json",
     encoding = "UTF-8"
   )
 }
+
+#' Internal function to warn if API call was unsuccessful
+#'
+#' The function is called for the side effect of warning when the API response
+#' has errors, and is a thin wrapper around httr::stop_for_status
+#'
+#' @param r The response from a call to the MLFlow API
+#'
+#' @return NULL
+#' @importFrom httr status_code content
+#' @keywords Internal
+#' @noRd
+#'
+stop_for_status <- function(r) {
+  # note that httr::stop_for_status should be called explicitly
+
+  if (r$status_code != 200) {
+    cr <- content(
+      x = r,
+      as = "parsed",
+      encoding = "UTF-8"
+    )
+
+    stop(
+      sprintf(
+        "MLFlow API call failed with status code %s.\n\nDiagnostics:\n%s",
+        r$status_code,
+        paste(
+          cr,
+          collapse = "\n"
+        )
+      ),
+      call. = FALSE
+    )
+  }
+
+  invisible()
+}
+
