@@ -4,7 +4,7 @@
 \alias{set_experiment}
 \title{Set Experiment}
 \usage{
-set_experiment(experiment_name, experiment_id, artifact_location = NULL)
+set_experiment(experiment_name, experiment_id, artifact_location = "")
 }
 \arguments{
 \item{experiment_name}{Name of experiment to be activated.}

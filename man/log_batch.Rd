@@ -7,7 +7,7 @@
 log_batch(
   metrics = NULL,
   params = NULL,
-  tags = NULL,
+  tags = list(),
   run_id = NULL,
   client = NULL
 )

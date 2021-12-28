@@ -8,7 +8,7 @@ start_run(
   run_id = NULL,
   experiment_id = NULL,
   start_time = NULL,
-  tags = NULL,
+  tags = list(),
   client = NULL,
   nested = FALSE
 )
