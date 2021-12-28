@@ -1,0 +1,11 @@
+^renv$
+^renv\.lock$
+^lightMLFlow\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^codecov\.yml$
+^README\.Rmd$
