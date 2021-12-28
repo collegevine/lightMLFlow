@@ -2,19 +2,22 @@
 #'
 #' Creates an MLflow experiment and returns its id.
 #'
+#' @importFrom purrr is_empty
+#'
 #' @param name The name of the experiment to create.
 #' @param artifact_location Location where all artifacts for this experiment are stored. If
 #'   not provided, the remote server will select an appropriate default.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @param tags Experiment tags to set on the experiment upon experiment creation.
-
+#'
 #' @export
-create_experiment <- function(name, artifact_location = NULL, client = NULL, tags) {
+create_experiment <- function(name, artifact_location = "", client = NULL, tags = list()) {
+
   client <- resolve_client(client)
   name <- cast_string(name)
 
-  tags <- if (!missing(tags)) {
-    tags %>%
+  if (!is_empty(tags)) {
+    tags <- tags %>%
       imap(~ list(key = .y, value = .x)) %>%
       unname()
   }
@@ -39,6 +42,9 @@ create_experiment <- function(name, artifact_location = NULL, client = NULL, tag
 #'
 #' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#'
+#' @importFrom purrr map_dfr
+#'
 #' @export
 list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = NULL) {
 
@@ -59,11 +65,13 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
     return(NULL)
   }
 
-  map(response$experiments, function(x) {
-    x$tags <- parse_run_data(x$tags)
-    as.data.frame(x)
-  }) %>%
-    do.call(rbind, .)
+  map_dfr(
+    response$experiments,
+    function(x) {
+      x$tags <- parse_run_data(x$tags)
+      as.data.frame(x)
+    }
+  )
 }
 
 #' Set Experiment Tag
@@ -154,8 +162,6 @@ delete_experiment <- function(experiment_id, client = NULL) {
       experiment_id = experiment_id
     )
   )
-
-  invisible()
 }
 
 
@@ -228,7 +234,7 @@ rename_experiment <- function(new_name, experiment_id = NULL, client = NULL) {
 #' @param artifact_location Location where all artifacts for this experiment are stored. If
 #'   not provided, the remote server will select an appropriate default.
 #' @export
-set_experiment <- function(experiment_name, experiment_id, artifact_location = NULL) {
+set_experiment <- function(experiment_name, experiment_id, artifact_location = "") {
 
   if (!missing(experiment_name) && !missing(experiment_id)) {
     stop("Only one of `experiment_name` or `experiment_id` should be specified.",
