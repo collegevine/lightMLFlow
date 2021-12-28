@@ -16,10 +16,10 @@ A lightweight R wrapper for the MLFlow REST API
 ``` r
 # install.packages("devtools")
 
-devtools::install_github("mrkaye97/lightMLFlow")
+devtools::install_github("collegevine/lightMLFlow")
 ```
 
-# The package
+# The Package
 
 This package differs from the CRAN `mlflow` package in a few important
 ways.
@@ -48,7 +48,7 @@ over `mlflow`:
 -   `lightMLFlow` fixes some bugs in `mlflow`’s API wrapping functions.
 -   `lightMLFlow` is significantly more lightweight than `mlflow`. It
     doesn’t depend on `httpuv`, `reticulate`, or `swagger`, and has a
-    far more minimal footprint in general.
+    more minimal footprint in general.
 -   `lightMLFlow` uses `aws.s3` to put and save objects to and from S3,
     which means you don’t need to have a `boto3` install on your machine
     running your `MLFlow` code. This is an essential change, as it means

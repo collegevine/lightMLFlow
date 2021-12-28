@@ -27,10 +27,10 @@ knitr::opts_chunk$set(
 ```r
 # install.packages("devtools")
 
-devtools::install_github("mrkaye97/lightMLFlow")
+devtools::install_github("collegevine/lightMLFlow")
 ```
 
-# The package
+# The Package
 
 This package differs from the CRAN `mlflow` package in a few important ways. 
 
@@ -44,7 +44,7 @@ However, there are also significant advantages to using `lightMLFlow` over `mlfl
 
 * `lightMLFlow` features a friendlier API, with significantly fewer functions, no `mlflow::mlflow_*` function prefixing (following Tidyverse conventions, `lightMLFlow` function names are verbs), and improved error handling.
 * `lightMLFlow` fixes some bugs in `mlflow`'s API wrapping functions.
-* `lightMLFlow` is significantly more lightweight than `mlflow`. It doesn't depend on `httpuv`, `reticulate`, or `swagger`, and has a far more minimal footprint in general.
+* `lightMLFlow` is significantly more lightweight than `mlflow`. It doesn't depend on `httpuv`, `reticulate`, or `swagger`, and has a more minimal footprint in general.
 * `lightMLFlow` uses `aws.s3` to put and save objects to and from S3, which means you don't need to have a `boto3` install on your machine running your `MLFlow` code. This is an essential change, as it means that `lightMLFlow` does not require _any_ Python infrastructure, as opposed to `mlflow`, which does.
 
 
