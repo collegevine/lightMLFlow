@@ -5,6 +5,8 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
     get_timestamp()
   )
 
+  Sys.sleep(3)
+
   n2 <- paste0(
     "unit-test-",
     get_timestamp()
