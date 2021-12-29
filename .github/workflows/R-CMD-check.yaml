@@ -59,7 +59,7 @@ jobs:
       - name: Install Postgres
         run: |
           sudo apt-get update
-          sudo apt-get install --yes postgresql
+          sudo apt-get install --yes postgresql postgresql-client
 
       - name: Clobber
         run: |
