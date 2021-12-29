@@ -64,7 +64,7 @@ print.mlflow_host_creds <- function(x, ...) {
 }
 
 new_mlflow_client.default <- function(tracking_uri) {
-  stop(paste("Unsupported scheme: '", tracking_uri$scheme, "'", sep = ""))
+  abort(paste("Unsupported scheme: '", tracking_uri$scheme, "'", sep = ""))
 }
 
 basic_http_client <- function(tracking_uri) {

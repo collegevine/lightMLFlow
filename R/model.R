@@ -171,14 +171,14 @@ parse_json <- function(input_path, json_format = "split") {
       elms <- names(json)
       if (length(setdiff(elms, c("columns", "index", "data"))) != 0 ||
         length(setdiff(c("columns", "data"), elms) != 0)) {
-        stop(paste("Invalid input. Make sure the input json data is in 'split' format.", elms))
+        abort(paste("Invalid input. Make sure the input json data is in 'split' format.", elms))
       }
       df <- data.frame(json$data, row.names = json$index)
       names(df) <- json$columns
       df
     },
     records = fromJSON(input_path, simplifyVector = TRUE),
-    stop(paste(
+    abort(paste(
       "Unsupported JSON format", json_format,
       ". Supported formats are 'split' or 'records'"
     ))

@@ -122,7 +122,7 @@ create_run <- function(start_time = NULL, tags = list(), experiment_id = NULL, c
 delete_run <- function(run_id, client = NULL) {
   run_id <- cast_string(run_id)
   if (identical(run_id, get_active_run_id())) {
-    stop("Cannot delete an active run.", call. = FALSE)
+    abort("Cannot delete an active run.")
   }
   client <- resolve_client(client)
   data <- list(run_id = run_id)
@@ -230,13 +230,13 @@ validate_batch_input <- function(input_type, input_dataframe, expected_column_na
       paste(names(input_dataframe), collapse = ", "),
       sep = ""
     )
-    stop(msg, call. = FALSE)
+    abort(msg)
   } else if (has_nas(input_dataframe)) {
     msg <- paste(input_type,
       " batch input dataframe contains a missing ('NA') entry.",
       sep = ""
     )
-    stop(msg, call. = FALSE)
+    abort(msg)
   }
 }
 
@@ -658,7 +658,7 @@ start_run <- function(run_id = NULL, experiment_id = NULL, start_time = NULL, ta
   # When `client` is provided, this function acts as a wrapper for `runs/create` and does not register
   #  an active run.
   if (!is.null(client)) {
-    if (!is.null(run_id)) stop("`run_id` should not be specified when `client` is specified.", call. = FALSE)
+    if (!is.null(run_id)) abort("`run_id` should not be specified when `client` is specified.")
     run <- create_run(
       client = client, start_time = start_time,
       tags = tags, experiment_id = experiment_id
@@ -668,15 +668,14 @@ start_run <- function(run_id = NULL, experiment_id = NULL, start_time = NULL, ta
 
   # Fluent mode, check to see if extraneous params passed.
 
-  if (!is.null(start_time)) stop("`start_time` should only be specified when `client` is specified.", call. = FALSE)
-  if (!is.null(tags)) stop("`tags` should only be specified when `client` is specified.", call. = FALSE)
+  if (!is.null(start_time)) abort("`start_time` should only be specified when `client` is specified.")
+  if (!is.null(tags)) abort("`tags` should only be specified when `client` is specified.")
 
   active_run_id <- get_active_run_id()
   if (!is.null(active_run_id) && !nested) {
-    stop("Run with UUID ",
+    abort("Run with UUID ",
       active_run_id,
-      " is already active. To start a nested run, Call `start_run()` with `nested = TRUE`.",
-      call. = FALSE
+      " is already active. To start a nested run, Call `start_run()` with `nested = TRUE`."
     )
   }
 
@@ -748,7 +747,7 @@ end_run <- function(status = c("FINISHED", "FAILED", "KILLED"),
   active_run_id <- get_active_run_id()
 
   if (!is.null(client) && is.null(run_id)) {
-    stop("`run_id` must be specified when `client` is specified.", call. = FALSE)
+    abort("`run_id` must be specified when `client` is specified.")
   }
 
   run <- if (!is.null(run_id)) {
@@ -758,7 +757,7 @@ end_run <- function(status = c("FINISHED", "FAILED", "KILLED"),
       end_time = end_time
     )
   } else {
-    if (is.null(active_run_id)) stop("There is no active run to end.", call. = FALSE)
+    if (is.null(active_run_id)) abort("There is no active run to end.")
     client <- mlflow_client()
     run_id <- active_run_id
     set_terminated(

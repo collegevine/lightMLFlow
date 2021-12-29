@@ -54,6 +54,32 @@ get_rest_config <- function(host_creds) {
   )
 }
 
+#' Check the MLFlow API status
+#'
+#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#'
+#' @return "ok" if the API is healthy, otherwise returns an HTTP error.
+#' @export
+check_api_status <- function(client = NULL) {
+
+  client <- resolve_client(client)
+  host_creds <- client$get_host_creds()
+  rest_config <- get_rest_config(host_creds)
+
+  req_headers <- do.call(add_headers, rest_config$headers)
+
+  r <- GET(
+    "https://my-mlflow-example.herokuapp.com/health",
+    get_mlflow_api_timeout(),
+    req_headers
+  )
+
+  stop_for_status(r)
+
+  "ok"
+}
+
+
 #' @importFrom httr GET POST PATCH DELETE add_headers config content
 #' @importFrom jsonlite fromJSON
 #' @importFrom rlang warn
@@ -121,7 +147,7 @@ call_mlflow_api <- function(..., client, query = NULL, data = NULL, verb = "GET"
         req_headers
       )
     },
-    stop("Verb '", verb, "' is unsupported.", call. = FALSE)
+    abort("Verb '", verb, "' is unsupported.")
   )
 
   sleep_for <- 1
@@ -176,7 +202,7 @@ stop_for_status <- function(r) {
       encoding = "UTF-8"
     )
 
-    stop(
+    abort(
       sprintf(
         "MLFlow API call failed with status code %s.\n\nDiagnostics:\n%s",
         r$status_code,
@@ -184,8 +210,7 @@ stop_for_status <- function(r) {
           cr,
           collapse = "\n"
         )
-      ),
-      call. = FALSE
+      )
     )
   }
 

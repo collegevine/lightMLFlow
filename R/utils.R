@@ -49,7 +49,7 @@ infer_experiment_id <- function(experiment_id = NULL) {
 with.mlflow_run <- function(data, expr, ...) {
   run_id <- mlflow_id(data)
   if (!identical(run_id, get_active_run_id())) {
-    stop("`with()` should only be used with `start_run()`.", call. = FALSE)
+    abort("`with()` should only be used with `start_run()`.")
   }
 
   tryCatch(
@@ -101,7 +101,7 @@ wait_for <- function(f, wait, sleep) {
   }
 
   if (!success) {
-    stop("Operation failed after waiting for ", wait, " seconds")
+    abort("Operation failed after waiting for ", wait, " seconds")
   }
 }
 
@@ -131,7 +131,7 @@ resolve_client_and_run_id <- function(client, run_id) {
     client <- mlflow_client()
   } else {
     client <- resolve_client(client)
-    if (is.null(run_id)) stop("`run_id` must be specified when `client` is specified.", call. = FALSE)
+    if (is.null(run_id)) abort("`run_id` must be specified when `client` is specified.")
   }
   list(client = client, run_id = run_id)
 }
@@ -195,13 +195,13 @@ parse_run_data <- function(d) {
 
 resolve_experiment_id <- function(experiment_id) {
   infer_experiment_id(experiment_id) %||%
-    stop("`experiment_id` must be specified when there is no active experiment.", call. = FALSE)
+    abort("`experiment_id` must be specified when there is no active experiment.")
 }
 
 resolve_run_id <- function(run_id) {
   cast_nullable_string(run_id) %||%
     get_active_run_id() %||%
-    stop("`run_id` must be specified when there is no active run.", call. = FALSE)
+    abort("`run_id` must be specified when there is no active run.")
 }
 
 new_mlflow_experiment <- function(x) {
@@ -232,20 +232,20 @@ mlflow_id <- function(object) {
 #' @rdname mlflow_id
 #' @export
 mlflow_id.mlflow_run <- function(object) {
-  object$run_id %||% stop("Cannot extract Run ID.", call. = FALSE)
+  object$run_id %||% abort("Cannot extract Run ID.")
 }
 
 #' @rdname mlflow_id
 #' @export
 mlflow_id.mlflow_experiment <- function(object) {
-  object$experiment_id %||% stop("Cannot extract Experiment ID.", call. = FALSE)
+  object$experiment_id %||% abort("Cannot extract Experiment ID.")
 }
 
 resolve_client <- function(client) {
   if (is.null(client)) {
     mlflow_client()
   } else {
-    if (!inherits(client, "mlflow_client")) stop("`client` must be an `mlflow_client` object.", call. = FALSE)
+    if (!inherits(client, "mlflow_client")) abort("`client` must be an `mlflow_client` object.")
     client
   }
 }

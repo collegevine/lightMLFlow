@@ -114,7 +114,7 @@ set_experiment_tag <- function(key, value, experiment_id = NULL, client = NULL) 
 #' @export
 get_experiment <- function(experiment_id, name, client = NULL) {
   if (!missing(name) && !missing(experiment_id)) {
-    stop("Only one of `name` or `experiment_id` should be specified.", call. = FALSE)
+    abort("Only one of `name` or `experiment_id` should be specified.")
   }
 
   client <- resolve_client(client)
@@ -149,7 +149,7 @@ get_experiment <- function(experiment_id, name, client = NULL) {
 #' @export
 delete_experiment <- function(experiment_id, client = NULL) {
   if (identical(experiment_id, get_active_experiment_id())) {
-    stop("Cannot delete an active experiment.", call. = FALSE)
+    abort("Cannot delete an active experiment.")
   }
 
   client <- resolve_client(client)
@@ -237,15 +237,11 @@ rename_experiment <- function(new_name, experiment_id = NULL, client = NULL) {
 set_experiment <- function(experiment_name, experiment_id, artifact_location = "") {
 
   if (!missing(experiment_name) && !missing(experiment_id)) {
-    stop("Only one of `experiment_name` or `experiment_id` should be specified.",
-      call. = FALSE
-    )
+    abort("Only one of `experiment_name` or `experiment_id` should be specified.")
   }
 
   if (missing(experiment_name) && missing(experiment_id)) {
-    stop("Exactly one of `experiment_name` or `experiment_id` should be specified.",
-      call. = FALSE
-    )
+    abort("Exactly one of `experiment_name` or `experiment_id` should be specified.")
   }
 
   client <- mlflow_client()
@@ -265,7 +261,7 @@ set_experiment <- function(experiment_name, experiment_id, artifact_location = "
           message("Experiment `", experiment_name, "` does not exist. Creating a new experiment.")
           create_experiment(client = client, name = experiment_name, artifact_location = artifact_location)
         } else {
-          stop(e)
+          abort(e)
         }
       }
     )
