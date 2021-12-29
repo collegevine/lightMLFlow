@@ -1,11 +1,11 @@
-mlflow_rest_path <- function(version) {
+get_mlflow_api_path <- function(version) {
   switch(version,
     "2.0" = "api/2.0/mlflow"
   )
 }
 
 #' @importFrom httr timeout
-mlflow_rest_timeout <- function() {
+get_mlflow_api_timeout <- function() {
   timeout(getOption("mlflow.rest.timeout", 60))
 }
 
@@ -57,7 +57,7 @@ get_rest_config <- function(host_creds) {
 #' @importFrom httr GET POST PATCH DELETE add_headers config content
 #' @importFrom jsonlite fromJSON
 #' @importFrom rlang warn
-mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", version = "2.0",
+call_mlflow_api <- function(..., client, query = NULL, data = NULL, verb = "GET", version = "2.0",
                         max_rate_limit_interval = 60) {
 
   host_creds <- client$get_host_creds()
@@ -66,7 +66,7 @@ mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", ve
 
   api_url <- file.path(
     host_creds$host,
-    mlflow_rest_path(version),
+    get_mlflow_api_path(version),
     paste(args, collapse = "/")
   )
 
@@ -77,7 +77,7 @@ mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", ve
       GET(
         api_url,
         query = query,
-        mlflow_rest_timeout(),
+        get_mlflow_api_timeout(),
         config = rest_config$config,
         req_headers
       )
@@ -90,7 +90,7 @@ mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", ve
           pretty = TRUE,
           auto_unbox = TRUE
         ),
-        mlflow_rest_timeout(),
+        get_mlflow_api_timeout(),
         config = rest_config$config,
         req_headers
       )
@@ -103,7 +103,7 @@ mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", ve
           pretty = TRUE,
           auto_unbox = TRUE
         ),
-        mlflow_rest_timeout(),
+        get_mlflow_api_timeout(),
         config = rest_config$config,
         req_headers
       )
@@ -116,7 +116,7 @@ mlflow_rest <- function(..., client, query = NULL, data = NULL, verb = "GET", ve
            pretty = TRUE,
            auto_unbox = TRUE
          ),
-        mlflow_rest_timeout(),
+        get_mlflow_api_timeout(),
         config = rest_config$config,
         req_headers
       )

@@ -22,7 +22,7 @@ create_experiment <- function(name, artifact_location = "", client = NULL, tags 
       unname()
   }
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "experiments", "create",
     client = client,
     verb = "POST",
@@ -51,7 +51,7 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
   client <- resolve_client(client)
   view_type <- match.arg(view_type)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "experiments", "list",
     client = client,
     verb = "GET",
@@ -93,7 +93,7 @@ set_experiment_tag <- function(key, value, experiment_id = NULL, client = NULL) 
 
   experiment_id <- resolve_experiment_id(experiment_id)
   experiment_id <- cast_string(experiment_id)
-  response <- mlflow_rest("experiments", "set-experiment-tag", client = client, verb = "POST", data = list(
+  response <- call_mlflow_api("experiments", "set-experiment-tag", client = client, verb = "POST", data = list(
     experiment_id = experiment_id,
     key = key,
     value = value
@@ -120,14 +120,14 @@ get_experiment <- function(experiment_id, name, client = NULL) {
   client <- resolve_client(client)
 
   response <- if (!missing(name)) {
-    mlflow_rest("experiments", "get-by-name",
+    call_mlflow_api("experiments", "get-by-name",
       client = client,
       query = list(experiment_name = name)
     )
   } else {
     experiment_id <- resolve_experiment_id(experiment_id)
     experiment_id <- cast_string(experiment_id)
-    response <- mlflow_rest(
+    response <- call_mlflow_api(
       "experiments", "get",
       client = client, query = list(experiment_id = experiment_id)
     )
@@ -154,7 +154,7 @@ delete_experiment <- function(experiment_id, client = NULL) {
 
   client <- resolve_client(client)
 
-  mlflow_rest(
+  call_mlflow_api(
     "experiments", "delete",
     verb = "POST",
     client = client,
@@ -182,7 +182,7 @@ restore_experiment <- function(experiment_id, client = NULL) {
 
   client <- resolve_client(client)
 
-  mlflow_rest(
+  call_mlflow_api(
     "experiments", "restore",
     client = client,
     verb = "POST",
@@ -210,7 +210,7 @@ rename_experiment <- function(new_name, experiment_id = NULL, client = NULL) {
 
   client <- resolve_client(client)
 
-  mlflow_rest(
+  call_mlflow_api(
     "experiments", "update",
     client = client,
     verb = "POST",

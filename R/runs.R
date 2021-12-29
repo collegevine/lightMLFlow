@@ -56,7 +56,7 @@ log_metric <- function(key, value, timestamp = NULL, step = NULL, run_id = NULL,
     step = step
   )
 
-  mlflow_rest(
+  call_mlflow_api(
     "runs", "log-metric",
     client = client,
     verb = "POST",
@@ -98,7 +98,7 @@ create_run <- function(start_time = NULL, tags = list(), experiment_id = NULL, c
     tags = tags
   )
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "runs", "create",
     client = client,
     verb = "POST",
@@ -126,7 +126,7 @@ delete_run <- function(run_id, client = NULL) {
   }
   client <- resolve_client(client)
   data <- list(run_id = run_id)
-  mlflow_rest("runs", "delete", client = client, verb = "POST", data = data)
+  call_mlflow_api("runs", "delete", client = client, verb = "POST", data = data)
   register_tracking_event("delete_run", data)
   invisible(NULL)
 }
@@ -143,7 +143,7 @@ restore_run <- function(run_id, client = NULL) {
   run_id <- cast_string(run_id)
   client <- resolve_client(client)
   data <- list(run_id = run_id)
-  mlflow_rest("runs", "restore", client = client, verb = "POST", data = data)
+  call_mlflow_api("runs", "restore", client = client, verb = "POST", data = data)
   register_tracking_event("restore_run", data)
 
   get_run(run_id, client = client)
@@ -164,7 +164,7 @@ get_run <- function(run_id = NULL, client = NULL) {
   run_id <- resolve_run_id(run_id)
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "runs", "get",
     client = client, verb = "GET",
     query = list(
@@ -208,7 +208,7 @@ log_batch <- function(metrics = NULL, params = NULL, tags = list(), run_id = NUL
     params = params,
     tags = tags
   )
-  mlflow_rest("runs", "log-batch", client = client, verb = "POST", data = data)
+  call_mlflow_api("runs", "log-batch", client = client, verb = "POST", data = data)
   register_tracking_event("log_batch", data)
 
   invisible(NULL)
@@ -264,7 +264,7 @@ set_tag <- function(key, value, run_id = NULL, client = NULL) {
     value = value
   )
 
-  mlflow_rest("runs", "set-tag", client = client, verb = "POST", data = data)
+  call_mlflow_api("runs", "set-tag", client = client, verb = "POST", data = data)
   register_tracking_event("set_tag", data)
 
   invisible(NULL)
@@ -288,7 +288,7 @@ delete_tag <- function(key, run_id = NULL, client = NULL) {
   key <- cast_string(key)
 
   data <- list(run_id = run_id, key = key)
-  mlflow_rest("runs", "delete-tag", client = client, verb = "POST", data = data)
+  call_mlflow_api("runs", "delete-tag", client = client, verb = "POST", data = data)
   register_tracking_event("delete_tag", data)
 
   invisible(NULL)
@@ -320,7 +320,7 @@ log_param <- function(key, value, run_id = NULL, client = NULL) {
     key = key,
     value = cast_string(value)
   )
-  mlflow_rest("runs", "log-parameter", client = client, verb = "POST", data = data)
+  call_mlflow_api("runs", "log-parameter", client = client, verb = "POST", data = data)
   register_tracking_event("log_param", data)
 
   invisible(value)
@@ -346,7 +346,7 @@ get_metric_history <- function(metric_key, run_id = NULL, client = NULL) {
 
   metric_key <- cast_string(metric_key)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "metrics", "get-history",
     client = client, verb = "GET",
     query = list(run_id = run_id, run_id = run_id, metric_key = metric_key)
@@ -391,7 +391,7 @@ search_runs <- function(filter = NULL,
   experiment_ids <- cast_string_list(experiment_ids)
   filter <- cast_nullable_string(filter)
 
-  response <- mlflow_rest("runs", "search", client = client, verb = "POST", data = list(
+  response <- call_mlflow_api("runs", "search", client = client, verb = "POST", data = list(
     experiment_ids = experiment_ids,
     filter = filter,
     run_view_type = run_view_type,
@@ -421,7 +421,7 @@ list_artifacts <- function(path = NULL, run_id = NULL, client = NULL) {
   run_id <- resolve_run_id(run_id)
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "artifacts", "list",
     client = client, verb = "GET",
     query = list(
@@ -451,7 +451,7 @@ set_terminated <- function(status, end_time, run_id, client) {
     status = status,
     end_time = end_time
   )
-  response <- mlflow_rest("runs", "update", verb = "POST", client = client, data = data)
+  response <- call_mlflow_api("runs", "update", verb = "POST", client = client, data = data)
   register_tracking_event("set_terminated", data)
 
   get_run(client = client, run_id = response$run_info$run_id)
@@ -543,7 +543,7 @@ list_run_infos <- function(run_view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL
   run_view_type <- match.arg(run_view_type)
   experiment_ids <- cast_string_list(experiment_id)
 
-  response <- mlflow_rest("runs", "search", client = client, verb = "POST", data = list(
+  response <- call_mlflow_api("runs", "search", client = client, verb = "POST", data = list(
     experiment_ids = experiment_ids,
     filter = NULL,
     run_view_type = run_view_type
@@ -624,7 +624,7 @@ record_logged_model <- function(model_spec, run_id = NULL, client = NULL) {
   client <- c_r$client
   run_id <- c_r$run_id
 
-  mlflow_rest(
+  call_mlflow_api(
     "runs", "log-model",
     client = client,
     verb = "POST",
