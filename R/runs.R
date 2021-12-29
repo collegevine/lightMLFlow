@@ -191,12 +191,17 @@ get_run <- function(run_id = NULL, client = NULL) {
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @export
-log_batch <- function(metrics = NULL, params = NULL, tags = list(), run_id = NULL,
+log_batch <- function(metrics = data.frame(), params = data.frame(), tags = list(), run_id = NULL,
                              client = NULL) {
+
   validate_batch_input("metrics", metrics, c("key", "value", "step", "timestamp"))
-  metrics$value <- unlist(lapply(metrics$value, metric_value_to_rest))
   validate_batch_input("params", params, c("key", "value"))
   validate_batch_input("tags", tags, c("key", "value"))
+
+  metrics$value <- unlist(lapply(metrics$value, metric_value_to_rest))
+  if (nrow(params) > 0) {
+    params$value <- as.character(params$value)
+  }
 
   c_r <- resolve_client_and_run_id(client, run_id)
   client <- c_r$client
@@ -208,6 +213,7 @@ log_batch <- function(metrics = NULL, params = NULL, tags = list(), run_id = NUL
     params = params,
     tags = tags
   )
+
   call_mlflow_api("runs", "log-batch", client = client, verb = "POST", data = data)
   register_tracking_event("log_batch", data)
 
@@ -220,7 +226,7 @@ has_nas <- function(df) {
 }
 
 validate_batch_input <- function(input_type, input_dataframe, expected_column_names) {
-  if (is.null(input_dataframe)) {
+  if (is.null(input_dataframe) || nrow(input_dataframe) == 0) {
     return()
   } else if (!setequal(names(input_dataframe), expected_column_names)) {
     msg <- paste(input_type,
@@ -320,6 +326,7 @@ log_param <- function(key, value, run_id = NULL, client = NULL) {
     key = key,
     value = cast_string(value)
   )
+
   call_mlflow_api("runs", "log-parameter", client = client, verb = "POST", data = data)
   register_tracking_event("log_param", data)
 
