@@ -191,7 +191,7 @@ get_run <- function(run_id = NULL, client = NULL) {
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @export
-log_batch <- function(metrics = data.frame(), params = data.frame(), tags = list(), run_id = NULL,
+log_batch <- function(metrics = data.frame(), params = data.frame(), tags = data.frame(), run_id = NULL,
                              client = NULL) {
 
   validate_batch_input("metrics", metrics, c("key", "value", "step", "timestamp"))
@@ -226,6 +226,7 @@ has_nas <- function(df) {
 }
 
 validate_batch_input <- function(input_type, input_dataframe, expected_column_names) {
+
   if (is.null(input_dataframe) || nrow(input_dataframe) == 0) {
     return()
   } else if (!setequal(names(input_dataframe), expected_column_names)) {
