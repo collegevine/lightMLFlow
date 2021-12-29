@@ -180,8 +180,6 @@ get_run <- function(run_id = NULL, client = NULL) {
 #' Log a batch of metrics, params, and/or tags for a run. The server will respond with an error (non-200 status code)
 #'   if any data failed to be persisted. In case of error (due to internal server error or an invalid request), partial
 #'   data may be written.
-
-
 #' @param metrics A dataframe of metrics to log, containing the following columns: "key", "value",
 #'  "step", "timestamp". This dataframe cannot contain any missing ('NA') entries.
 #' @param params A dataframe of params to log, containing the following columns: "key", "value".

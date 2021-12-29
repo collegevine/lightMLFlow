@@ -5,9 +5,9 @@
 \title{Log Batch}
 \usage{
 log_batch(
-  metrics = NULL,
-  params = NULL,
-  tags = list(),
+  metrics = data.frame(),
+  params = data.frame(),
+  tags = data.frame(),
   run_id = NULL,
   client = NULL
 )
