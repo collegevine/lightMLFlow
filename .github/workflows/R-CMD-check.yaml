@@ -4,7 +4,7 @@ on:
   push:
     branches: main
   pull_request:
-    branches: main, master
+    branches: main
 
 name: R-CMD-check
 
@@ -23,6 +23,13 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+      S3_URI: ${{ secrets.S3_URI }}
 
     steps:
       - uses: actions/checkout@v2
@@ -40,3 +47,43 @@ jobs:
           extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v1
+
+  postgres-job:
+    needs: R-CMD-check
+    runs-on: ubuntu-latest
+    container: node:latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+
+      - name: Query database
+        run: |
+          psql -d $DATABASE_URL 'DELETE FROM experiments'
+          psql -d $DATABASE_URL -c 'DELETE FROM tags'
+          psql -d $DATABASE_URL -c 'DELETE FROM params'
+          psql -d $DATABASE_URL -c 'DELETE FROM metrics'
+          psql -d $DATABASE_URL -c 'DELETE FROM latest_metrics'
+          psql -d $DATABASE_URL -c 'DELETE FROM experiment_tags'
+          psql -d $DATABASE_URL -c 'DELETE FROM runs'
+          psql -d $DATABASE_URL -c 'DELETE FROM registered_models'
+          psql -d $DATABASE_URL -c 'DELETE FROM model_version_tags'
+          psql -d $DATABASE_URL -c 'DELETE FROM model_versions'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
