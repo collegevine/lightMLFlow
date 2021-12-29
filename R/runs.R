@@ -83,7 +83,7 @@ create_run <- function(start_time = NULL, tags = list(), experiment_id = NULL, c
   # user_id is deprecated and will be removed from a future release
   user_id <- tags[[MLFLOW_TAGS$MLFLOW_USER]] %||% "unknown"
 
-  tags <- if (!is.null(tags)) {
+  tags <- if (!is_empty(tags)) {
     tags %>%
       imap(~ list(key = .y, value = .x)) %>%
       unname()
@@ -669,7 +669,7 @@ start_run <- function(run_id = NULL, experiment_id = NULL, start_time = NULL, ta
   # Fluent mode, check to see if extraneous params passed.
 
   if (!is.null(start_time)) abort("`start_time` should only be specified when `client` is specified.")
-  if (!is.null(tags)) abort("`tags` should only be specified when `client` is specified.")
+  if (!is_empty(tags)) abort("`tags` should only be specified when `client` is specified.")
 
   active_run_id <- get_active_run_id()
   if (!is.null(active_run_id) && !nested) {
