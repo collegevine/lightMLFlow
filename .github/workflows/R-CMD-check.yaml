@@ -34,46 +34,34 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      # - uses: r-lib/actions/setup-pandoc@v1
+      #
+      # - uses: r-lib/actions/setup-r@v1
+      #   with:
+      #     r-version: ${{ matrix.config.r }}
+      #     http-user-agent: ${{ matrix.config.http-user-agent }}
+      #     use-public-rspm: true
+      #
+      # - uses: r-lib/actions/setup-r-dependencies@v1
+      #   with:
+      #     extra-packages: rcmdcheck
+      #
+      # - uses: r-lib/actions/check-r-package@v1
 
-      - uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
-
-      - uses: r-lib/actions/setup-r-dependencies@v1
-        with:
-          extra-packages: rcmdcheck
-
-      - uses: r-lib/actions/check-r-package@v1
-
-  postgres-job:
+  clobber-db:
     needs: R-CMD-check
     runs-on: ubuntu-latest
-    container: node:latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
-      - name: Install PostgreSQL client
+      - name: Install Postgres
         run: |
           apt-get update
-          apt-get install --yes postgresql-client
+          apt-get install --yes postgresql
 
-      - name: Query database
+      - name: Clobber
         run: |
           psql -d $DATABASE_URL -c '
             DELETE FROM experiments;
@@ -87,5 +75,4 @@ jobs:
             DELETE FROM model_version_tags;
             DELETE FROM model_versions;
           '
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
