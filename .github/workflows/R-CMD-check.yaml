@@ -63,16 +63,12 @@ jobs:
 
       - name: Clobber
         run: |
-          psql -d $DATABASE_URL -c '
-            DELETE FROM experiments;
-            DELETE FROM tags;
-            DELETE FROM params;
-            DELETE FROM metrics;
-            DELETE FROM latest_metrics;
-            DELETE FROM experiment_tags;
-            DELETE FROM runs;
-            DELETE FROM registered_models;
-            DELETE FROM model_version_tags;
-            DELETE FROM model_versions;
-          '
-
+          psql -d $DATABASE_URL -c 'DELETE FROM tags;'
+          psql -d $DATABASE_URL -c 'DELETE FROM metrics;'
+          psql -d $DATABASE_URL -c 'DELETE FROM latest_metrics;'
+          psql -d $DATABASE_URL -c 'DELETE FROM params;'
+          psql -d $DATABASE_URL -c 'DELETE FROM runs;'
+          psql -d $DATABASE_URL -c 'DELETE FROM experiment_tags;'
+          psql -d $DATABASE_URL -c 'DELETE FROM registered_models;'
+          psql -d $DATABASE_URL -c 'DELETE FROM model_version_tags;'
+          psql -d $DATABASE_URL -c 'DELETE FROM model_versions;'
