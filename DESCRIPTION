@@ -47,5 +47,6 @@ Collate:
 License: Apache License (>= 2)
 Suggests: 
     testthat (>= 3.0.0),
+    carrier,
     covr
 Config/testthat/edition: 3
