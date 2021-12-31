@@ -137,6 +137,7 @@ resolve_client_and_run_id <- function(client, run_id) {
 }
 
 parse_run <- function(r) {
+
   info <- parse_run_info(r$info)
 
   info$metrics <- parse_metric_data(r$data$metrics)
@@ -166,19 +167,16 @@ parse_run_info <- function(r) {
     as.data.frame()
 }
 
-#' @importFrom purrr transpose map
+#' @importFrom purrr reduce map
 parse_metric_data <- function(d) {
-  if (is.null(d)) {
-    return(NA)
+  if (is.null(d) || all(is.na(d)) || is_empty(d)) {
+    NULL
+  } else {
+    d %>%
+      map(as.data.frame) %>%
+      reduce(rbind) %>%
+      list()
   }
-  d %>%
-    transpose() %>%
-    map(unlist) %>%
-    map_at("timestamp", milliseconds_to_date) %>%
-    map_at("step", as.double) %>%
-    map_at("value", as.double) %>%
-    as.data.frame() %>%
-    list()
 }
 
 #' @importFrom purrr map_chr set_names

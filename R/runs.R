@@ -421,6 +421,7 @@ search_runs <- function(filter = NULL,
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @importFrom glue glue
+#' @importFrom purrr transpose
 #'
 #' @export
 list_artifacts <- function(path = NULL, run_id = NULL, client = NULL) {
@@ -445,6 +446,7 @@ list_artifacts <- function(path = NULL, run_id = NULL, client = NULL) {
     }
     file_info
   })
+
   files_list %>%
     transpose() %>%
     map(unlist) %>%
