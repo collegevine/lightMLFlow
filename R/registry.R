@@ -6,16 +6,15 @@
 #' @param tags Additional metadata for the registered model (Optional).
 #' @param description Description for the registered model (Optional).
 #' @export
-create_registered_model <- function(name, tags = NULL,
-                                           description = NULL, client = NULL) {
+create_registered_model <- function(name, tags = list(),
+                                           description = "", client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "registered-models",
     "create",
     client = client,
     verb = "POST",
-    version = "2.0",
     data = list(
       name = cast_string(name),
       tags = tags,
@@ -35,12 +34,11 @@ create_registered_model <- function(name, tags = NULL,
 get_registered_model <- function(name, client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "registered-models",
     "get",
     client = client,
     verb = "GET",
-    version = "2.0",
     query = list(name = name)
   )
 
@@ -57,15 +55,14 @@ get_registered_model <- function(name, client = NULL) {
 rename_registered_model <- function(name, new_name, client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "registered-models",
     "rename",
     client = client,
     verb = "POST",
-    version = "2.0",
     data = list(
-      name = forge::cast_string(name),
-      new_name = forge::cast_string(new_name)
+      name = name,
+      new_name = new_name
     )
   )
 
@@ -82,15 +79,14 @@ rename_registered_model <- function(name, new_name, client = NULL) {
 update_registered_model <- function(name, description, client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "registered-models",
     "update",
     client = client,
     verb = "PATCH",
-    version = "2.0",
     data = list(
-      name = forge::cast_string(name),
-      description = forge::cast_string(description)
+      name = name,
+      description = description
     )
   )
 
@@ -106,13 +102,12 @@ update_registered_model <- function(name, description, client = NULL) {
 delete_registered_model <- function(name, client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "registered-models",
     "delete",
     client = client,
     verb = "DELETE",
-    version = "2.0",
-    data = list(name = forge::cast_string(name))
+    data = list(name = name)
   )
 }
 
@@ -128,12 +123,11 @@ list_registered_models <- function(max_results = 100, page_token = NULL,
                                           client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "registered-models",
     "list",
     client = client,
     verb = "GET",
-    version = "2.0",
     query = list(
       max_results = max_results,
       page_token = page_token
@@ -157,15 +151,14 @@ list_registered_models <- function(max_results = 100, page_token = NULL,
 get_latest_versions <- function(name, stages = list(), client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "registered-models",
     "get-latest-versions",
     client = client,
     verb = "GET",
-    version = "2.0",
     query = list(
-      name = forge::cast_string(name),
-      stages = forge::cast_string_list(stages)
+      name = name,
+      stages = stages
     )
   )
 
@@ -188,12 +181,11 @@ create_model_version <- function(name, source, run_id = NULL,
                                         description = NULL, client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "model-versions",
     "create",
     client = client,
     verb = "POST",
-    version = "2.0",
     data = list(
       name = name,
       source = source,
@@ -214,12 +206,11 @@ create_model_version <- function(name, source, run_id = NULL,
 get_model_version <- function(name, version, client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "model-versions",
     "get",
     client = client,
     verb = "GET",
-    version = "2.0",
     query = list(
       name = name,
       version = version
@@ -241,12 +232,11 @@ update_model_version <- function(name, version, description,
                                         client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "model-versions",
     "update",
     client = client,
     verb = "PATCH",
-    version = "2.0",
     data = list(
       name = name,
       version = version,
@@ -265,15 +255,14 @@ update_model_version <- function(name, version, description,
 delete_model_version <- function(name, version, client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "model-versions",
     "delete",
     client = client,
     verb = "DELETE",
-    version = "2.0",
     data = list(
-      name = forge::cast_string(name),
-      version = forge::cast_string(version)
+      name = name,
+      version = version
     )
   )
 }
@@ -292,12 +281,11 @@ transition_model_version_stage <- function(name, version, stage,
                                                   client = NULL) {
   client <- resolve_client(client)
 
-  response <- mlflow_rest(
+  response <- call_mlflow_api(
     "model-versions",
     "transition-stage",
     client = client,
     verb = "POST",
-    version = "2.0",
     data = list(
       name = name,
       version = version,
