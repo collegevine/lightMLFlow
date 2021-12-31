@@ -2,7 +2,11 @@
 #' @export
 save_model.crate <- function(model, path, model_spec = list(), ...) {
 
-  if (!exists(path)) dir.create(path, showWarnings = FALSE)
+  if (!exists(path)) {
+    .path_created <- TRUE
+    dir.create(path, showWarnings = FALSE)
+  }
+
   serialized <- serialize(model, NULL)
 
   objname <- "crate.bin"
@@ -28,6 +32,10 @@ save_model.crate <- function(model, path, model_spec = list(), ...) {
     path,
     model_spec
   )
+
+  if (isTRUE(.path_created)) {
+    unlink(path, recursive = TRUE, force = TRUE)
+  }
 
   model_spec
 }
