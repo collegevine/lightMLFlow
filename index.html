@@ -101,11 +101,12 @@
 <code>lightMLFlow</code> uses <code>aws.s3</code> to put and save objects to and from S3, which means you don’t need to have a <code>boto3</code> install on your machine running your <code>MLFlow</code> code. This is an essential change, as it means that <code>lightMLFlow</code> does not require <em>any</em> Python infrastructure, as opposed to <code>mlflow</code>, which does.</li>
 </ul>
 <div class="section level2">
-<h2 id="future-work">Future Work<a class="anchor" aria-label="anchor" href="#future-work"></a>
+<h2 id="known-issues--future-work">Known Issues / Future Work<a class="anchor" aria-label="anchor" href="#known-issues--future-work"></a>
 </h2>
-<p>A couple goals for this package as it matures:</p>
 <ol style="list-style-type: decimal">
-<li>Supporting <code>Tidymodels</code> model formats in <code>save_model</code> and <code>log_model</code>. Since <code>Tidymodels</code> provides a uniform API for modeling, it should play nicely with <code>MLFlow</code> by allowing us to save an arbitrary model in <code>.rds</code> format (as long as a <code>predict</code> method exists), and then load the <code>.rds</code> file and use <code>predict(model, data)</code> when serving the model.</li>
+<li>Throw a warning when the S3 URI that’s set as an env var doesn’t match the path that the API sends back in (e.g.) <code>list_artifacts</code>. This would be a helpful debugging hint.</li>
+<li>Clarify the parameter names for things like <code>path</code>, <code>model_path</code>, etc. since they don’t make much sense right now.</li>
+<li>Clarify the difference between <code>save_model</code> and <code>log_model</code>.</li>
 </ol>
 </div>
 </div>
