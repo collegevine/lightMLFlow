@@ -181,15 +181,20 @@ parse_metric_data <- function(d) {
     list()
 }
 
+#' @importFrom purrr map_chr set_names
 parse_run_data <- function(d) {
   if (is.null(d) || all(is.na(d)) || is_empty(d)) {
-    NA
+    NULL
   } else {
-    d %>%
-      transpose() %>%
-      map(unlist) %>%
-      as.data.frame() %>%
-      list()
+    keys <- d %>%
+      map_chr(~ .x[["key"]])
+
+    vals <- d %>%
+      map_chr(~ .x[["value"]])
+
+    vals %>%
+      as.list() %>%
+      set_names(keys)
   }
 }
 
