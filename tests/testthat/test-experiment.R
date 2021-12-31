@@ -1,5 +1,4 @@
 test_that("Experiment creation / renaming / deletion / reactivation work", {
-  skip_on_ci()
   n1 <- paste0(
     "unit-test-",
     get_timestamp()
