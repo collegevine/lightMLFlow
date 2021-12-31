@@ -77,7 +77,7 @@ test_that("Runs work", {
     2
   )
 
-  expect_equal(
+  expect_setequal(
     r$metrics[[1]]$value,
     c(1, 100)
   )
