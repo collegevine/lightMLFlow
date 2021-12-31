@@ -39,6 +39,7 @@ Collate:
     'mlflow-package.R'
     'model-crate.R'
     'model.R'
+    'registry.R'
     'rest.R'
     'runs.R'
     'server.R'
