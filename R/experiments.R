@@ -43,8 +43,6 @@ create_experiment <- function(name, artifact_location = "", client = NULL, tags 
 #' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
-#' @importFrom purrr map_dfr
-#'
 #' @export
 list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = NULL) {
 
@@ -65,12 +63,17 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
     return(NULL)
   }
 
-  map_dfr(
+  result <- map(
     response$experiments,
     function(x) {
       x$tags <- parse_run_data(x$tags)
       as.data.frame(x)
     }
+  )
+
+  do.call(
+    rbind,
+    result
   )
 }
 
