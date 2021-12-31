@@ -194,7 +194,8 @@ parse_run_data <- function(d) {
 
     vals %>%
       as.list() %>%
-      set_names(keys)
+      set_names(keys) %>%
+      list()
   }
 }
 
@@ -210,7 +211,7 @@ resolve_run_id <- function(run_id) {
 }
 
 new_mlflow_experiment <- function(x) {
-  dx <- as.data.frame(x)
+  dx <- as_tibble(x)
   class(dx) <- c("mlflow_experiment", class(dx))
 
   dx

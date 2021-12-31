@@ -119,6 +119,7 @@ set_experiment_tag <- function(key, value, experiment_id = NULL, client = NULL) 
 #'
 #' @export
 get_experiment <- function(experiment_id, name, client = NULL) {
+
   if (!missing(name) && !missing(experiment_id)) {
     abort("Only one of `name` or `experiment_id` should be specified.")
   }

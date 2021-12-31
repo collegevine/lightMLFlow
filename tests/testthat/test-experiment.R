@@ -42,8 +42,11 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
   )
 
   expect_equal(
-    get_experiment(id2)$tags.key,
-    c("a", "c")
+    get_experiment(id2)$tags[[1]],
+    list(
+      a = "b",
+      c = "d"
+    )
   )
 
   all_experiments <- list_experiments()
@@ -60,47 +63,47 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
       name == n2
     ) %>%
     nrow() %>%
-    expect_equal(2)
+    expect_equal(1)
 
   delete_experiment(id1)
   delete_experiment(id2)
 
-    list_experiments() %>%
-      subset(
-        name %in% c(n1, n2)
-      ) %>%
-      nrow() %>%
-      expect_equal(0)
+  list_experiments() %>%
+    subset(
+      name %in% c(n1, n2)
+    ) %>%
+    nrow() %>%
+    expect_equal(0)
 
-    expect_equal(
-      get_experiment(id1)$lifecycle_stage[1],
-      "deleted"
-    )
+  expect_equal(
+    get_experiment(id1)$lifecycle_stage[1],
+    "deleted"
+  )
 
-    restore_experiment(id1)
+  restore_experiment(id1)
 
-    expect_equal(
-      get_experiment(id1)$lifecycle_stage[1],
-      "active"
-    )
+  expect_equal(
+    get_experiment(id1)$lifecycle_stage[1],
+    "active"
+  )
 
-    delete_experiment(id1)
+  delete_experiment(id1)
 
-    expect_equal(
-      get_experiment(id1)$lifecycle_stage[1],
-      "deleted"
-    )
+  expect_equal(
+    get_experiment(id1)$lifecycle_stage[1],
+    "deleted"
+  )
 
-    restore_experiment(id1)
+  restore_experiment(id1)
 
-    new_name <- paste0("test-name", runif(1, 0, 1000000))
-    rename_experiment(
-      new_name,
-      id1
-    )
+  new_name <- paste0("test-name", runif(1, 0, 1000000))
+  rename_experiment(
+    new_name,
+    id1
+  )
 
-    expect_equal(
-      get_experiment(id1)$name[1],
-      new_name
-    )
+  expect_equal(
+    get_experiment(id1)$name[1],
+    new_name
+  )
 })
