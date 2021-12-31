@@ -62,12 +62,12 @@ test_that("Runs work", {
     3
   )
 
-  expect_equal(
+  expect_setequal(
     names(r$params[[1]]),
     c("intercept", "temperature", "df")
   )
 
-  expect_equal(
+  expect_setequal(
     r$metrics[[1]]$key,
     c("R2", "F")
   )
