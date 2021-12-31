@@ -68,7 +68,14 @@ with.mlflow_run <- function(data, expr, ...) {
 }
 
 current_time <- function() {
-  round(as.numeric(Sys.time()) * 1000)
+  round(
+    as.numeric(
+      as.POSIXlt(
+        Sys.time(),
+        tz = "UTC"
+      )
+    )
+  )
 }
 
 milliseconds_to_date <- function(x) as.POSIXct(as.double(x) / 1000, origin = "1970-01-01")
