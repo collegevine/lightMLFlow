@@ -88,7 +88,7 @@ get_timestamp <- function() {
   with_options(
     c(digits.secs = 2),
     format(
-      as.POSIXlt(Sys.time(), tz = "GMT"),
+      as.POSIXlt(Sys.time(), tz = "UTC"),
       "%y-%m-%dT%H:%M:%S.%OS"
     )
   )
