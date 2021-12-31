@@ -182,7 +182,7 @@ parse_metric_data <- function(d) {
 }
 
 parse_run_data <- function(d) {
-  if (is.null(d) || is.na(d) || is_empty(d)) {
+  if (is.null(d) || all(is.na(d)) || is_empty(d)) {
     NA
   } else {
     d %>%
