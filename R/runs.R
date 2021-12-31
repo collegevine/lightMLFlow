@@ -83,8 +83,8 @@ create_run <- function(start_time = NULL, tags = list(), experiment_id = NULL, c
   # user_id is deprecated and will be removed from a future release
   user_id <- tags[[MLFLOW_TAGS$MLFLOW_USER]] %||% "unknown"
 
-  tags <- if (!is_empty(tags)) {
-    tags %>%
+  if (!is_empty(tags)) {
+    tags <- tags %>%
       imap(~ list(key = .y, value = .x)) %>%
       unname()
   }
