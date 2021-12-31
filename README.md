@@ -55,13 +55,11 @@ over `mlflow`:
     that `lightMLFlow` does not require *any* Python infrastructure, as
     opposed to `mlflow`, which does.
 
-## Future Work
+## Known Issues / Future Work
 
-A couple goals for this package as it matures:
-
-1.  Supporting `Tidymodels` model formats in `save_model` and
-    `log_model`. Since `Tidymodels` provides a uniform API for modeling,
-    it should play nicely with `MLFlow` by allowing us to save an
-    arbitrary model in `.rds` format (as long as a `predict` method
-    exists), and then load the `.rds` file and use
-    `predict(model, data)` when serving the model.
+1.  Throw a warning when the S3 URI that’s set as an env var doesn’t
+    match the path that the API sends back in (e.g.) `list_artifacts`.
+    This would be a helpful debugging hint.
+2.  Clarify the parameter names for things like `path`, `model_path`,
+    etc. since they don’t make much sense right now.
+3.  Clarify the difference between `save_model` and `log_model`.
