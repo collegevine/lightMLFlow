@@ -347,6 +347,7 @@ log_param <- function(key, value, run_id = NULL, client = NULL) {
 #'
 #' @export
 get_metric_history <- function(metric_key, run_id = NULL, client = NULL) {
+
   run_id <- resolve_run_id(run_id)
   client <- resolve_client(client)
 
@@ -354,16 +355,25 @@ get_metric_history <- function(metric_key, run_id = NULL, client = NULL) {
 
   response <- call_mlflow_api(
     "metrics", "get-history",
-    client = client, verb = "GET",
-    query = list(run_id = run_id, run_id = run_id, metric_key = metric_key)
+    client = client,
+    verb = "GET",
+    query = list(
+      run_id = run_id,
+      metric_key = metric_key
+    )
   )
 
   response$metrics %>%
-    transpose() %>%
-    map(unlist) %>%
-    map_at("timestamp", milliseconds_to_date) %>%
-    map_at("step", as.double) %>%
-    as.data.frame()
+    map(
+      function(.x) {
+        .x %>%
+          purrr::list_modify(
+            timestamp = as.POSIXct(.x$timestamp, origin = '1970-01-01',tz='UTC')
+          )
+      }
+    ) %>%
+    map(as_tibble) %>%
+    reduce(rbind)
 }
 
 #' Search Runs
@@ -430,7 +440,8 @@ list_artifacts <- function(path = NULL, run_id = NULL, client = NULL) {
 
   response <- call_mlflow_api(
     "artifacts", "list",
-    client = client, verb = "GET",
+    client = client,
+    verb = "GET",
     query = list(
       run_id = run_id,
       path = path
