@@ -40,6 +40,9 @@ create_experiment <- function(name, artifact_location = "", client = NULL, tags 
 #'
 #' Gets a list of all experiments.
 #'
+#' @importFrom purrr reduce
+#' @importFrom tibble as_tibble
+#'
 #' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
@@ -66,14 +69,14 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
   result <- map(
     response$experiments,
     function(x) {
-      x$tags <- parse_run_data(x$tags)
-      as.data.frame(x)
+      x$tags <- list(parse_run_data(x$tags))
+      as_tibble(x)
     }
   )
 
-  do.call(
-    rbind,
-    result
+  reduce(
+    result,
+    rbind
   )
 }
 
