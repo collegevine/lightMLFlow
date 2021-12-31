@@ -69,7 +69,7 @@ check_api_status <- function(client = NULL) {
   req_headers <- do.call(add_headers, rest_config$headers)
 
   r <- GET(
-    "https://my-mlflow-example.herokuapp.com/health",
+    paste(get_tracking_uri(), "health", sep = "/"),
     get_mlflow_api_timeout(),
     req_headers
   )
