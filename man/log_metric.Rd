@@ -4,14 +4,7 @@
 \alias{log_metric}
 \title{Log Metric}
 \usage{
-log_metric(
-  key,
-  value,
-  timestamp = NULL,
-  step = NULL,
-  run_id = NULL,
-  client = NULL
-)
+log_metric(key, value, timestamp, step, run_id, client)
 }
 \arguments{
 \item{key}{Name of the metric.}

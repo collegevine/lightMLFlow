@@ -4,7 +4,7 @@
 \alias{create_run}
 \title{Create an MLFlow run}
 \usage{
-create_run(start_time, tags, experiment_id = NULL, client)
+create_run(start_time, tags, experiment_id, client)
 }
 \arguments{
 \item{start_time}{The start time of the run. Defaults to the current time.}

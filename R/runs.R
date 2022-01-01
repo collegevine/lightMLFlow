@@ -31,35 +31,34 @@ metric_value_to_rest <- function(value) {
 #'
 #' @importFrom forge cast_string cast_scalar_double cast_nullable_scalar_double
 #' @importFrom rlang maybe_missing
+#' @importFrom checkmate assert_double
 #'
 #' @export
-log_metric <- function(key, value, timestamp = NULL, step = NULL, run_id = NULL,
-                              client = NULL) {
+log_metric <- function(key, value, timestamp, step, run_id, client) {
 
-  c_r <- resolve_client_and_run_id(client, run_id)
-  client <- c_r$client
-  run_id <- c_r$run_id
+  .args <- resolve_args(
+    client = maybe_missing(client),
+    run_id = maybe_missing(run_id),
+    timestamp = maybe_missing(timestamp),
+    step = maybe_missing(step)
+  )
 
-  key <- cast_string(key)
-  value <- cast_scalar_double(value, allow_na = TRUE)
-
-  # convert Inf to 'Infinity'
-  value <- metric_value_to_rest(value)
-  timestamp <- cast_nullable_scalar_double(timestamp)
-  timestamp <- round(timestamp %||% current_time())
-  step <- round(cast_nullable_scalar_double(step) %||% 0)
+  assert_string(key)
+  value <- value %>%
+    assert_double()
+    metric_value_to_rest()
 
   data <- list(
-    run_id = run_id,
+    run_id = .args$run_id,
     key = key,
     value = value,
-    timestamp = timestamp,
-    step = step
+    timestamp = .args$timestamp,
+    step = .args$step
   )
 
   call_mlflow_api(
     "runs", "log-metric",
-    client = client,
+    client = .args$client,
     verb = "POST",
     data = data
   )
@@ -77,31 +76,33 @@ log_metric <- function(key, value, timestamp = NULL, step = NULL, run_id = NULL,
 #' @param tags Additional tags to supply for the run
 #' @param experiment_id The ID of the experiment to register the run under.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-create_run <- function(start_time, tags, experiment_id = NULL, client) {
-  experiment_id <- resolve_experiment_id(experiment_id)
+create_run <- function(start_time, tags, experiment_id, client) {
+
+  .args <- resolve_args(
+    experiment_id = maybe_missing(experiment_id),
+    client = maybe_missing(client),
+    start_time = maybe_missing(start_time),
+    tags = maybe_missing(tags)
+  )
 
   # Read user_id from tags
   # user_id is deprecated and will be removed from a future release
   user_id <- tags[[MLFLOW_TAGS$MLFLOW_USER]] %||% "unknown"
 
-  if (!is_empty(tags)) {
-    tags <- tags %>%
-      imap(~ list(key = .y, value = .x)) %>%
-      unname()
-  }
-
-  start_time <- ifelse(missing(start_time), current_time(), start_time)
+  tags <- tags %>%
+    imap(~ list(key = .y, value = .x)) %>%
+    unname()
 
   data <- list(
-    experiment_id = experiment_id,
-    user_id = user_id,
-    start_time = start_time,
-    tags = tags
+    experiment_id = .args$experiment_id,
+    user_id = .args$user_id,
+    start_time = .args$start_time,
+    tags = .args$tags
   )
 
   response <- call_mlflow_api(
     "runs", "create",
-    client = client,
+    client = .args$client,
     verb = "POST",
     data = data
   )
@@ -109,7 +110,7 @@ create_run <- function(start_time, tags, experiment_id = NULL, client) {
   run_id <- response$run$info$run_id
   register_tracking_event("create_run", data)
 
-  get_run(run_id = run_id, client = client)
+  get_run(run_id = run_id, client = .args$client)
 }
 
 #' Delete a Run
@@ -120,16 +121,27 @@ create_run <- function(start_time, tags, experiment_id = NULL, client) {
 #' @export
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-delete_run <- function(run_id, client = NULL) {
-  run_id <- cast_string(run_id)
-  if (identical(run_id, get_active_run_id())) {
+delete_run <- function(run_id, client) {
+
+  .args <- resolve_args(
+    run_id = maybe_missing(run_id),
+    client = maybe_missing(client)
+  )
+
+  if (identical(.args$run_id, get_active_run_id())) {
     abort("Cannot delete an active run.")
   }
-  client <- resolve_client(client)
-  data <- list(run_id = run_id)
-  call_mlflow_api("runs", "delete", client = client, verb = "POST", data = data)
+
+  data <- list(run_id = .args$run_id)
+  call_mlflow_api(
+    "runs", "delete",
+    client = client,
+    verb = "POST",
+    data = data
+  )
+
   register_tracking_event("delete_run", data)
-  invisible(NULL)
+  invisible()
 }
 
 #' Restore a Run
@@ -138,13 +150,24 @@ delete_run <- function(run_id, client = NULL) {
 
 
 #' @export
-#' @param run_id A run uuid. Automatically inferred if a run is currently active.
+#' @param run_id A run id
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-restore_run <- function(run_id, client = NULL) {
-  run_id <- cast_string(run_id)
-  client <- resolve_client(client)
+restore_run <- function(run_id, client) {
+
+  stop_for_missing_args(
+    run_id = maybe_missing(run_id)
+  )
+
+  assert_string(run_id)
+
+  client <- resolve_client(maybe_missing(client))
   data <- list(run_id = run_id)
-  call_mlflow_api("runs", "restore", client = client, verb = "POST", data = data)
+  call_mlflow_api(
+    "runs", "restore",
+    client = client,
+    verb = "POST",
+    data = data
+  )
   register_tracking_event("restore_run", data)
 
   get_run(run_id, client = client)
@@ -155,21 +178,27 @@ restore_run <- function(run_id, client = NULL) {
 #' Gets metadata, params, tags, and metrics for a run. Returns a single value for each metric
 #' key: the most recently logged metric value at the largest step.
 #'
-
-
-#' @export
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-get_run <- function(run_id = NULL, client = NULL) {
+#'
+#' @export
+get_run <- function(run_id, client) {
 
-  run_id <- resolve_run_id(run_id)
-  client <- resolve_client(client)
+  stop_for_missing_args(
+    run_id = maybe_missing(run_id)
+  )
+
+  .args <- resolve_args(
+    run_id = maybe_missing(run_id),
+    client = maybe_missing(client)
+  )
 
   response <- call_mlflow_api(
     "runs", "get",
-    client = client, verb = "GET",
+    client = client,
+    verb = "GET",
     query = list(
-      run_id = run_id
+      run_id = .args$run_id
     )
   )
 
@@ -712,7 +741,7 @@ start_run <- function(run_id, experiment_id, start_time, tags = list(), client, 
     # This is meant to pick up existing run when we're inside `mlflow_source()` called via `mlflow run`.
     get_run(client = client, run_id = existing_run_id)
   } else {
-    experiment_id <- infer_experiment_id(experiment_id)
+    experiment_id <- infer_experiment_id()
     client <- mlflow_client()
 
     args <- get_run_context(

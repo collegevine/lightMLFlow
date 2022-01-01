@@ -41,8 +41,9 @@ get_experiment_id_from_env <- function(client = mlflow_client()) {
   }
 }
 
-infer_experiment_id <- function(experiment_id) {
-  experiment_id %||% get_active_experiment_id() %||% get_experiment_id_from_env()
+infer_experiment_id <- function() {
+  experiment_id <- get_active_experiment_id() %||% get_experiment_id_from_env()
+  assert_string(experiment_id)
 }
 
 #' @export
@@ -210,12 +211,11 @@ resolve_artifact_location <- function(artifact_location) {
   assert_string(artifact_location)
 }
 
+#' @importFrom checkmate assert_integerish
 resolve_start_time <- function(start_time) {
-  if (is_missing(start_time)) {
-    current_time()
-  } else {
-    start_time
-  }
+  if (is_missing(start_time)) start_time <- current_time()
+
+  assert_integerish(start_time)
 }
 
 #' @importFrom checkmate assert_list
@@ -238,16 +238,18 @@ resolve_run_link <- function(run_link) {
 }
 
 resolve_experiment_id <- function(experiment_id) {
-  experiment_id <- infer_experiment_id(experiment_id) %||%
-    abort("`experiment_id` must be specified when there is no active experiment.")
+  if (is_missing(experiment_id)) experiment_id <- infer_experiment_id()
+  if (is.null(experiment_id)) abort("`experiment_id` must be specified when there is no active experiment.")
 
   assert_string(experiment_id)
 }
 
 resolve_run_id <- function(run_id) {
-  cast_nullable_string(run_id) %||%
-    get_active_run_id() %||%
-    abort("`run_id` must be specified when there is no active run.")
+  if (is_missing(run_id)) run_id <- get_active_run_id()
+
+  if (is.null(run_id)) abort("`run_id` must be specified when there is no active run.")
+
+  assert_string(run_id)
 }
 
 new_mlflow_experiment <- function(x) {
@@ -295,4 +297,24 @@ resolve_client <- function(client) {
     if (!inherits(client, "mlflow_client")) abort("`client` must be an `mlflow_client` object.")
     client
   }
+}
+
+#' @importFrom purrr keep
+stop_for_missing_args <- function(...) {
+
+  missings <- list(...) %>%
+    keep(
+      ~ is_missing(.x)
+    )
+
+  if (length(missings) > 0) {
+    abort(
+      sprintf(
+        "Missing the following required argument(s): %s",
+        paste(names(missings), collapse = ", ")
+      )
+    )
+  }
+
+  invisible()
 }

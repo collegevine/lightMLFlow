@@ -4,10 +4,10 @@
 \alias{restore_run}
 \title{Restore a Run}
 \usage{
-restore_run(run_id, client = NULL)
+restore_run(run_id, client)
 }
 \arguments{
-\item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
+\item{run_id}{A run id}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }

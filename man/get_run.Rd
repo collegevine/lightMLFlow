@@ -4,7 +4,7 @@
 \alias{get_run}
 \title{Get Run}
 \usage{
-get_run(run_id = NULL, client = NULL)
+get_run(run_id, client)
 }
 \arguments{
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
