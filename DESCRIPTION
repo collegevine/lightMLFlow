@@ -25,6 +25,7 @@ Imports:
     glue,
     httr,
     jsonlite,
+    lifecycle,
     magrittr,
     purrr,
     rlang,
