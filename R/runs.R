@@ -30,6 +30,7 @@ metric_value_to_rest <- function(value) {
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #'
 #' @importFrom forge cast_string cast_scalar_double cast_nullable_scalar_double
+#' @importFrom rlang maybe_missing
 #'
 #' @export
 log_metric <- function(key, value, timestamp = NULL, step = NULL, run_id = NULL,
@@ -76,7 +77,7 @@ log_metric <- function(key, value, timestamp = NULL, step = NULL, run_id = NULL,
 #' @param tags Additional tags to supply for the run
 #' @param experiment_id The ID of the experiment to register the run under.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-create_run <- function(start_time = NULL, tags = list(), experiment_id = NULL, client) {
+create_run <- function(start_time, tags, experiment_id = NULL, client) {
   experiment_id <- resolve_experiment_id(experiment_id)
 
   # Read user_id from tags
@@ -89,7 +90,7 @@ create_run <- function(start_time = NULL, tags = list(), experiment_id = NULL, c
       unname()
   }
 
-  start_time <- start_time %||% current_time()
+  start_time <- ifelse(missing(start_time), current_time(), start_time)
 
   data <- list(
     experiment_id = experiment_id,
@@ -672,15 +673,17 @@ record_logged_model <- function(model_spec, run_id = NULL, client = NULL) {
 #' @param nested Controls whether the run to be started is nested in a parent run. `TRUE` creates a nest run.
 #'
 #' @export
-start_run <- function(run_id = NULL, experiment_id = NULL, start_time = NULL, tags = list(), client = NULL, nested = FALSE) {
+start_run <- function(run_id, experiment_id, start_time, tags = list(), client, nested = FALSE) {
 
   # When `client` is provided, this function acts as a wrapper for `runs/create` and does not register
   #  an active run.
-  if (!is.null(client)) {
-    if (!is.null(run_id)) abort("`run_id` should not be specified when `client` is specified.")
+  if (!is_missing(client)) {
+    if (!is_missing(run_id)) abort("`run_id` should not be specified when `client` is specified.")
     run <- create_run(
-      client = client, start_time = start_time,
-      tags = tags, experiment_id = experiment_id
+      client = client,
+      start_time = start_time,
+      tags = tags,
+      experiment_id = experiment_id
     )
     return(run)
   }
@@ -718,8 +721,10 @@ start_run <- function(run_id = NULL, experiment_id = NULL, start_time = NULL, ta
     )
     do.call(create_run, args)
   }
+
   push_active_run_id(mlflow_id(run))
   set_experiment(experiment_id = run$experiment_id)
+
   run
 }
 

@@ -11,24 +11,30 @@
 #' @param tags Experiment tags to set on the experiment upon experiment creation.
 #'
 #' @export
-create_experiment <- function(name, artifact_location = "", client = NULL, tags = list()) {
+create_experiment <- function(name, artifact_location, client, tags) {
 
-  client <- resolve_client(client)
-  name <- cast_string(name)
+  if (is_missing(name)) abort("You must specify an experiment name")
 
-  if (!is_empty(tags)) {
-    tags <- tags %>%
-      imap(~ list(key = .y, value = .x)) %>%
-      unname()
-  }
+  assert_string(name)
+
+  .args <- resolve_args(
+    name = name,
+    client = maybe_missing(client),
+    artifact_location = maybe_missing(artifact_location),
+    tags = maybe_missing(tags)
+  )
+
+  tags <- .args$tags %>%
+    imap(~ list(key = .y, value = .x)) %>%
+    unname()
 
   response <- call_mlflow_api(
     "experiments", "create",
-    client = client,
+    client = .args$client,
     verb = "POST",
     data = list(
       name = name,
-      artifact_location = artifact_location,
+      artifact_location = .args$artifact_location,
       tags = tags
     )
   )
@@ -47,9 +53,9 @@ create_experiment <- function(name, artifact_location = "", client = NULL, tags 
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = NULL) {
+list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client) {
 
-  client <- resolve_client(client)
+  client <- resolve_client(maybe_missing(client))
   view_type <- match.arg(view_type)
 
   response <- call_mlflow_api(
@@ -84,28 +90,41 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
 #'
 #' Sets a tag on an experiment with the specified ID. Tags are experiment metadata that can be updated.
 #'
+#' @importFrom checkmate assert_string
+#'
 #' @param key Name of the tag. All storage backends are guaranteed to support
 #'   key values up to 250 bytes in size. This field is required.
 #' @param value String value of the tag being logged. All storage backends are
 #'   guaranteed to support key values up to 5000 bytes in size. This field is required.
 #' @param experiment_id ID of the experiment.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @param client An MLFlow client. Will be auto-generated if not specified.
 #'
 #' @export
-set_experiment_tag <- function(key, value, experiment_id = NULL, client = NULL) {
-  key <- cast_string(key)
-  value <- cast_string(value)
-  client <- resolve_client(client)
+set_experiment_tag <- function(key, value, experiment_id, client) {
 
-  experiment_id <- resolve_experiment_id(experiment_id)
-  experiment_id <- cast_string(experiment_id)
-  response <- call_mlflow_api("experiments", "set-experiment-tag", client = client, verb = "POST", data = list(
-    experiment_id = experiment_id,
-    key = key,
-    value = value
-  ))
+  assert_string(key)
+  assert_string(value)
 
-  invisible(NULL)
+  .args <- resolve_args(
+    client = maybe_missing(client),
+    experiment_id = maybe_missing(experiment_id)
+  )
+
+  experiment_id <- cast_string(.args$experiment_id)
+
+  response <- call_mlflow_api(
+    "experiments",
+    "set-experiment-tag",
+    client = .args$client,
+    verb = "POST",
+    data = list(
+      experiment_id = experiment_id,
+      key = key,
+      value = value
+    )
+  )
+
+  invisible()
 }
 
 #' Get Experiment
@@ -120,16 +139,24 @@ set_experiment_tag <- function(key, value, experiment_id = NULL, client = NULL) 
 #' @export
 get_experiment <- function(experiment_id, name, client = NULL) {
 
-  if (!missing(name) && !missing(experiment_id)) {
+  if (!is_missing(name) && !is_missing(experiment_id)) {
     abort("Only one of `name` or `experiment_id` should be specified.")
   }
 
-  client <- resolve_client(client)
+  .args <- resolve_args(
+    client = maybe_missing(client),
+    experiment_id = maybe_missing(experiment_id)
+  )
 
-  response <- if (!missing(name)) {
+  assert_string(.args$name, .var.name = "name")
+  assert_string(.args$experiment_id, .var.name = "experiment_id")
+
+  response <- if (!is_missing(name)) {
     call_mlflow_api("experiments", "get-by-name",
-      client = client,
-      query = list(experiment_name = name)
+      client = .args$client,
+      query = list(
+        experiment_name = name
+      )
     )
   } else {
     experiment_id <- resolve_experiment_id(experiment_id)
@@ -243,17 +270,17 @@ rename_experiment <- function(new_name, experiment_id = NULL, client = NULL) {
 #' @export
 set_experiment <- function(experiment_name, experiment_id, artifact_location = "") {
 
-  if (!missing(experiment_name) && !missing(experiment_id)) {
+  if (!is_missing(experiment_name) && !is_missing(experiment_id)) {
     abort("Only one of `experiment_name` or `experiment_id` should be specified.")
   }
 
-  if (missing(experiment_name) && missing(experiment_id)) {
+  if (is_missing(experiment_name) && missing(experiment_id)) {
     abort("Exactly one of `experiment_name` or `experiment_id` should be specified.")
   }
 
   client <- mlflow_client()
 
-  final_experiment_id <- if (!missing(experiment_name)) {
+  final_experiment_id <- if (!is_missing(experiment_name)) {
     tryCatch(
       mlflow_id(get_experiment(client = client, name = experiment_name)),
       error = function(e) {

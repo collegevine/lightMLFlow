@@ -41,7 +41,7 @@ get_experiment_id_from_env <- function(client = mlflow_client()) {
   }
 }
 
-infer_experiment_id <- function(experiment_id = NULL) {
+infer_experiment_id <- function(experiment_id) {
   experiment_id %||% get_active_experiment_id() %||% get_experiment_id_from_env()
 }
 
@@ -78,14 +78,7 @@ current_time <- function() {
   )
 }
 
-milliseconds_to_date <- function(x) as.POSIXct(as.double(x) / 1000, origin = "1970-01-01")
-
-tidy_run_info <- function(run_info) {
-  df <- as.data.frame(run_info, stringsAsFactors = FALSE)
-  df$start_time <- milliseconds_to_date(df$start_time %||% NA)
-  df$end_time <- milliseconds_to_date(df$end_time %||% NA)
-  df
-}
+milliseconds_to_datetime <- function(x) as.POSIXct(as.double(x) / 1000, origin = "1970-01-01", tz = "UTC")
 
 wait_for <- function(f, wait, sleep) {
   command_start <- Sys.time()
@@ -128,21 +121,6 @@ MLFLOW_SOURCE_TYPE <- list(
   UNKNOWN = "UNKNOWN"
 )
 
-#' @importFrom forge cast_nullable_string
-resolve_client_and_run_id <- function(client, run_id) {
-  run_id <- cast_nullable_string(run_id)
-  if (is.null(client)) {
-    if (is.null(run_id)) {
-      run_id <- get_active_run_id_or_start_run()
-    }
-    client <- mlflow_client()
-  } else {
-    client <- resolve_client(client)
-    if (is.null(run_id)) abort("`run_id` must be specified when `client` is specified.")
-  }
-  list(client = client, run_id = run_id)
-}
-
 parse_run <- function(r) {
 
   info <- parse_run_info(r$info)
@@ -166,10 +144,8 @@ fill_missing_run_cols <- function(r) {
 
 #' @importFrom purrr map_at
 parse_run_info <- function(r) {
-  # TODO: Consider adding dplyr back after 1.0 along with a minimum rlang version to avoid
-  # dependency conflicts. The dplyr implementation is likely faster.
   r %>%
-    map_at(c("start_time", "end_time"), milliseconds_to_date) %>%
+    map_at(c("start_time", "end_time"), milliseconds_to_datetime) %>%
     fill_missing_run_cols() %>%
     as.data.frame()
 }
@@ -204,9 +180,68 @@ parse_run_data <- function(d) {
   }
 }
 
+resolve_args <- function(...) {
+  list(...) %>%
+    imap(resolve_arg)
+}
+
+resolve_arg <- function(value, name) {
+  switch(
+    name,
+    tags = resolve_tags(value),
+    experiment_id = resolve_experiment_id(value),
+    run_id = resolve_run_id(value),
+    client = resolve_client(value),
+    run_link = resolve_run_link(value),
+    stages = resolve_stages(value),
+    start_time = resolve_start_time(value),
+    artifact_location = resolve_artifact_location(value),
+    name = resolve_name(value)
+  )
+}
+
+resolve_name <- function(name) {
+  assert_string(name)
+}
+
+resolve_artifact_location <- function(artifact_location) {
+  if (is_missing(artifact_location)) artifact_location <- ""
+
+  assert_string(artifact_location)
+}
+
+resolve_start_time <- function(start_time) {
+  if (is_missing(start_time)) {
+    current_time()
+  } else {
+    start_time
+  }
+}
+
+#' @importFrom checkmate assert_list
+resolve_stages <- function(stages) {
+  if (is_missing(stages)) list("None", "Archived", "Staging", "Production")
+
+  assert_list(stages)
+}
+
+resolve_tags <- function(tags) {
+  if (is_missing(tags))  list()
+
+  assert_list(tags)
+}
+
+resolve_run_link <- function(run_link) {
+  if (is_missing(run_link)) ""
+
+  assert_string(run_link)
+}
+
 resolve_experiment_id <- function(experiment_id) {
-  infer_experiment_id(experiment_id) %||%
+  experiment_id <- infer_experiment_id(experiment_id) %||%
     abort("`experiment_id` must be specified when there is no active experiment.")
+
+  assert_string(experiment_id)
 }
 
 resolve_run_id <- function(run_id) {
@@ -252,8 +287,9 @@ mlflow_id.mlflow_experiment <- function(object) {
   object$experiment_id %||% abort("Cannot extract Experiment ID.")
 }
 
+#' @importFrom rlang is_missing
 resolve_client <- function(client) {
-  if (is.null(client)) {
+  if (is_missing(client)) {
     mlflow_client()
   } else {
     if (!inherits(client, "mlflow_client")) abort("`client` must be an `mlflow_client` object.")

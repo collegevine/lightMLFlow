@@ -4,12 +4,12 @@
 \alias{get_latest_versions}
 \title{Get latest model versions}
 \usage{
-get_latest_versions(name, stages = list(), client = NULL)
+get_latest_versions(name, stages, client = NULL)
 }
 \arguments{
 \item{name}{Name of the model.}
 
-\item{stages}{A list of desired stages. If the input list is NULL, return
+\item{stages}{A list of desired stages. If the input list is missing, return
 latest versions for ALL_STAGES.}
 }
 \description{

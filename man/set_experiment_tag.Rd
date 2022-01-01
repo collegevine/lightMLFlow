@@ -4,7 +4,7 @@
 \alias{set_experiment_tag}
 \title{Set Experiment Tag}
 \usage{
-set_experiment_tag(key, value, experiment_id = NULL, client = NULL)
+set_experiment_tag(key, value, experiment_id, client)
 }
 \arguments{
 \item{key}{Name of the tag. All storage backends are guaranteed to support
@@ -15,7 +15,7 @@ guaranteed to support key values up to 5000 bytes in size. This field is require
 
 \item{experiment_id}{ID of the experiment.}
 
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
+\item{client}{An MLFlow client. Will be auto-generated if not specified.}
 }
 \description{
 Sets a tag on an experiment with the specified ID. Tags are experiment metadata that can be updated.

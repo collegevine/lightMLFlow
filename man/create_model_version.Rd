@@ -9,8 +9,8 @@ create_model_version(
   source,
   run_id = NULL,
   tags = NULL,
-  run_link = NULL,
-  description = NULL,
+  run_link = "",
+  description = "",
   client = NULL
 )
 }

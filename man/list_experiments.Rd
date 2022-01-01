@@ -4,10 +4,7 @@
 \alias{list_experiments}
 \title{List Experiments}
 \usage{
-list_experiments(
-  view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"),
-  client = NULL
-)
+list_experiments(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client)
 }
 \arguments{
 \item{view_type}{Qualifier for type of experiments to be returned. Defaults to \code{ACTIVE_ONLY}.}

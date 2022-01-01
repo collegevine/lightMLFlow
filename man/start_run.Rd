@@ -5,11 +5,11 @@
 \title{Start Run}
 \usage{
 start_run(
-  run_id = NULL,
-  experiment_id = NULL,
-  start_time = NULL,
+  run_id,
+  experiment_id,
+  start_time,
   tags = list(),
-  client = NULL,
+  client,
   nested = FALSE
 )
 }

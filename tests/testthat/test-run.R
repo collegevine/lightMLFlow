@@ -121,4 +121,6 @@ test_that("Runs work", {
     artifacts$path,
     c("carrier-model/MLmodel", "carrier-model/crate.bin")
   )
+
+  end_run()
 })

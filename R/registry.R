@@ -134,35 +134,48 @@ list_registered_models <- function(max_results = 100, page_token = NULL,
     )
   )
 
-  return(list(
-    registered_models = response$registered_model,
-    next_page_token = response$next_page_token
-  ))
+  return(
+    list(
+      registered_models = response$registered_model,
+      next_page_token = response$next_page_token
+    )
+  )
 }
 
 #' Get latest model versions
 #'
 #' Retrieves a list of the latest model versions for a given model.
 #'
+#' @importFrom purrr list_modify
+#'
 #' @param name Name of the model.
-#' @param stages A list of desired stages. If the input list is NULL, return
+#' @param stages A list of desired stages. If the input list is missing, return
 #'   latest versions for ALL_STAGES.
 #' @export
-get_latest_versions <- function(name, stages = list(), client = NULL) {
+get_latest_versions <- function(name, stages, client = NULL) {
+
   client <- resolve_client(client)
+  if (is_missing(stages)) stages <- list("None", "Staging", "Production", "Archived")
 
   response <- call_mlflow_api(
     "registered-models",
     "get-latest-versions",
     client = client,
-    verb = "GET",
-    query = list(
+    verb = "POST",
+    data = list(
       name = name,
       stages = stages
     )
   )
 
-  return(response$model_versions)
+  response$model_versions %>%
+    map(
+      ~ list_modify(
+        .x,
+        creation_timestamp = milliseconds_to_datetime(.x[["creation_timestamp"]]),
+        last_updated_timestamp = milliseconds_to_datetime(.x[["last_updated_timestamp"]])
+      )
+    )
 }
 
 #' Create a model version
@@ -177,9 +190,12 @@ get_latest_versions <- function(name, stages = list(), client = NULL) {
 #' @param description Description for model version.
 #' @export
 create_model_version <- function(name, source, run_id = NULL,
-                                        tags = NULL, run_link = NULL,
-                                        description = NULL, client = NULL) {
-  client <- resolve_client(client)
+                                        tags = NULL, run_link = "",
+                                        description = "", client = NULL) {
+
+  c_r <- resolve_client_and_run_id(client, run_id)
+  client <- c_r$client
+  run_id <- c_r$run_id
 
   response <- call_mlflow_api(
     "model-versions",
@@ -195,7 +211,11 @@ create_model_version <- function(name, source, run_id = NULL,
     )
   )
 
-  return(response$model_version)
+  response$model_version %>%
+    list_modify(
+      creation_timestamp = milliseconds_to_datetime(.[["creation_timestamp"]]),
+      last_updated_timestamp = milliseconds_to_datetime(.[["last_updated_timestamp"]])
+    )
 }
 
 #' Get a model version
