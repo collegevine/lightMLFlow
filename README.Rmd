@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+# WARNING: This package is a WIP
+
 # lightMLFlow
  A lightweight R wrapper for the MLFlow REST API
 

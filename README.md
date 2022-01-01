@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# WARNING: This package is a WIP
+
 # lightMLFlow
 
 A lightweight R wrapper for the MLFlow REST API
@@ -9,8 +11,6 @@ A lightweight R wrapper for the MLFlow REST API
 [![R-CMD-check](https://github.com/collegevine/lightMLFlow/workflows/R-CMD-check/badge.svg)](https://github.com/collegevine/lightMLFlow/actions)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![Codecov test
-coverage](https://codecov.io/gh/collegevine/lightMLFlow/branch/main/graph/badge.svg)](https://app.codecov.io/gh/collegevine/lightMLFlow?branch=main)
 <!-- badges: end -->
 
 # Setup
