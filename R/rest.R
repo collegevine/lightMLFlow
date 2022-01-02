@@ -60,9 +60,9 @@ get_rest_config <- function(host_creds) {
 #'
 #' @return "ok" if the API is healthy, otherwise returns an HTTP error.
 #' @export
-check_api_status <- function(client = NULL) {
+check_api_status <- function(client) {
 
-  client <- resolve_client(client)
+  client <- resolve_client(maybe_missing(client))
   host_creds <- client$get_host_creds()
   rest_config <- get_rest_config(host_creds)
 

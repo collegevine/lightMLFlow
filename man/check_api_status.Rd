@@ -4,7 +4,7 @@
 \alias{check_api_status}
 \title{Check the MLFlow API status}
 \usage{
-check_api_status(client = NULL)
+check_api_status(client)
 }
 \arguments{
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
