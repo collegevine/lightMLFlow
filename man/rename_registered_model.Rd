@@ -4,7 +4,7 @@
 \alias{rename_registered_model}
 \title{Rename a registered model}
 \usage{
-rename_registered_model(name, new_name, client = NULL)
+rename_registered_model(name, new_name, client)
 }
 \arguments{
 \item{name}{The current name of the model.}

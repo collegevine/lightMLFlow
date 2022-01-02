@@ -4,7 +4,7 @@
 \alias{get_model_version}
 \title{Get a model version}
 \usage{
-get_model_version(name, version, client = NULL)
+get_model_version(name, version, client)
 }
 \arguments{
 \item{name}{Name of the registered model.}

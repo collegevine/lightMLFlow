@@ -6,19 +6,29 @@
 #' @param tags Additional metadata for the registered model (Optional).
 #' @param description Description for the registered model (Optional).
 #' @export
-create_registered_model <- function(name, tags = list(),
-                                           description = "", client = NULL) {
-  client <- resolve_client(client)
+create_registered_model <- function(name, tags, description, client) {
+
+  stop_for_missing_args(
+    name = maybe_missing(name)
+  )
+
+  assert_string(name)
+
+  .args <- resolve_args(
+    tags = maybe_missing(tags),
+    description = maybe_missing(description),
+    client = maybe_missing(client)
+  )
 
   response <- call_mlflow_api(
     "registered-models",
     "create",
-    client = client,
+    client = .args$client,
     verb = "POST",
     data = list(
-      name = cast_string(name),
-      tags = tags,
-      description = description
+      name = name,
+      tags = .args$tags,
+      description = .args$description
     )
   )
 
@@ -31,8 +41,12 @@ create_registered_model <- function(name, tags = list(),
 #'
 #' @param name The name of the model to retrieve.
 #' @export
-get_registered_model <- function(name, client = NULL) {
-  client <- resolve_client(client)
+get_registered_model <- function(name, client) {
+
+  stop_for_missing_args(name = maybe_missing(name))
+  assert_string(name)
+
+  client <- resolve_client(maybe_missing(client))
 
   response <- call_mlflow_api(
     "registered-models",
@@ -52,8 +66,17 @@ get_registered_model <- function(name, client = NULL) {
 #' @param name The current name of the model.
 #' @param new_name The new name for the model.
 #' @export
-rename_registered_model <- function(name, new_name, client = NULL) {
-  client <- resolve_client(client)
+rename_registered_model <- function(name, new_name, client) {
+
+  stop_for_missing_args(
+    name = maybe_missing(name),
+    new_name = maybe_missing(new_name)
+  )
+
+  assert_string(name)
+  assert_string(new_name)
+
+  client <- resolve_client(maybe_missing(client))
 
   response <- call_mlflow_api(
     "registered-models",
@@ -76,17 +99,24 @@ rename_registered_model <- function(name, new_name, client = NULL) {
 #' @param name The name of the registered model.
 #' @param description The updated description for this registered model.
 #' @export
-update_registered_model <- function(name, description, client = NULL) {
-  client <- resolve_client(client)
+update_registered_model <- function(name, description, client) {
+
+  stop_for_missing_args(name = maybe_missing(name))
+  assert_string(name)
+
+  .args <- resolve_args(
+    client = maybe_missing(client),
+    description = maybe_missing(description)
+  )
 
   response <- call_mlflow_api(
     "registered-models",
     "update",
-    client = client,
+    client = .args$client,
     verb = "PATCH",
     data = list(
       name = name,
-      description = description
+      description = .args$description
     )
   )
 
@@ -99,10 +129,14 @@ update_registered_model <- function(name, description, client = NULL) {
 #'
 #' @param name The name of the model to delete
 #' @export
-delete_registered_model <- function(name, client = NULL) {
-  client <- resolve_client(client)
+delete_registered_model <- function(name, client) {
 
-  response <- call_mlflow_api(
+  stop_for_missing_args(name = maybe_missing(name))
+  assert_string(name)
+
+  client <- resolve_client(maybe_missing(client))
+
+  call_mlflow_api(
     "registered-models",
     "delete",
     client = client,
@@ -119,9 +153,8 @@ delete_registered_model <- function(name, client = NULL) {
 #' @param page_token Pagination token to go to the next page based on a
 #'   previous query.
 #' @export
-list_registered_models <- function(max_results = 100, page_token = NULL,
-                                          client = NULL) {
-  client <- resolve_client(client)
+list_registered_models <- function(max_results = 100, page_token = NULL, client) {
+  client <- resolve_client(maybe_missing(client))
 
   response <- call_mlflow_api(
     "registered-models",
@@ -152,19 +185,24 @@ list_registered_models <- function(max_results = 100, page_token = NULL,
 #' @param stages A list of desired stages. If the input list is missing, return
 #'   latest versions for ALL_STAGES.
 #' @export
-get_latest_versions <- function(name, stages, client = NULL) {
+get_latest_versions <- function(name, stages, client) {
 
-  client <- resolve_client(client)
-  if (is_missing(stages)) stages <- list("None", "Staging", "Production", "Archived")
+  .args <- resolve_args(
+    stages = maybe_missing(stages),
+    client = maybe_missing(client)
+  )
+
+  stop_for_missing_args(name = maybe_missing(name))
+  assert_string(name)
 
   response <- call_mlflow_api(
     "registered-models",
     "get-latest-versions",
-    client = client,
+    client = .args$client,
     verb = "POST",
     data = list(
       name = name,
-      stages = stages
+      stages = .args$stages
     )
   )
 
@@ -189,25 +227,35 @@ get_latest_versions <- function(name, stages, client = NULL) {
 #'   generated this model version.
 #' @param description Description for model version.
 #' @export
-create_model_version <- function(name, source, run_id = NULL,
-                                        tags = NULL, run_link = "",
-                                        description = "", client = NULL) {
+create_model_version <- function(name, source, run_id, tags, run_link, description, client) {
 
-  c_r <- resolve_client_and_run_id(client, run_id)
-  client <- c_r$client
-  run_id <- c_r$run_id
+  stop_for_missing_args(
+    name = maybe_missing(name),
+    source = maybe_missing(source)
+  )
+
+  assert_string(name)
+  assert_string(source)
+
+  .args <- resolve_args(
+    run_id = maybe_missing(run_id),
+    tags = maybe_missing(tags),
+    run_link = maybe_missing(run_link),
+    description = maybe_missing(description),
+    client = maybe_missing(client)
+  )
 
   response <- call_mlflow_api(
     "model-versions",
     "create",
-    client = client,
+    client = .args$client,
     verb = "POST",
     data = list(
       name = name,
       source = source,
-      run_id = run_id,
-      run_link = run_link,
-      description = description
+      run_id = .args$run_id,
+      run_link = .args$run_link,
+      description = .args$description
     )
   )
 
@@ -223,8 +271,17 @@ create_model_version <- function(name, source, run_id = NULL,
 #' @param name Name of the registered model.
 #' @param version Model version number.
 #' @export
-get_model_version <- function(name, version, client = NULL) {
-  client <- resolve_client(client)
+get_model_version <- function(name, version, client) {
+
+  stop_for_missing_args(
+    name = maybe_missing(name),
+    version = maybe_missing(version)
+  )
+
+  assert_string(name)
+  assert_string(version)
+
+  client <- resolve_client(maybe_missing(client))
 
   response <- call_mlflow_api(
     "model-versions",
@@ -248,19 +305,30 @@ get_model_version <- function(name, version, client = NULL) {
 #' @param version Model version number.
 #' @param description Description of this model version.
 #' @export
-update_model_version <- function(name, version, description,
-                                        client = NULL) {
-  client <- resolve_client(client)
+update_model_version <- function(name, version, description, client) {
+
+  stop_for_missing_args(
+    name = maybe_missing(name),
+    version = maybe_missing(version)
+  )
+
+  assert_string(name)
+  assert_string(version)
+
+  .args <- resolve_args(
+    client = maybe_missing(client),
+    description = maybe_missing(description)
+  )
 
   response <- call_mlflow_api(
     "model-versions",
     "update",
-    client = client,
+    client = .args$client,
     verb = "PATCH",
     data = list(
       name = name,
       version = version,
-      description = description
+      description = .args$description
     )
   )
 
@@ -272,10 +340,19 @@ update_model_version <- function(name, version, description,
 #' @param name Name of the registered model.
 #' @param version Model version number.
 #' @export
-delete_model_version <- function(name, version, client = NULL) {
-  client <- resolve_client(client)
+delete_model_version <- function(name, version, client) {
 
-  response <- call_mlflow_api(
+  stop_for_missing_args(
+    name = maybe_missing(name),
+    version = maybe_missing(version)
+  )
+
+  assert_string(name)
+  assert_string(version)
+
+  client <- resolve_client(maybe_missing(client))
+
+  call_mlflow_api(
     "model-versions",
     "delete",
     client = client,
@@ -291,15 +368,26 @@ delete_model_version <- function(name, version, client = NULL) {
 #'
 #' Transition a model version to a different stage.
 #'
+#' @importFrom checkmate assert_logical
 #' @param name Name of the registered model.
 #' @param version Model version number.
 #' @param stage Transition `model_version` to this tage.
 #' @param archive_existing_versions (Optional)
 #' @export
-transition_model_version_stage <- function(name, version, stage,
-                                                  archive_existing_versions = FALSE,
-                                                  client = NULL) {
-  client <- resolve_client(client)
+transition_model_version_stage <- function(name, version, stage, archive_existing_versions = FALSE, client) {
+
+  stop_for_missing_args(
+    name = maybe_missing(name),
+    version = maybe_missing(version),
+    stage = maybe_missing(stage)
+  )
+
+  assert_string(name)
+  assert_string(version)
+  assert_string(stage)
+  assert_logical(archive_existing_versions)
+
+  client <- resolve_client(maybe_missing(client))
 
   response <- call_mlflow_api(
     "model-versions",

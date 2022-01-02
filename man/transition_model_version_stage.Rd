@@ -9,7 +9,7 @@ transition_model_version_stage(
   version,
   stage,
   archive_existing_versions = FALSE,
-  client = NULL
+  client
 )
 }
 \arguments{

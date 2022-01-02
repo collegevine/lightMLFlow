@@ -4,7 +4,7 @@
 \alias{get_registered_model}
 \title{Get a registered model}
 \usage{
-get_registered_model(name, client = NULL)
+get_registered_model(name, client)
 }
 \arguments{
 \item{name}{The name of the model to retrieve.}

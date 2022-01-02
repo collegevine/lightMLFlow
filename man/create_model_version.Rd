@@ -4,15 +4,7 @@
 \alias{create_model_version}
 \title{Create a model version}
 \usage{
-create_model_version(
-  name,
-  source,
-  run_id = NULL,
-  tags = NULL,
-  run_link = "",
-  description = "",
-  client = NULL
-)
+create_model_version(name, source, run_id, tags, run_link, description, client)
 }
 \arguments{
 \item{name}{Register model under this name.}

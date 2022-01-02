@@ -4,7 +4,7 @@
 \alias{get_latest_versions}
 \title{Get latest model versions}
 \usage{
-get_latest_versions(name, stages, client = NULL)
+get_latest_versions(name, stages, client)
 }
 \arguments{
 \item{name}{Name of the model.}
