@@ -38,7 +38,7 @@ Collate:
     'experiments.R'
     'observer.R'
     'globals.R'
-    'mlflow-package.R'
+    'lightMLFlow-package.R'
     'model-crate.R'
     'model.R'
     'registry.R'
