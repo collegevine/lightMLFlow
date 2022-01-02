@@ -22,7 +22,6 @@ Imports:
     forge,
     fs,
     git2r,
-    glue,
     httr,
     jsonlite,
     lifecycle,
