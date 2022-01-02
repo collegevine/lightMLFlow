@@ -20,6 +20,8 @@ transition_model_version_stage(
 \item{stage}{Transition \code{model_version} to this tage.}
 
 \item{archive_existing_versions}{(Optional)}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Transition a model version to a different stage.

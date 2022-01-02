@@ -8,6 +8,8 @@ get_registered_model(name, client)
 }
 \arguments{
 \item{name}{The name of the model to retrieve.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Retrieves a registered model from the Model Registry.

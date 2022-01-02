@@ -477,7 +477,7 @@ get_metric_history <- function(metric_key, run_id, client) {
 #' @param order_by List of properties to order by. Example: "metrics.acc DESC".
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
-#' @importFrom forge cast_string_list
+#' @importFrom forge cast_string_list cast_nullable_string
 #'
 #' @export
 search_runs <- function(filter = NULL, run_view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), experiment_ids = NULL, order_by = list(), client = NULL) {
@@ -612,7 +612,7 @@ download_artifact <- function(path, run_id, ...) {
   run_id <- resolve_run_id(maybe_missing(run_id))
 
   experiment_id <- get_experiment_from_run(
-    run_id = .args$run_id
+    run_id = run_id
   )
 
   s3_info <- get_s3_bucket_and_prefix()
@@ -620,7 +620,7 @@ download_artifact <- function(path, run_id, ...) {
   s3_path <- create_s3_path(
     s3_prefix = s3_info$prefix,
     experiment_id = experiment_id,
-    run_id = .args$run_id,
+    run_id = run_id,
     fname = path
   )
 

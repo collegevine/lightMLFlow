@@ -10,6 +10,8 @@ rename_registered_model(name, new_name, client)
 \item{name}{The current name of the model.}
 
 \item{new_name}{The new name for the model.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Renames a model in the Model Registry.

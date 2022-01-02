@@ -10,6 +10,8 @@ update_registered_model(name, description, client)
 \item{name}{The name of the registered model.}
 
 \item{description}{The updated description for this registered model.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Updates a model in the Model Registry.

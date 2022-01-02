@@ -11,6 +11,8 @@ get_latest_versions(name, stages, client)
 
 \item{stages}{A list of desired stages. If the input list is missing, return
 latest versions for ALL_STAGES.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Retrieves a list of the latest model versions for a given model.

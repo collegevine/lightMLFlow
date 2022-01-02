@@ -10,6 +10,8 @@ delete_model_version(name, version, client)
 \item{name}{Name of the registered model.}
 
 \item{version}{Model version number.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Delete a model version

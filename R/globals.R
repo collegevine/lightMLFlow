@@ -1,3 +1,6 @@
+## for cmd check
+utils::globalVariables(c("."))
+
 .globals <- new.env(parent = emptyenv())
 
 #' @include observer.R

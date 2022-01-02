@@ -11,6 +11,8 @@ list_registered_models(max_results = 100, page_token = NULL, client)
 
 \item{page_token}{Pagination token to go to the next page based on a
 previous query.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Retrieves a list of registered models.

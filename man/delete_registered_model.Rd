@@ -8,6 +8,8 @@ delete_registered_model(name, client)
 }
 \arguments{
 \item{name}{The name of the model to delete}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Deletes an existing registered model by name

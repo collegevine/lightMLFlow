@@ -20,6 +20,8 @@ by an experiment run in MLflow Tracking.}
 generated this model version.}
 
 \item{description}{Description for model version.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Create a model version

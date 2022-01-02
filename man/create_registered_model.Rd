@@ -12,6 +12,8 @@ create_registered_model(name, tags, description, client)
 \item{tags}{Additional metadata for the registered model (Optional).}
 
 \item{description}{Description for the registered model (Optional).}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Creates a new registered model in the model registry

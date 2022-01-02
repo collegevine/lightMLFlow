@@ -5,6 +5,7 @@
 #' @param name The name of the model to create.
 #' @param tags Additional metadata for the registered model (Optional).
 #' @param description Description for the registered model (Optional).
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 create_registered_model <- function(name, tags, description, client) {
 
@@ -40,6 +41,7 @@ create_registered_model <- function(name, tags, description, client) {
 #' Retrieves a registered model from the Model Registry.
 #'
 #' @param name The name of the model to retrieve.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 get_registered_model <- function(name, client) {
 
@@ -65,6 +67,7 @@ get_registered_model <- function(name, client) {
 #'
 #' @param name The current name of the model.
 #' @param new_name The new name for the model.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 rename_registered_model <- function(name, new_name, client) {
 
@@ -98,6 +101,7 @@ rename_registered_model <- function(name, new_name, client) {
 #'
 #' @param name The name of the registered model.
 #' @param description The updated description for this registered model.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 update_registered_model <- function(name, description, client) {
 
@@ -128,6 +132,7 @@ update_registered_model <- function(name, description, client) {
 #' Deletes an existing registered model by name
 #'
 #' @param name The name of the model to delete
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 delete_registered_model <- function(name, client) {
 
@@ -152,6 +157,7 @@ delete_registered_model <- function(name, client) {
 #' @param max_results Maximum number of registered models to retrieve.
 #' @param page_token Pagination token to go to the next page based on a
 #'   previous query.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 list_registered_models <- function(max_results = 100, page_token = NULL, client) {
   client <- resolve_client(maybe_missing(client))
@@ -184,6 +190,7 @@ list_registered_models <- function(max_results = 100, page_token = NULL, client)
 #' @param name Name of the model.
 #' @param stages A list of desired stages. If the input list is missing, return
 #'   latest versions for ALL_STAGES.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 get_latest_versions <- function(name, stages, client) {
 
@@ -226,6 +233,7 @@ get_latest_versions <- function(name, stages, client) {
 #' @param run_link MLflow run link - This is the exact link of the run that
 #'   generated this model version.
 #' @param description Description for model version.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 create_model_version <- function(name, source, run_id, tags, run_link, description, client) {
 
@@ -270,6 +278,7 @@ create_model_version <- function(name, source, run_id, tags, run_link, descripti
 #'
 #' @param name Name of the registered model.
 #' @param version Model version number.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 get_model_version <- function(name, version, client) {
 
@@ -308,6 +317,7 @@ get_model_version <- function(name, version, client) {
 #' @param name Name of the registered model.
 #' @param version Model version number.
 #' @param description Description of this model version.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 update_model_version <- function(name, version, description, client) {
 
@@ -343,6 +353,7 @@ update_model_version <- function(name, version, description, client) {
 #'
 #' @param name Name of the registered model.
 #' @param version Model version number.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 delete_model_version <- function(name, version, client) {
 
@@ -377,6 +388,7 @@ delete_model_version <- function(name, version, client) {
 #' @param version Model version number.
 #' @param stage Transition `model_version` to this tage.
 #' @param archive_existing_versions (Optional)
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 transition_model_version_stage <- function(name, version, stage, archive_existing_versions = FALSE, client) {
 

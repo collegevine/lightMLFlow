@@ -12,6 +12,8 @@ update_model_version(name, version, description, client)
 \item{version}{Model version number.}
 
 \item{description}{Description of this model version.}
+
+\item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
 \description{
 Updates a model version
