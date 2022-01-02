@@ -4,14 +4,12 @@
 \alias{download_artifact}
 \title{Download Artifact}
 \usage{
-download_artifact(path, run_id = NULL, client = NULL, ...)
+download_artifact(path, run_id, ...)
 }
 \arguments{
 \item{path}{Relative source path to the desired artifact.}
 
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
-
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 
 \item{...}{Additional arguments to pass to \code{aws.s3::save_object}}
 }

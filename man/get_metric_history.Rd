@@ -4,7 +4,7 @@
 \alias{get_metric_history}
 \title{Get Metric History}
 \usage{
-get_metric_history(metric_key, run_id = NULL, client = NULL)
+get_metric_history(metric_key, run_id, client)
 }
 \arguments{
 \item{metric_key}{Name of the metric.}

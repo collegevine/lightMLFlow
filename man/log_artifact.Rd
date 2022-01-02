@@ -4,14 +4,12 @@
 \alias{log_artifact}
 \title{Log Artifact}
 \usage{
-log_artifact(file, run_id = NULL, client = NULL, ...)
+log_artifact(file, run_id, ...)
 }
 \arguments{
 \item{file}{The file to log as an artifact.}
 
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
-
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 
 \item{...}{Additional arguments to pass to \code{aws.s3::put_object}}
 }

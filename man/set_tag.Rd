@@ -4,7 +4,7 @@
 \alias{set_tag}
 \title{Set Tag}
 \usage{
-set_tag(key, value, run_id = NULL, client = NULL)
+set_tag(key, value, run_id, client)
 }
 \arguments{
 \item{key}{Name of the tag. Maximum size is 255 bytes. This field is required.}

@@ -4,7 +4,7 @@
 \alias{delete_tag}
 \title{Delete Tag}
 \usage{
-delete_tag(key, run_id = NULL, client = NULL)
+delete_tag(key, run_id, client)
 }
 \arguments{
 \item{key}{Name of the tag. Maximum size is 255 bytes. This field is required.}

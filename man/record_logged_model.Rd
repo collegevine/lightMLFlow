@@ -4,7 +4,7 @@
 \alias{record_logged_model}
 \title{Record logged model metadata with the tracking server.}
 \usage{
-record_logged_model(model_spec, run_id = NULL, client = NULL)
+record_logged_model(model_spec, run_id, client)
 }
 \arguments{
 \item{model_spec}{A model specification.}

@@ -4,14 +4,7 @@
 \alias{start_run}
 \title{Start Run}
 \usage{
-start_run(
-  run_id,
-  experiment_id,
-  start_time,
-  tags = list(),
-  client,
-  nested = FALSE
-)
+start_run(run_id, experiment_id, start_time, tags, client, nested = FALSE)
 }
 \arguments{
 \item{run_id}{If specified, get the run with the specified UUID and log metrics

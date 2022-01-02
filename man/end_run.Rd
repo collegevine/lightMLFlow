@@ -7,8 +7,8 @@
 end_run(
   status = c("FINISHED", "FAILED", "KILLED"),
   end_time = NULL,
-  run_id = NULL,
-  client = NULL
+  run_id,
+  client
 )
 }
 \arguments{

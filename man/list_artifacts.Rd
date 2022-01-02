@@ -4,13 +4,13 @@
 \alias{list_artifacts}
 \title{List Artifacts}
 \usage{
-list_artifacts(path = NULL, run_id = NULL, client = NULL)
+list_artifacts(path = NULL, run_id, client)
 }
 \arguments{
 \item{path}{The run's relative artifact path to list from. If not specified, it is
 set to the root artifact path}
 
-\item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
+\item{run_id}{A run id Automatically inferred if a run is currently active.}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }

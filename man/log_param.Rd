@@ -4,7 +4,7 @@
 \alias{log_param}
 \title{Log Parameter}
 \usage{
-log_param(key, value, run_id = NULL, client = NULL)
+log_param(key, value, run_id, client)
 }
 \arguments{
 \item{key}{Name of the parameter.}

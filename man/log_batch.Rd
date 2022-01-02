@@ -8,8 +8,8 @@ log_batch(
   metrics = data.frame(),
   params = data.frame(),
   tags = data.frame(),
-  run_id = NULL,
-  client = NULL
+  run_id,
+  client
 )
 }
 \arguments{
