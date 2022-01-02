@@ -69,6 +69,6 @@ jobs:
           psql -d $DATABASE_URL -c 'DELETE FROM params;'
           psql -d $DATABASE_URL -c 'DELETE FROM runs;'
           psql -d $DATABASE_URL -c 'DELETE FROM experiment_tags;'
+          psql -d $DATABASE_URL -c 'DELETE FROM model_versions;'
           psql -d $DATABASE_URL -c 'DELETE FROM registered_models;'
           psql -d $DATABASE_URL -c 'DELETE FROM model_version_tags;'
-          psql -d $DATABASE_URL -c 'DELETE FROM model_versions;'
