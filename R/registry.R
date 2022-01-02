@@ -294,7 +294,11 @@ get_model_version <- function(name, version, client) {
     )
   )
 
-  return(response$model_version)
+  response$model_version %>%
+    list_modify(
+      creation_timestamp = milliseconds_to_datetime(.[["creation_timestamp"]]),
+      last_updated_timestamp = milliseconds_to_datetime(.[["last_updated_timestamp"]])
+    )
 }
 
 #' Update model version

@@ -17,7 +17,7 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
 
   id2 <- create_experiment(
     name = n2,
-    tags = c(
+    tags = list(
       a = "b",
       c = "d"
     )

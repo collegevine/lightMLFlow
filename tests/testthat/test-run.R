@@ -20,6 +20,8 @@ test_that("Runs work", {
     value = r2
   )
 
+  Sys.sleep(3)
+
   log_metric(
     "F",
     f
@@ -52,7 +54,7 @@ test_that("Runs work", {
 
   log_param(
     key = "df",
-    value = model_summary$df[1]
+    value = as.character(model_summary$df[1])
   )
 
   r <- get_run()

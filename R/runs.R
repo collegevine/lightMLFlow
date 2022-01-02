@@ -50,7 +50,7 @@ log_metric <- function(key, value, timestamp, step, run_id, client) {
 
   assert_string(key)
   value <- value %>%
-    assert_double()
+    assert_double() %>%
     metric_value_to_rest()
 
   data <- list(
@@ -90,17 +90,12 @@ create_run <- function(start_time, tags, experiment_id, client) {
     tags = maybe_missing(tags)
   )
 
-  # Read user_id from tags
-  # user_id is deprecated and will be removed from a future release
-  user_id <- tags[[MLFLOW_TAGS$MLFLOW_USER]] %||% "unknown"
-
-  tags <- tags %>%
+  .args$tags <- .args$tags %>%
     imap(~ list(key = .y, value = .x)) %>%
     unname()
 
   data <- list(
     experiment_id = .args$experiment_id,
-    user_id = .args$user_id,
     start_time = .args$start_time,
     tags = .args$tags
   )
@@ -189,10 +184,6 @@ restore_run <- function(run_id, client) {
 #' @export
 get_run <- function(run_id, client) {
 
-  stop_for_missing_args(
-    run_id = maybe_missing(run_id)
-  )
-
   .args <- resolve_args(
     run_id = maybe_missing(run_id),
     client = maybe_missing(client)
@@ -200,7 +191,7 @@ get_run <- function(run_id, client) {
 
   response <- call_mlflow_api(
     "runs", "get",
-    client = client,
+    client = .args$client,
     verb = "GET",
     query = list(
       run_id = .args$run_id
@@ -774,13 +765,19 @@ start_run <- function(run_id, experiment_id, start_time, tags, client, nested = 
     # This is meant to pick up existing run when we're inside `mlflow_source()` called via `mlflow run`.
     get_run(client = client, run_id = existing_run_id)
   } else {
-    experiment_id <- infer_experiment_id()
+    experiment_id <- ifelse(
+      is_missing(experiment_id),
+      infer_experiment_id(),
+      experiment_id
+    )
+
     client <- mlflow_client()
 
     args <- get_run_context(
       client,
       experiment_id = experiment_id
     )
+
     do.call(create_run, args)
   }
 

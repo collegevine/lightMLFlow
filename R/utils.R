@@ -195,11 +195,28 @@ resolve_arg <- function(value, name) {
     client = resolve_client(value),
     run_link = resolve_run_link(value),
     stages = resolve_stages(value),
-    start_time = resolve_start_time(value),
+    start_time = resolve_timestamp(value),
+    timestamp = resolve_timestamp(value),
     artifact_location = resolve_artifact_location(value),
-    name = resolve_name(value)
+    name = resolve_name(value),
+    description = resolve_description(value),
+    step = resolve_step(value),
+    abort(sprintf("Could not find a way to resolve '%s'.", name))
   )
 }
+
+resolve_step <- function(step) {
+  if (is_missing(step)) step <- 1
+
+  assert_integerish(step)
+}
+
+resolve_description <- function(description) {
+  if (is_missing(description)) description <- ""
+
+  assert_string(description)
+}
+
 
 resolve_name <- function(name) {
   assert_string(name)
@@ -212,7 +229,7 @@ resolve_artifact_location <- function(artifact_location) {
 }
 
 #' @importFrom checkmate assert_integerish
-resolve_start_time <- function(start_time) {
+resolve_timestamp <- function(start_time) {
   if (is_missing(start_time)) start_time <- current_time()
 
   assert_integerish(start_time)
@@ -238,6 +255,7 @@ resolve_run_link <- function(run_link) {
 }
 
 resolve_experiment_id <- function(experiment_id) {
+
   if (is_missing(experiment_id)) experiment_id <- infer_experiment_id()
   if (is.null(experiment_id)) abort("`experiment_id` must be specified when there is no active experiment.")
 
