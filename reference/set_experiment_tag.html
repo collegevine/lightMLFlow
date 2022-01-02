@@ -44,7 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">set_experiment_tag</span><span class="op">(</span><span class="va">key</span>, <span class="va">value</span>, experiment_id <span class="op">=</span> <span class="cn">NULL</span>, client <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">set_experiment_tag</span><span class="op">(</span><span class="va">key</span>, <span class="va">value</span>, <span class="va">experiment_id</span>, <span class="va">client</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -58,7 +58,7 @@ guaranteed to support key values up to 5000 bytes in size. This field is require
 <dt>experiment_id</dt>
 <dd><p>ID of the experiment.</p></dd>
 <dt>client</dt>
-<dd><p>An MLFlow client. Defaults to <code>NULL</code> and will be auto-generated.</p></dd>
+<dd><p>An MLFlow client. Will be auto-generated if not specified.</p></dd>
 </dl></div>
 
   </div>

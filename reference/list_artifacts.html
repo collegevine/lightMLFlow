@@ -44,7 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">list_artifacts</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, run_id <span class="op">=</span> <span class="cn">NULL</span>, client <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">list_artifacts</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">run_id</span>, <span class="va">client</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -53,7 +53,7 @@
 <dd><p>The run's relative artifact path to list from. If not specified, it is
 set to the root artifact path</p></dd>
 <dt>run_id</dt>
-<dd><p>A run uuid. Automatically inferred if a run is currently active.</p></dd>
+<dd><p>A run id Automatically inferred if a run is currently active.</p></dd>
 <dt>client</dt>
 <dd><p>An MLFlow client. Defaults to <code>NULL</code> and will be auto-generated.</p></dd>
 </dl></div>

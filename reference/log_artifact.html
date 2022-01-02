@@ -44,7 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_artifact</span><span class="op">(</span><span class="va">file</span>, run_id <span class="op">=</span> <span class="cn">NULL</span>, client <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_artifact</span><span class="op">(</span><span class="va">file</span>, <span class="va">run_id</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -53,8 +53,6 @@
 <dd><p>The file to log as an artifact.</p></dd>
 <dt>run_id</dt>
 <dd><p>A run uuid. Automatically inferred if a run is currently active.</p></dd>
-<dt>client</dt>
-<dd><p>An MLFlow client. Defaults to <code>NULL</code> and will be auto-generated.</p></dd>
 <dt>...</dt>
 <dd><p>Additional arguments to pass to <code><a href="https://rdrr.io/pkg/aws.s3/man/put_object.html" class="external-link">aws.s3::put_object</a></code></p></dd>
 </dl></div>

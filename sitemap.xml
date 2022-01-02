@@ -19,10 +19,22 @@
     <loc>/reference/create_experiment.html</loc>
   </url>
   <url>
+    <loc>/reference/create_model_version.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_registered_model.html</loc>
+  </url>
+  <url>
     <loc>/reference/create_run.html</loc>
   </url>
   <url>
     <loc>/reference/delete_experiment.html</loc>
+  </url>
+  <url>
+    <loc>/reference/delete_model_version.html</loc>
+  </url>
+  <url>
+    <loc>/reference/delete_registered_model.html</loc>
   </url>
   <url>
     <loc>/reference/delete_run.html</loc>
@@ -40,7 +52,16 @@
     <loc>/reference/get_experiment.html</loc>
   </url>
   <url>
+    <loc>/reference/get_latest_versions.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_metric_history.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_model_version.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_registered_model.html</loc>
   </url>
   <url>
     <loc>/reference/get_run.html</loc>
@@ -61,7 +82,7 @@
     <loc>/reference/list_experiments.html</loc>
   </url>
   <url>
-    <loc>/reference/list_run_infos.html</loc>
+    <loc>/reference/list_registered_models.html</loc>
   </url>
   <url>
     <loc>/reference/load_flavor.html</loc>
@@ -103,6 +124,9 @@
     <loc>/reference/rename_experiment.html</loc>
   </url>
   <url>
+    <loc>/reference/rename_registered_model.html</loc>
+  </url>
+  <url>
     <loc>/reference/restore_experiment.html</loc>
   </url>
   <url>
@@ -128,5 +152,14 @@
   </url>
   <url>
     <loc>/reference/start_run.html</loc>
+  </url>
+  <url>
+    <loc>/reference/transition_model_version_stage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/update_model_version.html</loc>
+  </url>
+  <url>
+    <loc>/reference/update_registered_model.html</loc>
   </url>
 </urlset>
