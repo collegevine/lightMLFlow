@@ -4,7 +4,7 @@
 \alias{get_experiment}
 \title{Get Experiment}
 \usage{
-get_experiment(experiment_id, name, client = NULL)
+get_experiment(experiment_id, name, client)
 }
 \arguments{
 \item{experiment_id}{ID of the experiment.}

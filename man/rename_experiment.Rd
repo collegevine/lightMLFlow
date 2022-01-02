@@ -4,7 +4,7 @@
 \alias{rename_experiment}
 \title{Rename Experiment}
 \usage{
-rename_experiment(new_name, experiment_id = NULL, client = NULL)
+rename_experiment(new_name, experiment_id, client)
 }
 \arguments{
 \item{new_name}{The experiment's name will be changed to this. The new name must be unique.}

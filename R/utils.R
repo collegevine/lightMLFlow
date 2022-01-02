@@ -43,7 +43,7 @@ get_experiment_id_from_env <- function(client = mlflow_client()) {
 
 infer_experiment_id <- function() {
   experiment_id <- get_active_experiment_id() %||% get_experiment_id_from_env()
-  assert_string(experiment_id)
+  assert_string(experiment_id, null.ok = TRUE)
 }
 
 #' @export
@@ -220,19 +220,19 @@ resolve_start_time <- function(start_time) {
 
 #' @importFrom checkmate assert_list
 resolve_stages <- function(stages) {
-  if (is_missing(stages)) list("None", "Archived", "Staging", "Production")
+  if (is_missing(stages)) stages <- list("None", "Archived", "Staging", "Production")
 
   assert_list(stages)
 }
 
 resolve_tags <- function(tags) {
-  if (is_missing(tags))  list()
+  if (is_missing(tags))  tags <- list()
 
   assert_list(tags)
 }
 
 resolve_run_link <- function(run_link) {
-  if (is_missing(run_link)) ""
+  if (is_missing(run_link)) run_link <- ""
 
   assert_string(run_link)
 }
