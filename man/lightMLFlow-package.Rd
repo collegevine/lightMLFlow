@@ -6,7 +6,11 @@
 \alias{lightMLFlow-package}
 \title{lightMLFlow: A lightweight R wrapper for the MLFlow REST API}
 \description{
-This package provides a lightweight R wrapper for the MLFlow REST API. It makes some assumtions (notably, that you already have MLFlow installed wherever this package is being used), but, in return, you get some benefits: A simpler API, not needing `reticulate`, relying on `aws.s3` where possible, etc.
+This package provides a lightweight R wrapper for the MLFlow
+    REST API. It makes some assumtions (notably, that you already have
+    MLFlow installed wherever this package is being used), but, in return,
+    you get some benefits: A simpler API, not needing `reticulate`,
+    relying on `aws.s3` where possible, etc.
 }
 \author{
 \strong{Maintainer}: Matt Kaye \email{mrkaye97@gmail.com}

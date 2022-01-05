@@ -96,7 +96,7 @@ create_run <- function(start_time, tags, experiment_id, client) {
 
   data <- list(
     experiment_id = .args$experiment_id,
-    start_time = .args$start_time,
+    start_time = .args$start_time * 1000,  ## convert to ms
     tags = .args$tags
   )
 
@@ -653,6 +653,7 @@ download_artifact <- function(path, run_id, ...) {
 #' @importFrom stringr str_remove str_split str_sub
 #' @importFrom aws.s3 put_object
 #'
+#' @return The path to the file
 #' @export
 log_artifact <- function(file, run_id, ...) {
 
@@ -676,6 +677,8 @@ log_artifact <- function(file, run_id, ...) {
     bucket = s3_info$bucket,
     ...
   )
+
+  s3_file
 }
 
 #' Record logged model metadata with the tracking server.
@@ -824,7 +827,7 @@ get_run_context.default <- function(client, experiment_id, ...) {
 #' @export
 end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), end_time = NULL, run_id, client) {
   status <- match.arg(status)
-  end_time <- end_time %||% current_time()
+  end_time <- end_time %||% (current_time() * 1000) ## convert to ms
 
   active_run_id <- get_active_run_id()
 

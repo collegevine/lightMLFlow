@@ -13,6 +13,9 @@ log_artifact(file, run_id, ...)
 
 \item{...}{Additional arguments to pass to \code{aws.s3::put_object}}
 }
+\value{
+The path to the file
+}
 \description{
 Logs a specific file or directory as an artifact for a run.
 }
