@@ -55,7 +55,7 @@ to clone a repo to get the same benefits.</p>
   <span class="va">client</span>,
   git_repo_url <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GIT_REPO_URL"</span><span class="op">)</span>,
   <span class="va">git_repo_subdir</span>,
-  source_git_commit <span class="op">=</span> <span class="fu">git2r</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/git2r/reference/revparse_single.html" class="external-link">revparse_single</a></span><span class="op">(</span><span class="st">"."</span>, revision <span class="op">=</span> <span class="st">"HEAD"</span><span class="op">)</span><span class="op">$</span><span class="va">sha</span>,
+  source_git_commit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"git rev-parse HEAD"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   source_git_branch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"git rev-parse --abbrev-ref HEAD"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   project_entrypoint <span class="op">=</span> <span class="st">"main"</span>,
   project_backend <span class="op">=</span> <span class="st">"local"</span>
