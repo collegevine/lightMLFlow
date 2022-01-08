@@ -61,12 +61,8 @@
   <div class="contents col-md-9">
 
 <div class="section level1">
-<div class="page-header"><h1 id="warning-this-package-is-a-wip">WARNING: This package is a WIP<a class="anchor" aria-label="anchor" href="#warning-this-package-is-a-wip"></a>
+<div class="page-header"><h1 id="lightmlflow">lightMLFlow<a class="anchor" aria-label="anchor" href="#lightmlflow"></a>
 </h1></div>
-</div>
-<div class="section level1">
-<h1 id="lightmlflow">lightMLFlow<a class="anchor" aria-label="anchor" href="#lightmlflow"></a>
-</h1>
 <p>A lightweight R wrapper for the MLFlow REST API</p>
 <!-- badges: start -->
 
@@ -103,6 +99,8 @@
 <code>lightMLFlow</code> is significantly more lightweight than <code>mlflow</code>. It doesn’t depend on <code>httpuv</code>, <code>reticulate</code>, or <code>swagger</code>, and has a more minimal footprint in general.</li>
 <li>
 <code>lightMLFlow</code> uses <code>aws.s3</code> to put and save objects to and from S3, which means you don’t need to have a <code>boto3</code> install on your machine running your <code>MLFlow</code> code. This is an essential change, as it means that <code>lightMLFlow</code> does not require <em>any</em> Python infrastructure, as opposed to <code>mlflow</code>, which does.</li>
+<li>
+<code>mlflow</code> (and, specifically, <code>MLFlow Projects</code>) doesn’t play particularly nicely with <code>renv</code>. The reason for that is that an <code>MLProject</code> file that’s pointed at a Git repo will try to clone and run the code from scratch. But with <code>renv</code>, we like restoring a package cache in CI and baking it into the Docker image that the code lives in so that we don’t need to install all of the R packages the project needs every time we run the project. <code>lightMLFlow</code> hacks its way around this problem by allowing the user to run <code><a href="reference/set_git_tracking_tags.html">set_git_tracking_tags()</a></code>, which tricks the MLFlow REST API into thinking that the code was run from an MLFlow Project even when it wasn’t. This lets you keep your normal (e.g.) <code>renv</code> workflow in place and get the benefit of linked Git commits in the MLFlow UI without actually needing any of the <code>MLProject</code> infrastructure or setup steps.</li>
 </ul>
 <div class="section level2">
 <h2 id="known-issues--future-work">Known Issues / Future Work<a class="anchor" aria-label="anchor" href="#known-issues--future-work"></a>
