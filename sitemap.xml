@@ -49,6 +49,12 @@
     <loc>/reference/end_run.html</loc>
   </url>
   <url>
+    <loc>/reference/get_active_experiment_id.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_active_run_id.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_experiment.html</loc>
   </url>
   <url>
