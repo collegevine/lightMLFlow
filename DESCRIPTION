@@ -40,6 +40,7 @@ Collate:
     'lightMLFlow-package.R'
     'model-crate.R'
     'model.R'
+    'project.R'
     'registry.R'
     'rest.R'
     'runs.R'
