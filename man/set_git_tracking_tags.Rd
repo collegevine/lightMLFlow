@@ -34,7 +34,7 @@ This is expected to be of the form \verb{https://<<GITHUB_TOKEN>>@github.com/<<o
 \item{project_backend}{A backend for the project. Defaults to \code{"local"}}
 }
 \value{
-No return value. Called for side effects.
+Returns a list of tags for the \code{run_id}
 }
 \description{
 This is a utility to make it easier to set tracking tags. Basically, it tricks

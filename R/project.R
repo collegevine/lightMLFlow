@@ -17,7 +17,7 @@
 #' @param project_entrypoint An entrypoint for the project. Defaults to `"main"`
 #' @param project_backend A backend for the project. Defaults to `"local"`
 #'
-#' @return No return value. Called for side effects.
+#' @return Returns a list of tags for the `run_id`
 #' @export
 set_git_tracking_tags <- function(
   run_id,
@@ -31,28 +31,14 @@ set_git_tracking_tags <- function(
 ) {
 
   .args <- resolve_args(
-    run_id = resolve_run_id(maybe_missing(run_id)),
-    client = resolve_run_id(maybe_missing(client)),
+    run_id = maybe_missing(run_id),
+    client = maybe_missing(client)
   )
 
   source_name <- paste(
     git_repo_url,
     git_repo_subdir,
     sep = "#"
-  )
-
-  set_tag(
-    key = "mlflow.gitBranchName",
-    value = branch,
-    run_id = .args$run_id,
-    client = .args$client
-  )
-
-  set_tag(
-    key = "mlflow.gitRepoURL",
-    value = git_repo_url,
-    run_id = .args$run_id,
-    client = .args$client
   )
 
   set_tag(
