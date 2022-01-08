@@ -24,7 +24,7 @@ set_git_tracking_tags <- function(
   client,
   git_repo_url = Sys.getenv("GIT_REPO_URL"),
   git_repo_subdir,
-  source_git_commit = git2r::revparse_single(".", revision = "HEAD")$sha,
+  source_git_commit = system("git rev-parse HEAD", intern = TRUE),
   source_git_branch = system("git rev-parse --abbrev-ref HEAD", intern = TRUE),
   project_entrypoint = "main",
   project_backend = "local"
