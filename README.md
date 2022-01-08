@@ -1,8 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# WARNING: This package is a WIP
-
 # lightMLFlow
 
 A lightweight R wrapper for the MLFlow REST API
@@ -58,6 +56,20 @@ over `mlflow`:
     running your `MLFlow` code. This is an essential change, as it means
     that `lightMLFlow` does not require *any* Python infrastructure, as
     opposed to `mlflow`, which does.
+-   `mlflow` (and, specifically, `MLFlow Projects`) doesn’t play
+    particularly nicely with `renv`. The reason for that is that an
+    `MLProject` file that’s pointed at a Git repo will try to clone and
+    run the code from scratch. But with `renv`, we like restoring a
+    package cache in CI and baking it into the Docker image that the
+    code lives in so that we don’t need to install all of the R packages
+    the project needs every time we run the project. `lightMLFlow` hacks
+    its way around this problem by allowing the user to run
+    `set_git_tracking_tags()`, which tricks the MLFlow REST API into
+    thinking that the code was run from an MLFlow Project even when it
+    wasn’t. This lets you keep your normal (e.g.) `renv` workflow in
+    place and get the benefit of linked Git commits in the MLFlow UI
+    without actually needing any of the `MLProject` infrastructure or
+    setup steps.
 
 ## Known Issues / Future Work
 
