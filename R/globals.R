@@ -15,6 +15,10 @@ pop_active_run_id <- function() {
   .globals$active_run_stack <- .globals$active_run_stack[1:length(.globals$active_run_stack) - 1]
 }
 
+#' Get the ID of the active run
+#'
+#' @return The run ID
+#' @export
 get_active_run_id <- function() {
   if (length(.globals$active_run_stack) == 0) {
     NULL
@@ -30,6 +34,10 @@ set_active_experiment_id <- function(experiment_id) {
   )
 }
 
+#' Get the ID of the active experiment
+#'
+#' @return The active experiment ID
+#' @export
 get_active_experiment_id <- function() {
   .globals$active_experiment_id
 }
