@@ -4,20 +4,24 @@
 \alias{log_artifact}
 \title{Log Artifact}
 \usage{
-log_artifact(file, run_id, ...)
+log_artifact(x, FUN = saveRDS, filename, run_id, ...)
 }
 \arguments{
-\item{file}{The file to log as an artifact.}
+\item{x}{The object to log as an artifact}
+
+\item{FUN}{the function to use to save the artifact}
+
+\item{filename}{the name of the file to save}
 
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
 
-\item{...}{Additional arguments to pass to \code{aws.s3::put_object}}
+\item{...}{Additional arguments to pass to \code{aws.s3::s3write_using}}
 }
 \value{
 The path to the file
 }
 \description{
-Logs a specific file or directory as an artifact for a run.
+Logs a specific file or directory as an artifact for a run. Modeled after \code{aws.s3::s3write_using}
 }
 \details{
 When logging to Amazon S3, ensure that you have the s3:PutObject, s3:GetObject,

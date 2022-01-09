@@ -634,11 +634,13 @@ download_artifact <- function(path, run_id, ...) {
 
 #' Log Artifact
 #'
-#' Logs a specific file or directory as an artifact for a run.
+#' Logs a specific file or directory as an artifact for a run. Modeled after `aws.s3::s3write_using`
 #'
-#' @param file The file to log as an artifact.
+#' @param x The object to log as an artifact
+#' @param FUN the function to use to save the artifact
+#' @param filename the name of the file to save
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
-#' @param ... Additional arguments to pass to `aws.s3::put_object`
+#' @param ... Additional arguments to pass to `aws.s3::s3write_using`
 #'
 #' @details
 #'
@@ -655,7 +657,7 @@ download_artifact <- function(path, run_id, ...) {
 #'
 #' @return The path to the file
 #' @export
-log_artifact <- function(file, run_id, ...) {
+log_artifact <- function(x, FUN = saveRDS, filename, run_id, ...) {
 
   run_id <- resolve_run_id(maybe_missing(run_id))
 
@@ -668,14 +670,15 @@ log_artifact <- function(file, run_id, ...) {
     s3_prefix = s3_info$prefix,
     experiment_id = experiment_id,
     run_id = run_id,
-    fname = file
+    fname = filename
   )
 
-  put_object(
-    file = file,
+  s3write_using(
+    x = x,
+    FUN = FUN,
+    ...,
     object = s3_file,
-    bucket = s3_info$bucket,
-    ...
+    bucket = s3_info$bucket
   )
 
   s3_file
