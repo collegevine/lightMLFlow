@@ -28,15 +28,38 @@ create_experiment <- function(name, artifact_location, client, tags) {
     imap(~ list(key = .y, value = .x)) %>%
     unname()
 
-  response <- call_mlflow_api(
-    "experiments", "create",
-    client = .args$client,
-    verb = "POST",
-    data = list(
-      name = .args$name,
-      artifact_location = .args$artifact_location,
-      tags = .args$tags
-    )
+  response <- tryCatch(
+    {
+      call_mlflow_api(
+        "experiments", "create",
+        client = .args$client,
+        verb = "POST",
+        data = list(
+          name = .args$name,
+          artifact_location = .args$artifact_location,
+          tags = .args$tags
+        )
+      )
+    },
+    error = function(cond) {
+      if (grepl("RESOURCE_ALREADY_EXISTS", cond$message)) {
+        warn(
+          sprintf(
+            "An experiment named %s already exists.",
+            .args$name
+          )
+        )
+
+        get_experiment(
+          name = .args$name
+        )
+      } else {
+        abort(
+          cond$message,
+          trace = cond$trace
+        )
+      }
+    }
   )
 
   response$experiment_id
