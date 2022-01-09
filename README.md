@@ -70,6 +70,9 @@ over `mlflow`:
     place and get the benefit of linked Git commits in the MLFlow UI
     without actually needing any of the `MLProject` infrastructure or
     setup steps.
+-   For artifact and model logging, `lightMLFlow` logs R objects
+    directly so that you don’t need to worry about first saving a file
+    to disk and then copying it to your artifact store.
 
 ## Known Issues / Future Work
 
