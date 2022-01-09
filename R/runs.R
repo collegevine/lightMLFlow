@@ -653,7 +653,7 @@ download_artifact <- function(path, run_id, ...) {
 #'
 #' @importFrom fs is_file
 #' @importFrom stringr str_remove str_split str_sub
-#' @importFrom aws.s3 put_object
+#' @importFrom aws.s3 s3write_using
 #'
 #' @return The path to the file
 #' @export
