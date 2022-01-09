@@ -21,16 +21,41 @@ create_registered_model <- function(name, tags, description, client) {
     client = maybe_missing(client)
   )
 
-  response <- call_mlflow_api(
-    "registered-models",
-    "create",
-    client = .args$client,
-    verb = "POST",
-    data = list(
-      name = name,
-      tags = .args$tags,
-      description = .args$description
-    )
+  response <- tryCatch(
+    {
+      call_mlflow_api(
+        "registered-models",
+        "create",
+        client = .args$client,
+        verb = "POST",
+        data = list(
+          name = name,
+          tags = .args$tags,
+          description = .args$description
+        )
+      )
+    },
+    error = function(cond) {
+      if (grepl("RESOURCE_ALREADY_EXISTS", cond$message)) {
+        warn(
+          sprintf(
+            "An experiment named %s already exists.",
+            name
+          )
+        )
+
+        list(
+          registered_model = get_registered_model(
+            name = name
+          )
+        )
+      } else {
+        abort(
+          cond$message,
+          trace = cond$trace
+        )
+      }
+    }
   )
 
   return(response$registered_model)
