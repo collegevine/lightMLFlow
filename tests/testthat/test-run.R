@@ -10,6 +10,12 @@ test_that("Runs work", {
 
   model <- lm(pressure ~ temperature, data = pressure)
 
+  log_artifact(
+    x = model,
+    FUN = saveRDS,
+    filename = "model.rds"
+  )
+
   model_summary <- summary(model)
 
   r2 <- model_summary$r.squared
