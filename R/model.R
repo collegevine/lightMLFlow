@@ -44,12 +44,15 @@ log_model <- function(model, path, ...) {
   model_fname <- model_spec$object_name
 
   log_artifact(
-    paste(path, model_fname, sep = "/"),
+    x = model,
+    filename = paste(path, model_fname, sep = "/"),
     ...
   )
 
   log_artifact(
-    paste(path, "MLmodel", sep = "/"),
+    x = model_spec,
+    FUN = write_yaml,
+    filename = paste(path, "MLmodel", sep = "/"),
     ...
   )
 
