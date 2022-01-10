@@ -452,17 +452,27 @@ get_metric_history <- function(metric_key, run_id, client) {
     )
   )
 
-  response$metrics %>%
-    map(
-      function(.x) {
-        .x %>%
-          list_modify(
-            timestamp = as.POSIXct(.x$timestamp, origin = '1970-01-01',tz='UTC')
-          )
-      }
-    ) %>%
-    map(as_tibble) %>%
-    reduce(rbind)
+  if (is_empty(response$metrics)) {
+    abort(
+      sprintf(
+        "Could not find a metric called %s in run %s.",
+        metric_key,
+        .args$run_id
+      )
+    )
+  } else {
+    response$metrics %>%
+      map(
+        function(.x) {
+          .x %>%
+            list_modify(
+              timestamp = as.POSIXct(.x$timestamp, origin = '1970-01-01',tz='UTC')
+            )
+        }
+      ) %>%
+      map(as_tibble) %>%
+      reduce(rbind)
+  }
 }
 
 #' Search Runs
