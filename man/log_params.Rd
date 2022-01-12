@@ -4,15 +4,15 @@
 \alias{log_params}
 \title{Log Parameters}
 \usage{
-log_params(params, run_id, client)
+log_params(..., run_id, client)
 }
 \arguments{
-\item{params}{A dataframe of params to log, containing the following columns: "key", "value".
-This dataframe cannot contain any missing ('NA') entries.}
-
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
+
+\item{params}{A dataframe of params to log, containing the following columns: "key", "value".
+This dataframe cannot contain any missing ('NA') entries.}
 }
 \description{
 Logs parameters for a run. Examples are params and hyperparams

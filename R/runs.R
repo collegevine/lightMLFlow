@@ -366,6 +366,17 @@ delete_tag <- function(key, run_id, client) {
   invisible()
 }
 
+#' @importFrom rlang check_dots_used check_dots_unnamed list2
+#' @importFrom tibble enframe
+convert_dots_to_df <- function(...) {
+  check_dots_unnamed()
+  l <- list2(...) %>% as.vector() %>% as.character()
+  args <- as.list(sys.call(1))
+  nms <- args[2:length(args)] %>% as.vector() %>% as.character()
+  named_l <- setNames(l, nms)
+  enframe(named_l, name = "key", value = "value")
+}
+
 #' Log Parameters
 #'
 #' Logs parameters for a run. Examples are params and hyperparams
@@ -379,17 +390,9 @@ delete_tag <- function(key, run_id, client) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-log_params <- function(params, run_id, client) {
+log_params <- function(..., run_id, client) {
 
-  stop_for_missing_columns(
-    c("key", "value"),
-    params
-  )
-
-  params <- params[, c("key", "value")]
-
-  assert_string(params$key)
-  assert_string(params$value)
+  params <- convert_dots_to_df(...)
 
   .args <- resolve_args(
     run_id = maybe_missing(run_id),
