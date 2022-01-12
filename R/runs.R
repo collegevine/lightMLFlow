@@ -3,10 +3,10 @@ NULL
 
 #' @importFrom tibble tibble
 #' @importFrom rlang names2
-get_key_value_df <- function(...) {
+get_key_value_df <- function(..., .which = -1) {
   values <- list(...) %>% unlist()
   keys <- names2(values)
-  args <- as.list(sys.call(0))
+  args <- as.list(sys.call(which = .which))
   backup_keys <- args[2:length(args)] %>%
     as.vector() %>%
     as.character() %>%
@@ -26,7 +26,7 @@ assert_new_col_length <- function(x, metrics) {
   nm <- deparse(substitute(x))
   n_metrics <- nrow(metrics)
   n_x <- length(x)
-  cnd <- n_x == n_metrics | n_x== 1
+  cnd <- n_x == n_metrics | n_x == 1
   if(cnd) {
     return(TRUE)
   }

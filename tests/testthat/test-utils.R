@@ -4,7 +4,8 @@ test_that("Runs work", {
   kv <- get_key_value_df(
     a,
     b,
-    c = TRUE
+    c = TRUE,
+    .which = 0
   )
   expect_equal(
     kv,
