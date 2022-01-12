@@ -98,9 +98,10 @@ test_that("Runs work", {
     "R2"
   )
 
+  ## have to round because mlflow does some rounding when we get history?!?
   expect_equal(
     r2_hist$value,
-    c(R2, 1)
+    c(round(R2, 4), 1)
   )
 
   expect_gt(
