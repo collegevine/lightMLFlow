@@ -19,6 +19,7 @@ Imports:
     aws.s3,
     base64enc,
     checkmate,
+    dplyr,
     forge,
     fs,
     git2r,
