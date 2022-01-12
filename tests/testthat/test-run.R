@@ -18,11 +18,11 @@ test_that("Runs work", {
 
   model_summary <- summary(model)
 
-  R2 <- model_summary$r.squared
+  r2 <- model_summary$r.squared
   f <- model_summary$fstatistic[["value"]]
 
   log_metrics(
-    R2,
+    "R2" = R2,
     "F" = f
   )
 
