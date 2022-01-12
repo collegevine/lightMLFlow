@@ -21,17 +21,12 @@ test_that("Runs work", {
   r2 <- model_summary$r.squared
   f <- model_summary$fstatistic[["value"]]
 
-  log_metric(
-    key = "R2",
-    value = r2
+  log_metrics(
+    "R2" = r2,
+    f
   )
 
   Sys.sleep(3)
-
-  log_metric(
-    "F",
-    f
-  )
 
   log_model(
     model = carrier::crate(function(x) predict(model, x)),
@@ -58,9 +53,9 @@ test_that("Runs work", {
     metrics = m_batch
   )
 
-  log_param(
-    key = "df",
-    value = as.character(model_summary$df[1])
+  log_params(
+    "df" = as.character(model_summary$df[1]),
+    as.character(model_summary$df[2]) ## test unnamed
   )
 
   r <- get_run()

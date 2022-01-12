@@ -1,7 +1,40 @@
 #' @include globals.R
 NULL
 
-#' Log Metric
+# Translate metric to value to safe format for REST.
+metric_value_to_rest <- function(value) {
+  if (is.nan(value)) {
+    as.character(NaN)
+  } else if (value == Inf) {
+    "Infinity"
+  } else if (value == -Inf) {
+    "-Infinity"
+  } else {
+    as.character(value)
+  }
+}
+
+#' @importFrom tibble tibble
+#' @importFrom rlang names2
+get_key_value_df <- function(...) {
+  values <- list(...) %>% unlist() %>% metric_value_to_rest()
+  keys <- names2(values)
+  args <- as.list(sys.call(1))
+  backup_keys <- args[2:length(args)] %>%
+    as.vector() %>%
+    as.character() %>%
+    make.names()
+  values <- unname(values)
+  for(i in seq_along(values)) {
+    keys[i] <- ifelse(keys[i] == "", backup_keys[i], keys[i])
+  }
+  tibble(
+    key = keys,
+    value = values,
+  )
+}
+
+#' Log Metrics
 #'
 #' Logs a metric for a run. Metrics key-value pair that records a single float measure.
 #'   During a single execution of a run, a particular metric can be logged several times.
@@ -10,18 +43,23 @@ NULL
 #' @param ... variable names from which a data.frame with `key` and `value` columns will be created.
 #' @param timestamp Timestamp at which to log the metric. Timestamp is rounded to the nearest
 #'  integer. If unspecified, the number of milliseconds since the Unix epoch is used.
+#' @param step Step at which to log the metric. Step is rounded to the nearest integer. If
+#'  unspecified, the default value of zero is used.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #'
 #' @importFrom forge cast_string cast_scalar_double cast_nullable_scalar_double
 #' @importFrom rlang maybe_missing
 #' @importFrom checkmate assert_double
+#' @importFrom purrr pmap
 #'
 #' @export
-log_metrics <- function(..., timestamp = as.integer(Sys.time()), run_id, client) {
+log_metrics <- function(..., timestamp, step, run_id, client) {
 
-  metrics <- convert_dots_to_df(...)
-  metrics$timestamp <- timestamp
+  metrics <- get_key_value_df(...)
+
+  metrics$timestamp <- maybe_missing(timestamp, default = NA)
+  metrics$step <- maybe_missing(step, default = NA)
 
   log_batch(
     metrics = metrics,
@@ -29,6 +67,8 @@ log_metrics <- function(..., timestamp = as.integer(Sys.time()), run_id, client)
     client = maybe_missing(client)
   )
 }
+
+
 
 #' Create an MLFlow run
 #'
@@ -73,8 +113,6 @@ create_run <- function(start_time, tags, experiment_id, client) {
 #' Delete a Run
 #'
 #' Deletes the run with the specified ID.
-
-
 #' @export
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
@@ -104,8 +142,6 @@ delete_run <- function(run_id, client) {
 #' Restore a Run
 #'
 #' Restores the run with the specified ID.
-
-
 #' @export
 #' @param run_id A run id
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
@@ -210,28 +246,17 @@ log_batch <- function(metrics = data.frame(), params = data.frame(), tags = data
   invisible()
 }
 
-has_nas <- function(df) {
-  any(is.na(df[, which(names(df) != "value")])) ||
-    any(is.na(df$value) & !is.nan(df$value))
-}
-
 validate_batch_input <- function(input_type, input_dataframe, expected_column_names) {
 
   if (is.null(input_dataframe) || nrow(input_dataframe) == 0) {
     return()
   } else if (!setequal(names(input_dataframe), expected_column_names)) {
     msg <- paste(input_type,
-      " batch input dataframe must contain exactly the following columns: ",
-      paste(expected_column_names, collapse = ", "),
-      ". Found: ",
-      paste(names(input_dataframe), collapse = ", "),
-      sep = ""
-    )
-    abort(msg)
-  } else if (has_nas(input_dataframe)) {
-    msg <- paste(input_type,
-      " batch input dataframe contains a missing ('NA') entry.",
-      sep = ""
+                 " batch input dataframe must contain exactly the following columns: ",
+                 paste(expected_column_names, collapse = ", "),
+                 ". Found: ",
+                 paste(names(input_dataframe), collapse = ", "),
+                 sep = ""
     )
     abort(msg)
   }
@@ -323,17 +348,6 @@ delete_tag <- function(key, run_id, client) {
   invisible()
 }
 
-#' @importFrom rlang check_dots_used check_dots_unnamed list2
-#' @importFrom tibble enframe
-convert_dots_to_df <- function(...) {
-  check_dots_unnamed()
-  l <- list2(...) %>% as.vector() %>% as.character()
-  args <- as.list(sys.call(1))
-  nms <- args[2:length(args)] %>% as.vector() %>% as.character()
-  named_l <- setNames(l, nms)
-  enframe(named_l, name = "key", value = "value")
-}
-
 #' Log Parameters
 #'
 #' Logs parameters for a run. Examples are params and hyperparams
@@ -341,12 +355,12 @@ convert_dots_to_df <- function(...) {
 #'   A param is a STRING key-value pair. For a run, a single parameter is allowed
 #'   to be logged only once.
 #'
-#' @inheritParams log_metric
+#' @inheritParams log_metrics
 #'
 #' @export
 log_params <- function(..., run_id, client) {
 
-  params <- convert_dots_to_df(...)
+  params <- get_key_value_df(...)
 
   log_batch(
     params = params,
@@ -702,8 +716,8 @@ start_run <- function(run_id, experiment_id, start_time, tags, client, nested = 
   active_run_id <- get_active_run_id()
   if (!is.null(active_run_id) && !nested) {
     abort("Run with id ",
-      active_run_id,
-      " is already active. To start a nested run, Call `start_run()` with `nested = TRUE`."
+          active_run_id,
+          " is already active. To start a nested run, Call `start_run()` with `nested = TRUE`."
     )
   }
 
