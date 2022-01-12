@@ -1,27 +1,52 @@
 #' @include globals.R
 NULL
 
-# Translate metric to value to safe format for REST.
-metric_value_to_rest <- function(value) {
-  if (is.nan(value)) {
-    as.character(NaN)
-  } else if (value == Inf) {
-    "Infinity"
-  } else if (value == -Inf) {
-    "-Infinity"
-  } else {
-    as.character(value)
+#' @importFrom tibble tibble
+#' @importFrom rlang names2
+get_key_value_df <- function(..., .which = -1) {
+  values <- list(...) %>% unlist()
+  keys <- names2(values)
+  args <- as.list(sys.call(which = .which))
+  backup_keys <- args[2:length(args)] %>%
+    as.vector() %>%
+    as.character() %>%
+    make.names()
+  values <- unname(values)
+  for(i in seq_along(values)) {
+    keys[i] <- ifelse(keys[i] == "", backup_keys[i], keys[i])
   }
+  tibble(
+    key = keys,
+    value = values,
+  )
 }
 
-#' Log Metric
+#' @importFrom checkmate assert
+assert_new_col_length <- function(x, metrics) {
+  nm <- deparse(substitute(x))
+  n_metrics <- nrow(metrics)
+  n_x <- length(x)
+  cnd <- n_x == n_metrics | n_x == 1
+  if(cnd) {
+    return(TRUE)
+  }
+  abort(
+    sprintf(
+      'The length of `%s` should be 1 or the same as the number of metrics (%s), not %s.',
+      nm,
+      n_metrics,
+      n_x
+    )
+  )
+}
+
+#' Log Metrics
 #'
 #' Logs a metric for a run. Metrics key-value pair that records a single float measure.
 #'   During a single execution of a run, a particular metric can be logged several times.
 #'   The MLflow Backend keeps track of historical metric values along two axes: timestamp and step.
 #'
-#' @param key Name of the metric.
-#' @param value Float value for the metric being logged.
+#' @param ... variable names from which a data.frame with `key` and `value` columns will be created.
 #' @param timestamp Timestamp at which to log the metric. Timestamp is rounded to the nearest
 #'  integer. If unspecified, the number of milliseconds since the Unix epoch is used.
 #' @param step Step at which to log the metric. Step is rounded to the nearest integer. If
@@ -31,47 +56,28 @@ metric_value_to_rest <- function(value) {
 #'
 #' @importFrom forge cast_string cast_scalar_double cast_nullable_scalar_double
 #' @importFrom rlang maybe_missing
-#' @importFrom checkmate assert_double
 #'
 #' @export
-log_metric <- function(key, value, timestamp, step, run_id, client) {
+log_metrics <- function(..., timestamp, step, run_id, client) {
 
-  stop_for_missing_args(
-    key = maybe_missing(key),
-    value = maybe_missing(value)
-  )
+  metrics <- get_key_value_df(...)
+  timestamp <- maybe_missing(timestamp, default = NA)
+  step <- maybe_missing(step, default = NA)
 
-  .args <- resolve_args(
-    client = maybe_missing(client),
+  assert_new_col_length(timestamp, metrics)
+  assert_new_col_length(step, metrics)
+
+  metrics$timestamp <- timestamp
+  metrics$step <- step
+
+  log_batch(
+    metrics = metrics,
     run_id = maybe_missing(run_id),
-    timestamp = maybe_missing(timestamp),
-    step = maybe_missing(step)
+    client = maybe_missing(client)
   )
-
-  assert_string(key)
-  value <- value %>%
-    assert_double() %>%
-    metric_value_to_rest()
-
-  data <- list(
-    run_id = .args$run_id,
-    key = key,
-    value = value,
-    timestamp = .args$timestamp,
-    step = .args$step
-  )
-
-  call_mlflow_api(
-    "runs", "log-metric",
-    client = .args$client,
-    verb = "POST",
-    data = data
-  )
-
-  register_tracking_event("log_metric", data)
-
-  invisible(value)
 }
+
+
 
 #' Create an MLFlow run
 #'
@@ -116,8 +122,6 @@ create_run <- function(start_time, tags, experiment_id, client) {
 #' Delete a Run
 #'
 #' Deletes the run with the specified ID.
-
-
 #' @export
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
@@ -147,8 +151,6 @@ delete_run <- function(run_id, client) {
 #' Restore a Run
 #'
 #' Restores the run with the specified ID.
-
-
 #' @export
 #' @param run_id A run id
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
@@ -226,10 +228,7 @@ log_batch <- function(metrics = data.frame(), params = data.frame(), tags = data
   validate_batch_input("params", params, c("key", "value"))
   validate_batch_input("tags", tags, c("key", "value"))
 
-  metrics$value <- unlist(lapply(metrics$value, metric_value_to_rest))
-  if (nrow(params) > 0) {
-    params$value <- as.character(params$value)
-  }
+  params$value <- unlist(lapply(params$value, param_value_to_rest))
 
   data <- list(
     run_id = .args$run_id,
@@ -253,28 +252,17 @@ log_batch <- function(metrics = data.frame(), params = data.frame(), tags = data
   invisible()
 }
 
-has_nas <- function(df) {
-  any(is.na(df[, which(names(df) != "value")])) ||
-    any(is.na(df$value) & !is.nan(df$value))
-}
-
 validate_batch_input <- function(input_type, input_dataframe, expected_column_names) {
 
   if (is.null(input_dataframe) || nrow(input_dataframe) == 0) {
     return()
   } else if (!setequal(names(input_dataframe), expected_column_names)) {
     msg <- paste(input_type,
-      " batch input dataframe must contain exactly the following columns: ",
-      paste(expected_column_names, collapse = ", "),
-      ". Found: ",
-      paste(names(input_dataframe), collapse = ", "),
-      sep = ""
-    )
-    abort(msg)
-  } else if (has_nas(input_dataframe)) {
-    msg <- paste(input_type,
-      " batch input dataframe contains a missing ('NA') entry.",
-      sep = ""
+                 " batch input dataframe must contain exactly the following columns: ",
+                 paste(expected_column_names, collapse = ", "),
+                 ". Found: ",
+                 paste(names(input_dataframe), collapse = ", "),
+                 sep = ""
     )
     abort(msg)
   }
@@ -366,53 +354,44 @@ delete_tag <- function(key, run_id, client) {
   invisible()
 }
 
-#' Log Parameter
+## Translate param value to safe format for REST.
+## Don't use case_when to avoid dplyr dep.
+param_value_to_rest <- function(value) {
+  ifelse(
+    is.nan(value),
+    "NaN",
+    ifelse(
+      is.infinite(value),
+      ifelse(
+        value < 0,
+        "-Infinity",
+        "Infinity"
+      ),
+      as.character(value)
+    )
+  )
+}
+
+#' Log Parameters
 #'
-#' Logs a parameter for a run. Examples are params and hyperparams
+#' Logs parameters for a run. Examples are params and hyperparams
 #'   used for ML training, or constant dates and values used in an ETL pipeline.
 #'   A param is a STRING key-value pair. For a run, a single parameter is allowed
 #'   to be logged only once.
 #'
-#' @param key Name of the parameter.
-#' @param value String value of the parameter.
-#' @param run_id A run uuid. Automatically inferred if a run is currently active.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @inheritParams log_metrics
 #'
 #' @export
-log_param <- function(key, value, run_id, client) {
+log_params <- function(..., run_id, client) {
 
-  stop_for_missing_args(
-    key = maybe_missing(key),
-    value = maybe_missing(value)
-  )
+  params <- get_key_value_df(...)
+  params$value <- param_value_to_rest(params$value)
 
-  assert_string(key)
-  assert_string(value)
-
-  .args <- resolve_args(
+  log_batch(
+    params = params,
     run_id = maybe_missing(run_id),
     client = maybe_missing(client)
   )
-
-  data <- list(
-    run_id = .args$run_id,
-    key = key,
-    value = value
-  )
-
-  call_mlflow_api(
-    "runs", "log-parameter",
-    client = .args$client,
-    verb = "POST",
-    data = data
-  )
-
-  register_tracking_event(
-    "log_param",
-    data
-  )
-
-  invisible(value)
 }
 
 #' Get Metric History
@@ -440,7 +419,6 @@ get_metric_history <- function(metric_key, run_id, client) {
     run_id = maybe_missing(run_id),
     client = maybe_missing(client)
   )
-
 
   response <- call_mlflow_api(
     "metrics", "get-history",
@@ -762,8 +740,8 @@ start_run <- function(run_id, experiment_id, start_time, tags, client, nested = 
   active_run_id <- get_active_run_id()
   if (!is.null(active_run_id) && !nested) {
     abort("Run with id ",
-      active_run_id,
-      " is already active. To start a nested run, Call `start_run()` with `nested = TRUE`."
+          active_run_id,
+          " is already active. To start a nested run, Call `start_run()` with `nested = TRUE`."
     )
   }
 

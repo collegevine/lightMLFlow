@@ -40,4 +40,4 @@ rsconnect/
 docs
 
 ## tests
-tests/test-setup.R
+tests/testthat/helper.R

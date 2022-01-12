@@ -18,20 +18,24 @@ test_that("Runs work", {
 
   model_summary <- summary(model)
 
-  r2 <- model_summary$r.squared
+  R2 <- model_summary$r.squared
   f <- model_summary$fstatistic[["value"]]
 
-  log_metric(
-    key = "R2",
-    value = r2
+  log_metrics(
+    R2,
+    "F" = f
+  )
+
+  expect_error(
+    log_metrics(
+      R2,
+      "F" = f,
+      "adj_r" = model_summary$adj.r.squared,
+      timestamp = c(1, 2)
+    )
   )
 
   Sys.sleep(3)
-
-  log_metric(
-    "F",
-    f
-  )
 
   log_model(
     model = carrier::crate(function(x) predict(model, x)),
@@ -58,21 +62,21 @@ test_that("Runs work", {
     metrics = m_batch
   )
 
-  log_param(
-    key = "df",
-    value = as.character(model_summary$df[1])
+  log_params(
+    "df1" = as.character(model_summary$df[1]),
+    "df2" = as.character(model_summary$df[2])
   )
 
   r <- get_run()
 
   expect_equal(
     length(r$params[[1]]),
-    3
+    4
   )
 
   expect_setequal(
     names(r$params[[1]]),
-    c("intercept", "temperature", "df")
+    c("intercept", "temperature", "df1", "df2")
   )
 
   expect_setequal(
@@ -94,9 +98,10 @@ test_that("Runs work", {
     "R2"
   )
 
+  ## have to round because mlflow does some rounding when we get history?!?
   expect_equal(
     r2_hist$value,
-    c(r2, 1)
+    c(round(R2, 4), 1)
   )
 
   expect_gt(

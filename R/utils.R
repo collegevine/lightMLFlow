@@ -318,12 +318,24 @@ resolve_client <- function(client) {
   }
 }
 
+#' @importFrom rlang is_symbol inject
+is_missing0 <- function (arg, env)  {
+  is_symbol(arg) && inject(missing(!!arg), env)
+}
+#' @importFrom rlang caller_env
+is_missing2 <- function(x) {
+  if (is_missing0(substitute(x), caller_env())) {
+    TRUE
+  }
+  FALSE
+}
+
 #' @importFrom purrr keep
 stop_for_missing_args <- function(...) {
 
   missings <- list(...) %>%
     keep(
-      ~ is_missing(.x)
+      ~ is_missing2(.x)
     )
 
   if (length(missings) > 0) {

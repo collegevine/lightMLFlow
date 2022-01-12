@@ -114,7 +114,8 @@ call_mlflow_api <- function(..., client, query = NULL, data = NULL, verb = "GET"
         body = toJSON(
           data,
           pretty = TRUE,
-          auto_unbox = TRUE
+          auto_unbox = TRUE,
+          na = NULL
         ),
         get_mlflow_api_timeout(),
         config = rest_config$config,
@@ -127,7 +128,8 @@ call_mlflow_api <- function(..., client, query = NULL, data = NULL, verb = "GET"
         body = toJSON(
           data,
           pretty = TRUE,
-          auto_unbox = TRUE
+          auto_unbox = TRUE,
+          na = NULL
         ),
         get_mlflow_api_timeout(),
         config = rest_config$config,
@@ -140,7 +142,8 @@ call_mlflow_api <- function(..., client, query = NULL, data = NULL, verb = "GET"
          body = toJSON(
            data,
            pretty = TRUE,
-           auto_unbox = TRUE
+           auto_unbox = TRUE,
+           na = NULL
          ),
         get_mlflow_api_timeout(),
         config = rest_config$config,
