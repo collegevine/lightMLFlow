@@ -1,29 +1,12 @@
 #' @include globals.R
 NULL
 
-# Translate metric to value to safe format for REST.
-metric_value_to_rest <- function(value) {
-  if (is.nan(value)) {
-    as.character(NaN)
-  } else if (value == Inf) {
-    "Infinity"
-  } else if (value == -Inf) {
-    "-Infinity"
-  } else {
-    as.character(value)
-  }
-}
-
 #' @importFrom tibble tibble
 #' @importFrom rlang names2
 get_key_value_df <- function(...) {
   values <- list(...) %>% unlist()
   keys <- names2(values)
-  args <- as.list(sys.call(-1))
-  fname <- args[[1]]
-  if(fname == "log_params") {
-    values <- values %>% map_chr(metric_value_to_rest)
-  }
+  args <- as.list(sys.call(0))
   backup_keys <- args[2:length(args)] %>%
     as.vector() %>%
     as.character() %>%
@@ -35,6 +18,25 @@ get_key_value_df <- function(...) {
   tibble(
     key = keys,
     value = values,
+  )
+}
+
+#' @importFrom checkmate assert
+assert_new_col_length <- function(x, metrics) {
+  nm <- deparse(substitute(x))
+  n_metrics <- nrow(metrics)
+  n_x <- length(x)
+  cnd <- n_x == n_metrics | n_x== 1
+  if(cnd) {
+    return(TRUE)
+  }
+  abort(
+    sprintf(
+      'The length of `%s` should be 1 or the same as the number of metrics (%s), not %s.',
+      nm,
+      n_metrics,
+      n_x
+    )
   )
 }
 
@@ -54,18 +56,16 @@ get_key_value_df <- function(...) {
 #'
 #' @importFrom forge cast_string cast_scalar_double cast_nullable_scalar_double
 #' @importFrom rlang maybe_missing
-#' @importFrom checkmate assert
 #'
 #' @export
 log_metrics <- function(..., timestamp, step, run_id, client) {
 
   metrics <- get_key_value_df(...)
-
   timestamp <- maybe_missing(timestamp, default = NA)
   step <- maybe_missing(step, default = NA)
 
-  assert(length(timestamp) == 1 | nrow(metrics))
-  assert(length(step) == 1 | nrow(metrics))
+  assert_new_col_length(timestamp, metrics)
+  assert_new_col_length(step, metrics)
 
   metrics$timestamp <- timestamp
   metrics$step <- step
@@ -228,10 +228,7 @@ log_batch <- function(metrics = data.frame(), params = data.frame(), tags = data
   validate_batch_input("params", params, c("key", "value"))
   validate_batch_input("tags", tags, c("key", "value"))
 
-  metrics$value <- unlist(lapply(metrics$value, metric_value_to_rest))
-  if (nrow(params) > 0) {
-    params$value <- as.character(params$value)
-  }
+  params$value <- unlist(lapply(params$value, param_value_to_rest))
 
   data <- list(
     run_id = .args$run_id,
@@ -357,6 +354,24 @@ delete_tag <- function(key, run_id, client) {
   invisible()
 }
 
+## Translate param value to safe format for REST.
+## Don't use case_when to avoid dplyr dep.
+param_value_to_rest <- function(value) {
+  ifelse(
+    is.nan(value),
+    "NaN",
+    ifelse(
+      is.infinite(value),
+      ifelse(
+        value < 0,
+        "Infinity",
+        "-Infinity"
+      ),
+      as.character(value)
+    )
+  )
+}
+
 #' Log Parameters
 #'
 #' Logs parameters for a run. Examples are params and hyperparams
@@ -370,6 +385,7 @@ delete_tag <- function(key, run_id, client) {
 log_params <- function(..., run_id, client) {
 
   params <- get_key_value_df(...)
+  params$value <- param_value_to_rest(params$value)
 
   log_batch(
     params = params,
