@@ -366,28 +366,30 @@ delete_tag <- function(key, run_id, client) {
   invisible()
 }
 
-#' Log Parameter
+#' Log Parameters
 #'
-#' Logs a parameter for a run. Examples are params and hyperparams
+#' Logs parameters for a run. Examples are params and hyperparams
 #'   used for ML training, or constant dates and values used in an ETL pipeline.
 #'   A param is a STRING key-value pair. For a run, a single parameter is allowed
 #'   to be logged only once.
 #'
-#' @param key Name of the parameter.
-#' @param value String value of the parameter.
+#' @param params A dataframe of params to log, containing the following columns: "key", "value".
+#'  This dataframe cannot contain any missing ('NA') entries.
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-log_param <- function(key, value, run_id, client) {
+log_params <- function(params, run_id, client) {
 
-  stop_for_missing_args(
-    key = maybe_missing(key),
-    value = maybe_missing(value)
+  stop_for_missing_columns(
+    c("key", "value"),
+    params
   )
 
-  assert_string(key)
-  assert_string(value)
+  params <- params[, c("key", "value")]
+
+  assert_string(params$key)
+  assert_string(params$value)
 
   .args <- resolve_args(
     run_id = maybe_missing(run_id),
@@ -396,19 +398,18 @@ log_param <- function(key, value, run_id, client) {
 
   data <- list(
     run_id = .args$run_id,
-    key = key,
-    value = value
+    params = params
   )
 
   call_mlflow_api(
-    "runs", "log-parameter",
+    "runs", "log-batch",
     client = .args$client,
     verb = "POST",
     data = data
   )
 
   register_tracking_event(
-    "log_param",
+    "log_batch",
     data
   )
 
