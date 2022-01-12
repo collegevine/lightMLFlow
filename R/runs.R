@@ -17,7 +17,7 @@ metric_value_to_rest <- function(value) {
 #' @importFrom tibble tibble
 #' @importFrom rlang names2
 get_key_value_df <- function(...) {
-  values <- list(...) %>% unlist() %>% metric_value_to_rest()
+  values <- list(...) %>% unlist() %>% map_chr(metric_value_to_rest)
   keys <- names2(values)
   args <- as.list(sys.call(1))
   backup_keys <- args[2:length(args)] %>%
@@ -394,7 +394,6 @@ get_metric_history <- function(metric_key, run_id, client) {
     run_id = maybe_missing(run_id),
     client = maybe_missing(client)
   )
-
 
   response <- call_mlflow_api(
     "metrics", "get-history",

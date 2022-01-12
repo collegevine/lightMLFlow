@@ -18,12 +18,12 @@ test_that("Runs work", {
 
   model_summary <- summary(model)
 
-  r2 <- model_summary$r.squared
+  R2 <- model_summary$r.squared
   f <- model_summary$fstatistic[["value"]]
 
   log_metrics(
-    "R2" = r2,
-    f
+    R2,
+    "F" = f
   )
 
   Sys.sleep(3)
@@ -54,20 +54,20 @@ test_that("Runs work", {
   )
 
   log_params(
-    "df" = as.character(model_summary$df[1]),
-    as.character(model_summary$df[2]) ## test unnamed
+    "df1" = as.character(model_summary$df[1]),
+    "df2" = as.character(model_summary$df[2])
   )
 
   r <- get_run()
 
   expect_equal(
     length(r$params[[1]]),
-    3
+    4
   )
 
   expect_setequal(
     names(r$params[[1]]),
-    c("intercept", "temperature", "df")
+    c("intercept", "temperature", "df1", "df2")
   )
 
   expect_setequal(
