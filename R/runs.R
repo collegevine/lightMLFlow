@@ -1,31 +1,15 @@
 #' @include globals.R
 NULL
 
-# Translate metric to value to safe format for REST.
-metric_value_to_rest <- function(value) {
-  if (is.nan(value)) {
-    as.character(NaN)
-  } else if (value == Inf) {
-    "Infinity"
-  } else if (value == -Inf) {
-    "-Infinity"
-  } else {
-    as.character(value)
-  }
-}
-
 #' Log Metric
 #'
 #' Logs a metric for a run. Metrics key-value pair that records a single float measure.
 #'   During a single execution of a run, a particular metric can be logged several times.
 #'   The MLflow Backend keeps track of historical metric values along two axes: timestamp and step.
 #'
-#' @param key Name of the metric.
-#' @param value Float value for the metric being logged.
+#' @param ... variable names from which a data.frame with `key` and `value` columns will be created.
 #' @param timestamp Timestamp at which to log the metric. Timestamp is rounded to the nearest
 #'  integer. If unspecified, the number of milliseconds since the Unix epoch is used.
-#' @param step Step at which to log the metric. Step is rounded to the nearest integer. If
-#'  unspecified, the default value of zero is used.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #'
@@ -34,43 +18,16 @@ metric_value_to_rest <- function(value) {
 #' @importFrom checkmate assert_double
 #'
 #' @export
-log_metric <- function(key, value, timestamp, step, run_id, client) {
+log_metrics <- function(..., timestamp = as.integer(Sys.time()), run_id, client) {
 
-  stop_for_missing_args(
-    key = maybe_missing(key),
-    value = maybe_missing(value)
-  )
+  metrics <- convert_dots_to_df(...)
+  metrics$timestamp <- timestamp
 
-  .args <- resolve_args(
-    client = maybe_missing(client),
+  log_batch(
+    metrics = metrics,
     run_id = maybe_missing(run_id),
-    timestamp = maybe_missing(timestamp),
-    step = maybe_missing(step)
+    client = maybe_missing(client)
   )
-
-  assert_string(key)
-  value <- value %>%
-    assert_double() %>%
-    metric_value_to_rest()
-
-  data <- list(
-    run_id = .args$run_id,
-    key = key,
-    value = value,
-    timestamp = .args$timestamp,
-    step = .args$step
-  )
-
-  call_mlflow_api(
-    "runs", "log-metric",
-    client = .args$client,
-    verb = "POST",
-    data = data
-  )
-
-  register_tracking_event("log_metric", data)
-
-  invisible(value)
 }
 
 #' Create an MLFlow run
@@ -384,39 +341,18 @@ convert_dots_to_df <- function(...) {
 #'   A param is a STRING key-value pair. For a run, a single parameter is allowed
 #'   to be logged only once.
 #'
-#' @param params A dataframe of params to log, containing the following columns: "key", "value".
-#'  This dataframe cannot contain any missing ('NA') entries.
-#' @param run_id A run uuid. Automatically inferred if a run is currently active.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @inheritParams log_metric
 #'
 #' @export
 log_params <- function(..., run_id, client) {
 
   params <- convert_dots_to_df(...)
 
-  .args <- resolve_args(
+  log_batch(
+    params = params,
     run_id = maybe_missing(run_id),
     client = maybe_missing(client)
   )
-
-  data <- list(
-    run_id = .args$run_id,
-    params = params
-  )
-
-  call_mlflow_api(
-    "runs", "log-batch",
-    client = .args$client,
-    verb = "POST",
-    data = data
-  )
-
-  register_tracking_event(
-    "log_batch",
-    data
-  )
-
-  invisible(value)
 }
 
 #' Get Metric History
