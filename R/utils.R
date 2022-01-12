@@ -46,6 +46,12 @@ infer_experiment_id <- function() {
   assert_string(experiment_id, null.ok = TRUE)
 }
 
+#' A `with` wrapper for MLFlow runs
+#'
+#' Adds some error handling on exit
+#'
+#' @return No return value. Called for side effects
+#' @export with.mlflow_run
 #' @export
 with.mlflow_run <- function(data, expr, ...) {
   run_id <- mlflow_id(data)
@@ -65,7 +71,7 @@ with.mlflow_run <- function(data, expr, ...) {
     interrupt = function(cnd) end_run(status = "KILLED")
   )
 
-  invisible(NULL)
+  invisible()
 }
 
 current_time <- function() {
