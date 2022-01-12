@@ -19,7 +19,7 @@ test_that("Runs work", {
     param_value_to_rest(
       c(3.14, NaN, -Inf, Inf, 0)
     ),
-    as.character(c(3.14, "NaN", "Infinity", "-Infinity", 0))
+    as.character(c(3.14, "NaN", "-Infinity", "Infinity", 0))
   )
   metrics <- tibble(
     key = c("a", "b"),

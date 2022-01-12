@@ -364,8 +364,8 @@ param_value_to_rest <- function(value) {
       is.infinite(value),
       ifelse(
         value < 0,
-        "Infinity",
-        "-Infinity"
+        "-Infinity",
+        "Infinity"
       ),
       as.character(value)
     )
