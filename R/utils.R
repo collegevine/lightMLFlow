@@ -353,3 +353,30 @@ stop_for_missing_args <- function(...) {
 
   invisible()
 }
+
+#' Abort on column missingness
+#'
+#' @param columns a character vector of expected columns
+#' @param data a data frame containing the expected columns
+#' @return No return value. Called for side effects
+#' @export
+stop_for_missing_columns <- function(columns, data) {
+  calling_fun <- tryCatch({as.list(sys.call(-1))[[1]]}, error = function(e) "an unknown function")
+  df_name <- deparse(substitute(data))
+
+  missing_columns <- setdiff(
+    columns,
+    colnames(data)
+  )
+
+  if (length(missing_columns) > 0) {
+    abort(
+      sprintf(
+        "The data you passed is missing the following column(s): %s.",
+        paste(missing_columns, collapse = ", ")
+      )
+    )
+  }
+
+  invisible()
+}
