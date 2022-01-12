@@ -48,6 +48,19 @@
 <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">expr</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>data</dt>
+<dd><p>data to use for constructing an environment. For the default with method this may be an environment, a list, a data frame, or an integer as in sys.call. For within, it can be a list or a data frame.</p></dd>
+<dt>expr</dt>
+<dd><p>expression to evaluate; particularly for within() often a “compound” expression, i.e., of the form</p>
+<p>a &lt;- somefun()
+b &lt;- otherfun()
+.....
+rm(unused1, temp)</p></dd>
+<dt>...</dt>
+<dd><p>Arguments to be passed to future methods</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>No return value. Called for side effects</p>
