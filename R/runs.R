@@ -21,7 +21,7 @@ get_key_value_df <- function(...) {
   keys <- names2(values)
   args <- as.list(sys.call(-1))
   fname <- args[[1]]
-  if(fname == "log_metrics") {
+  if(fname == "log_params") {
     values <- values %>% map_chr(metric_value_to_rest)
   }
   backup_keys <- args[2:length(args)] %>%
@@ -54,21 +54,21 @@ get_key_value_df <- function(...) {
 #'
 #' @importFrom forge cast_string cast_scalar_double cast_nullable_scalar_double
 #' @importFrom rlang maybe_missing
-#' @importFrom checkmate assert_double
-#' @importFrom dplyr mutate
+#' @importFrom checkmate assert
 #'
 #' @export
 log_metrics <- function(..., timestamp, step, run_id, client) {
 
   metrics <- get_key_value_df(...)
 
-  .timestamp <- maybe_missing(timestamp, default = NA)
-  .step <- maybe_missing(step, default = NA)
-  metrics <- metrics %>%
-    mutate(
-      timestamp = .timestamp,
-      step = .step
-    )
+  timestamp <- maybe_missing(timestamp, default = NA)
+  step <- maybe_missing(step, default = NA)
+
+  assert(length(timestamp) == 1 | nrow(metrics))
+  assert(length(step) == 1 | nrow(metrics))
+
+  metrics$timestamp <- timestamp
+  metrics$step <- step
 
   log_batch(
     metrics = metrics,
