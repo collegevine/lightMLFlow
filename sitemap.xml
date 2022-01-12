@@ -103,13 +103,13 @@
     <loc>/reference/log_batch.html</loc>
   </url>
   <url>
-    <loc>/reference/log_metric.html</loc>
+    <loc>/reference/log_metrics.html</loc>
   </url>
   <url>
     <loc>/reference/log_model.html</loc>
   </url>
   <url>
-    <loc>/reference/log_param.html</loc>
+    <loc>/reference/log_params.html</loc>
   </url>
   <url>
     <loc>/reference/mlflow_client.html</loc>
