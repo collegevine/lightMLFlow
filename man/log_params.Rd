@@ -6,14 +6,6 @@
 \usage{
 log_params(..., run_id, client)
 }
-\arguments{
-\item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
-
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
-
-\item{params}{A dataframe of params to log, containing the following columns: "key", "value".
-This dataframe cannot contain any missing ('NA') entries.}
-}
 \description{
 Logs parameters for a run. Examples are params and hyperparams
 used for ML training, or constant dates and values used in an ETL pipeline.
