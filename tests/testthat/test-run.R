@@ -18,12 +18,21 @@ test_that("Runs work", {
 
   model_summary <- summary(model)
 
-  r2 <- model_summary$r.squared
+  R2 <- model_summary$r.squared
   f <- model_summary$fstatistic[["value"]]
 
   log_metrics(
-    "R2" = R2,
+    R2,
     "F" = f
+  )
+
+  expect_error(
+    log_metrics(
+      R2,
+      "F" = f,
+      "adj_r" = model_summary$adj.r.squared,
+      timestamp = c(1, 2)
+    )
   )
 
   Sys.sleep(3)
@@ -91,7 +100,7 @@ test_that("Runs work", {
 
   expect_equal(
     r2_hist$value,
-    c(r2, 1)
+    c(R2, 1)
   )
 
   expect_gt(
