@@ -46,7 +46,23 @@ infer_experiment_id <- function() {
   assert_string(experiment_id, null.ok = TRUE)
 }
 
-#' @export
+#' A `with` wrapper for MLFlow runs
+#'
+#' Adds some error handling on exit
+#'
+#' @param data data to use for constructing an environment. For the default with method this may be an environment, a list, a data frame, or an integer as in sys.call. For within, it can be a list or a data frame.
+#' @param expr expression to evaluate; particularly for within() often a “compound” expression, i.e., of the form
+#'
+#' {
+#'  a <- somefun()
+#'  b <- otherfun()
+#'   .....
+#'  rm(unused1, temp)
+#' }
+#' @param ... Arguments to be passed to future methods
+#'
+#' @return No return value. Called for side effects
+#' @export with.mlflow_run
 with.mlflow_run <- function(data, expr, ...) {
   run_id <- mlflow_id(data)
   if (!identical(run_id, get_active_run_id())) {
