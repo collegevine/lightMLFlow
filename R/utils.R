@@ -46,7 +46,12 @@ infer_experiment_id <- function() {
   assert_string(experiment_id, null.ok = TRUE)
 }
 
-#' @export
+#' A `with` wrapper for MLFlow runs
+#'
+#' Adds some error handling on exit
+#'
+#' @return No return value. Called for side effects
+#' @export with.mlflow_run
 with.mlflow_run <- function(data, expr, ...) {
   run_id <- mlflow_id(data)
   if (!identical(run_id, get_active_run_id())) {
