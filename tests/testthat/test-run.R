@@ -16,6 +16,18 @@ test_that("Runs work", {
     filename = "model.rds"
   )
 
+  p <- ggplot(pressure, aes(x = temperature, y = pressure)) + geom_point()
+
+  log_artifact_path <- log_artifact(
+    x = p,
+    filename = "pressure.png",
+    ## extra params passed to `...`
+    device = "png",
+    width = 6,
+    height = 6
+  )
+  expect_true(is.character(log_artifact_path))
+
   model_summary <- summary(model)
 
   R2 <- model_summary$r.squared
