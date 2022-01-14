@@ -16,7 +16,11 @@ test_that("Runs work", {
     filename = "model.rds"
   )
 
-  p <- ggplot(pressure, aes(x = temperature, y = pressure)) + geom_point()
+  p <- ggplot2::ggplot(
+    pressure,
+    ggplot2::aes(x = temperature, y = pressure)
+  ) +
+    ggplot2::geom_point()
 
   log_artifact_path <- log_artifact(
     x = p,
