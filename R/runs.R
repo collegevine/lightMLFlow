@@ -684,15 +684,12 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id, ...) {
 log_artifact.ggplot <- function(x, FUN, filename, run_id, ...) {
 
   ## based on https://github.com/hrbrmstr/hrbrthemes/blob/master/R/aaa.r
-  if (isFALSE(requireNamespace(package, quietly = TRUE))) {
+  if (isFALSE(requireNamespace("ggplot2", quietly = TRUE))) {
     abort(
-      "Package `ggplot2` required for `log_artifact.ggplot`.\n",
+      "Package `ggplot2` required for `ggsave`.\n",
       "Please install and try again."
     )
   }
-
-  library("ggplot2")
-  on.exit(detach("package:ggplot2", unload = TRUE))
 
   run_id <- resolve_run_id(maybe_missing(run_id))
 
@@ -711,9 +708,9 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id, ...) {
   ext_pos <- regexpr("\\.([[:alnum:]]+)$", filename)
   ext <- ifelse(ext_pos > -1L, substring(x, ext_pos + 1L), "")
   temp_file <- tempfile(fileext = ext)
-  on.exist(unlink(temp_file, recursive = TRUE))
+  on.exit(unlink(temp_file, recursive = TRUE))
 
-  ggsave(filename = temp_file, plot = x, ...)
+  ggplot2::ggsave(filename = temp_file, plot = x, ...)
 
   put_object(
     file = temp_file,
