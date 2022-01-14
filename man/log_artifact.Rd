@@ -2,9 +2,15 @@
 % Please edit documentation in R/runs.R
 \name{log_artifact}
 \alias{log_artifact}
+\alias{log_artifact.default}
+\alias{log_artifact.ggplot}
 \title{Log Artifact}
 \usage{
-log_artifact(x, FUN = saveRDS, filename, run_id, ...)
+log_artifact(x, FUN, filename, run_id, ...)
+
+\method{log_artifact}{default}(x, FUN = saveRDS, filename, run_id, ...)
+
+\method{log_artifact}{ggplot}(x, FUN, filename, run_id, ...)
 }
 \arguments{
 \item{x}{The object to log as an artifact}

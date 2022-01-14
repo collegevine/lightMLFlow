@@ -645,7 +645,13 @@ download_artifact <- function(path, run_id, ...) {
 #'
 #' @return The path to the file
 #' @export
-log_artifact <- function(x, FUN = saveRDS, filename, run_id, ...) {
+log_artifact <- function(x, FUN, filename, run_id, ...) {
+  UseMethod("log_artifact")
+}
+
+#' @rdname log_artifact
+#' @export
+log_artifact.default <- function(x, FUN = saveRDS, filename, run_id, ...) {
 
   run_id <- resolve_run_id(maybe_missing(run_id))
 
@@ -665,6 +671,52 @@ log_artifact <- function(x, FUN = saveRDS, filename, run_id, ...) {
     x = x,
     FUN = FUN,
     ...,
+    object = s3_file,
+    bucket = s3_info$bucket
+  )
+
+  s3_file
+}
+
+#' @importFrom aws.s3 put_object
+#' @rdname log_artifact
+#' @export
+log_artifact.ggplot <- function(x, FUN, filename, run_id, ...) {
+
+  ## based on https://github.com/hrbrmstr/hrbrthemes/blob/master/R/aaa.r
+  if (isFALSE(requireNamespace(package, quietly = TRUE))) {
+    abort(
+      "Package `ggplot2` required for `log_artifact.ggplot`.\n",
+      "Please install and try again."
+    )
+  }
+
+  library("ggplot2")
+  on.exit(detach("package:ggplot2", unload = TRUE))
+
+  run_id <- resolve_run_id(maybe_missing(run_id))
+
+  experiment_id <- get_experiment_from_run(
+    run_id = run_id
+  )
+
+  s3_info <- get_s3_bucket_and_prefix()
+  s3_file <- create_s3_path(
+    s3_prefix = s3_info$prefix,
+    experiment_id = experiment_id,
+    run_id = run_id,
+    fname = filename
+  )
+
+  ext_pos <- regexpr("\\.([[:alnum:]]+)$", filename)
+  ext <- ifelse(ext_pos > -1L, substring(x, ext_pos + 1L), "")
+  temp_file <- tempfile(fileext = ext)
+  on.exist(unlink(temp_file, recursive = TRUE))
+
+  ggsave(filename = temp_file, plot = x, ...)
+
+  put_object(
+    file = temp_file,
     object = s3_file,
     bucket = s3_info$bucket
   )
