@@ -75,7 +75,6 @@ with.mlflow_run <- function(data, expr, ...) {
       end_run()
     },
     error = function(cnd) {
-      message(cnd)
       end_run(status = "FAILED")
       abort(cnd$message)
     },
