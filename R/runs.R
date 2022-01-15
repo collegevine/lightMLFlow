@@ -706,7 +706,7 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id, ...) {
   )
 
   ext_pos <- regexpr("\\.([[:alnum:]]+)$", filename)
-  ext <- ifelse(ext_pos > -1L, substring(x, ext_pos + 1L), "")
+  ext <- ifelse(ext_pos > -1L, substring(filename, ext_pos + 1L), "")
   temp_file <- tempfile(fileext = ext)
   on.exit(unlink(temp_file, recursive = TRUE))
 
