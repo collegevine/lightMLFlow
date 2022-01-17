@@ -48,7 +48,7 @@ jobs:
 
       - name: Check
         shell: Rscript {0}
-        run: devtools::check(error_on = "note")
+        run: install.packages("devtools"); devtools::check(error_on = "note")
 
   clobber-db:
     needs: R-CMD-check
