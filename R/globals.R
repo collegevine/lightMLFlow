@@ -27,11 +27,19 @@ get_active_run_id <- function() {
   }
 }
 
+#' Set an experiment to `active`
+#'
+#' @param experiment_id The ID of the experiment to activate
+#'
+#' @return No return value. Called for side effects.
+#' @export
 set_active_experiment_id <- function(experiment_id) {
   .globals$active_experiment_id <- experiment_id
   register_tracking_event(
     "active_experiment_id", list(experiment_id = experiment_id)
   )
+
+  invisible()
 }
 
 #' Get the ID of the active experiment

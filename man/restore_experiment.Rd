@@ -4,7 +4,7 @@
 \alias{restore_experiment}
 \title{Restore Experiment}
 \usage{
-restore_experiment(experiment_id, client)
+restore_experiment(experiment_id, client = mlflow_client())
 }
 \arguments{
 \item{experiment_id}{ID of the associated experiment. This field is required.}

@@ -4,7 +4,7 @@
 \alias{delete_experiment}
 \title{Delete Experiment}
 \usage{
-delete_experiment(experiment_id, client)
+delete_experiment(experiment_id, client = mlflow_client())
 }
 \arguments{
 \item{experiment_id}{ID of the associated experiment. This field is required.}

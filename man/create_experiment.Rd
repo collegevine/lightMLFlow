@@ -4,7 +4,12 @@
 \alias{create_experiment}
 \title{Create Experiment}
 \usage{
-create_experiment(name, artifact_location, client, tags)
+create_experiment(
+  name,
+  artifact_location = "",
+  client = mlflow_client(),
+  tags = list()
+)
 }
 \arguments{
 \item{name}{The name of the experiment to create.}

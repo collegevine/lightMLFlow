@@ -4,7 +4,11 @@
 \alias{get_experiment}
 \title{Get Experiment}
 \usage{
-get_experiment(experiment_id, name, client)
+get_experiment(
+  experiment_id = get_active_experiment_id(),
+  name = NULL,
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{experiment_id}{ID of the experiment.}
