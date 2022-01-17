@@ -4,7 +4,13 @@
 \alias{log_metrics}
 \title{Log Metrics}
 \usage{
-log_metrics(..., timestamp, step, run_id, client)
+log_metrics(
+  ...,
+  timestamp = NA,
+  step = NA,
+  run_id = get_active_run_id(),
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{...}{variable names from which a data.frame with \code{key} and \code{value} columns will be created.}

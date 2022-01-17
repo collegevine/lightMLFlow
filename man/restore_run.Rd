@@ -4,7 +4,7 @@
 \alias{restore_run}
 \title{Restore a Run}
 \usage{
-restore_run(run_id, client)
+restore_run(run_id = get_active_run_id(), client = mlflow_client())
 }
 \arguments{
 \item{run_id}{A run id}

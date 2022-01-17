@@ -4,7 +4,11 @@
 \alias{record_logged_model}
 \title{Record logged model metadata with the tracking server.}
 \usage{
-record_logged_model(model_spec, run_id, client)
+record_logged_model(
+  model_spec,
+  run_id = get_active_run_id(),
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{model_spec}{A model specification.}

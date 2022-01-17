@@ -4,7 +4,7 @@
 \alias{delete_tag}
 \title{Delete Tag}
 \usage{
-delete_tag(key, run_id, client)
+delete_tag(key, run_id = get_active_run_id(), client = mlflow_client())
 }
 \arguments{
 \item{key}{Name of the tag. Maximum size is 255 bytes. This field is required.}

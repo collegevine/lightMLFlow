@@ -8,9 +8,9 @@
 \usage{
 log_artifact(x, FUN, filename, run_id, ...)
 
-\method{log_artifact}{default}(x, FUN = saveRDS, filename, run_id, ...)
+\method{log_artifact}{default}(x, FUN = saveRDS, filename, run_id = get_active_run_id(), ...)
 
-\method{log_artifact}{ggplot}(x, FUN, filename, run_id, ...)
+\method{log_artifact}{ggplot}(x, FUN, filename, run_id = get_active_run_id(), ...)
 }
 \arguments{
 \item{x}{The object to log as an artifact}

@@ -4,7 +4,11 @@
 \alias{get_metric_history}
 \title{Get Metric History}
 \usage{
-get_metric_history(metric_key, run_id, client)
+get_metric_history(
+  metric_key,
+  run_id = get_active_run_id(),
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{metric_key}{Name of the metric.}

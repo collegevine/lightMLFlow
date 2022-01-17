@@ -4,7 +4,7 @@
 \alias{delete_run}
 \title{Delete a Run}
 \usage{
-delete_run(run_id, client)
+delete_run(run_id = get_active_run_id(), client = mlflow_client())
 }
 \arguments{
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}

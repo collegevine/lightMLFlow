@@ -4,7 +4,7 @@
 \alias{set_tag}
 \title{Set Tag}
 \usage{
-set_tag(key, value, run_id, client)
+set_tag(key, value, run_id = get_active_run_id(), client = mlflow_client())
 }
 \arguments{
 \item{key}{Name of the tag. Maximum size is 255 bytes. This field is required.}

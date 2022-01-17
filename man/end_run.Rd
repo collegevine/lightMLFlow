@@ -7,8 +7,8 @@
 end_run(
   status = c("FINISHED", "FAILED", "KILLED"),
   end_time = NULL,
-  run_id,
-  client
+  run_id = get_active_run_id(),
+  client = mlflow_client()
 )
 }
 \arguments{

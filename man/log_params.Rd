@@ -4,7 +4,7 @@
 \alias{log_params}
 \title{Log Parameters}
 \usage{
-log_params(..., run_id, client)
+log_params(..., run_id = get_active_run_id(), client = mlflow_client())
 }
 \arguments{
 \item{...}{variable names from which a data.frame with \code{key} and \code{value} columns will be created.}
