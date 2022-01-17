@@ -54,7 +54,6 @@ assert_new_col_length <- function(x, metrics) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #'
-#' @importFrom forge cast_string cast_scalar_double cast_nullable_scalar_double
 #' @importFrom rlang maybe_missing
 #'
 #' @export
