@@ -446,8 +446,6 @@ get_metric_history <- function(metric_key, run_id = get_active_run_id(), client 
 #' @param order_by List of properties to order by. Example: "metrics.acc DESC".
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
-#' @importFrom rlang check_required
-#'
 #' @export
 search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), order_by = list(), filter = "", client = mlflow_client()) {
 
@@ -745,8 +743,6 @@ record_logged_model <- function(model_spec, run_id = get_active_run_id(), client
 #' @param experiment_id Used only when `run_id` is unspecified. ID of the experiment under
 #'   which to create the current run. If unspecified, the run is created under
 #'   a new experiment with a randomly generated name.
-#' @param start_time Unix timestamp of when the run started in milliseconds. Only used when `client` is specified.
-#' @param tags Additional metadata for run in key-value pairs. Only used when `client` is specified.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @param nested Controls whether the run to be started is nested in a parent run. `TRUE` creates a nest run.
 #'

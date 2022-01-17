@@ -205,13 +205,6 @@
       "Repository": "CRAN",
       "Hash": "77bd60a6157420d4ffa93b27cf6a58b8"
     },
-    "forge": {
-      "Package": "forge",
-      "Version": "0.2.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "b98a63142d3aa952bb551968fea8a56c"
-    },
     "fs": {
       "Package": "fs",
       "Version": "1.5.0",

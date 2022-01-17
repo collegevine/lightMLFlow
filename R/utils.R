@@ -62,7 +62,10 @@ infer_experiment_id <- function() {
 #' @param ... Arguments to be passed to future methods
 #'
 #' @return No return value. Called for side effects
+#'
+#' @method with mlflow_run
 #' @export with.mlflow_run
+#' @export
 with.mlflow_run <- function(data, expr, ...) {
   run_id <- mlflow_id(data)
   if (!identical(run_id, get_active_run_id())) {
@@ -278,4 +281,14 @@ stop_for_missing_args <- function(...) {
 
 assert_mlflow_client <- function(client) {
   assert_class(client, c("mlflow_http_client", "mlflow_client"))
+}
+
+check_required <- function(arg) {
+  if (missing(arg)) {
+    abort(
+      sprintf(
+        "You must provide a value for `%s`", deparse(substitute(arg))
+      )
+    )
+  }
 }

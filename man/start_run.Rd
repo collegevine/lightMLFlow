@@ -23,10 +23,6 @@ a new experiment with a randomly generated name.}
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 
 \item{nested}{Controls whether the run to be started is nested in a parent run. \code{TRUE} creates a nest run.}
-
-\item{start_time}{Unix timestamp of when the run started in milliseconds. Only used when \code{client} is specified.}
-
-\item{tags}{Additional metadata for run in key-value pairs. Only used when \code{client} is specified.}
 }
 \description{
 Starts a new run. If \code{client} is not provided, this function infers contextual information such as
