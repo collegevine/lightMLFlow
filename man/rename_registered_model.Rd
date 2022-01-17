@@ -4,7 +4,7 @@
 \alias{rename_registered_model}
 \title{Rename a registered model}
 \usage{
-rename_registered_model(name, new_name, client)
+rename_registered_model(name, new_name, client = mlflow_client())
 }
 \arguments{
 \item{name}{The current name of the model.}

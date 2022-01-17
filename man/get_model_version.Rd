@@ -4,7 +4,7 @@
 \alias{get_model_version}
 \title{Get a model version}
 \usage{
-get_model_version(name, version, client)
+get_model_version(name, version, client = mlflow_client())
 }
 \arguments{
 \item{name}{Name of the registered model.}

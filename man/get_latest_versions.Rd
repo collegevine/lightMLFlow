@@ -4,7 +4,11 @@
 \alias{get_latest_versions}
 \title{Get latest model versions}
 \usage{
-get_latest_versions(name, stages, client)
+get_latest_versions(
+  name,
+  stages = list("None", "Archived", "Staging", "Production"),
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{name}{Name of the model.}

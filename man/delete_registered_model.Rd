@@ -4,7 +4,7 @@
 \alias{delete_registered_model}
 \title{Delete registered model}
 \usage{
-delete_registered_model(name, client)
+delete_registered_model(name, client = mlflow_client())
 }
 \arguments{
 \item{name}{The name of the model to delete}

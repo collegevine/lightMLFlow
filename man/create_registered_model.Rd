@@ -4,7 +4,12 @@
 \alias{create_registered_model}
 \title{Create registered model}
 \usage{
-create_registered_model(name, tags, description, client)
+create_registered_model(
+  name,
+  tags = list(),
+  description = "",
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{name}{The name of the model to create.}
