@@ -491,11 +491,13 @@ list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = m
 }
 
 set_terminated <- function(status, end_time, run_id, client) {
+
   data <- list(
     run_id = run_id,
     status = status,
     end_time = end_time
   )
+
   response <- call_mlflow_api("runs", "update", verb = "POST", client = client, data = data)
   register_tracking_event("set_terminated", data)
 
@@ -732,7 +734,7 @@ start_run <- function(run_id = Sys.getenv("MLFLOW_RUN_ID"), experiment_id = get_
     get_run(client = client, run_id = run_id)
   } else {
     experiment_id <- ifelse(
-      is_null(experiment_id),
+      is.null(experiment_id),
       infer_experiment_id(),
       experiment_id
     )
@@ -746,7 +748,7 @@ start_run <- function(run_id = Sys.getenv("MLFLOW_RUN_ID"), experiment_id = get_
   }
 
   push_active_run_id(mlflow_id(run))
-  set_experiment(experiment_id = run$experiment_id)
+  set_active_experiment_id(experiment_id = run$experiment_id)
 
   run
 }
@@ -792,7 +794,7 @@ end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), end_time = NULL,
 
   run <- set_terminated(
     client = client,
-    run_id = active_run_id,
+    run_id = run_id,
     status = status,
     end_time = end_time
   )

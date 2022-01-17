@@ -28,8 +28,10 @@ test_that("Runs work", {
     ## extra params passed to `...`
     device = "png",
     width = 6,
-    height = 6
+    height = 6,
+    FUN = ggsave
   )
+
   expect_true(is.character(log_artifact_path))
 
   model_summary <- summary(model)
