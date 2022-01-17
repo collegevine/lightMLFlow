@@ -33,7 +33,7 @@ get_active_run_id_or_start_run <- function() {
 
 get_experiment_id_from_env <- function(client = mlflow_client()) {
   experiment_name <- Sys.getenv("MLFLOW_EXPERIMENT_NAME", unset = NA)
-  if (!is.na(name)) {
+  if (!is.na(experiment_name)) {
     get_experiment(client = client, experiment_name = experiment_name)$experiment_id
   } else {
     id <- Sys.getenv("MLFLOW_EXPERIMENT_ID", unset = NA)

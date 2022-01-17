@@ -48,7 +48,7 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
         )
 
         get_experiment(
-          experiment_name = experiment_name
+          experiment_name = name
         )
       } else {
         abort(
