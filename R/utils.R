@@ -275,3 +275,7 @@ stop_for_missing_args <- function(...) {
 
   invisible()
 }
+
+assert_mlflow_client <- function(client) {
+  assert_class(client, c("mlflow_http_client", "mlflow_client"))
+}

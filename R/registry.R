@@ -10,7 +10,11 @@
 create_registered_model <- function(name, tags = list(), description = "", client = mlflow_client()) {
 
   check_required(name)
+
   assert_string(name)
+  assert_list(tags)
+  assert_string(description)
+  assert_mlflow_client(client)
 
   response <- tryCatch(
     {
@@ -63,6 +67,7 @@ get_registered_model <- function(name, client = mlflow_client()) {
 
   check_required(name)
   assert_string(name)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "registered-models",
@@ -90,6 +95,7 @@ rename_registered_model <- function(name, new_name, client = mlflow_client()) {
 
   assert_string(name)
   assert_string(new_name)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "registered-models",
@@ -117,6 +123,8 @@ update_registered_model <- function(name, description = "", client = mlflow_clie
 
   check_required(name)
   assert_string(name)
+  assert_string(description)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "registered-models",
@@ -143,6 +151,7 @@ delete_registered_model <- function(name, client = mlflow_client()) {
 
   check_required(name)
   assert_string(name)
+  assert_mlflow_client(client)
 
   call_mlflow_api(
     "registered-models",
@@ -157,12 +166,17 @@ delete_registered_model <- function(name, client = mlflow_client()) {
 #'
 #' Retrieves a list of registered models.
 #'
+#' @importFrom checkmate assert_integerish
+#'
 #' @param max_results Maximum number of registered models to retrieve.
 #' @param page_token Pagination token to go to the next page based on a
 #'   previous query.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @export
 list_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client()) {
+
+  assert_integerish(max_results)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "registered-models",
@@ -198,6 +212,8 @@ get_latest_versions <- function(name, stages = list("None", "Archived", "Staging
 
   check_required(name)
   assert_string(name)
+  assert_list(stages)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "registered-models",
@@ -239,6 +255,11 @@ create_model_version <- function(name, source, run_id = get_active_run_id(), tag
 
   assert_string(name)
   assert_string(source)
+  assert_string(run_id)
+  assert_list(tags)
+  assert_string(run_link)
+  assert_string(description)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "model-versions",
@@ -274,6 +295,7 @@ get_model_version <- function(name, version, client = mlflow_client()) {
 
   assert_string(name)
   assert_string(version)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "model-versions",
@@ -309,6 +331,7 @@ update_model_version <- function(name, version, description = "", client = mlflo
 
   assert_string(name)
   assert_string(version)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "model-versions",
@@ -338,6 +361,7 @@ delete_model_version <- function(name, version, client = mlflow_client()) {
 
   assert_string(name)
   assert_string(version)
+  assert_mlflow_client(client)
 
   call_mlflow_api(
     "model-versions",
@@ -372,6 +396,7 @@ transition_model_version_stage <- function(name, version, stage, archive_existin
   assert_string(version)
   assert_string(stage)
   assert_logical(archive_existing_versions)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "model-versions",

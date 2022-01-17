@@ -64,6 +64,8 @@ log_metrics <- function(..., timestamp = NA, step = NA, run_id = get_active_run_
 
   assert_new_col_length(timestamp, metrics)
   assert_new_col_length(step, metrics)
+  assert_string(run_id)
+  assert_mlflow_client(client)
 
   metrics$timestamp <- timestamp
   metrics$step <- step
@@ -86,6 +88,11 @@ log_metrics <- function(..., timestamp = NA, step = NA, run_id = get_active_run_
 #' @param experiment_id The ID of the experiment to register the run under.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 create_run <- function(start_time = current_time(), tags = list(), experiment_id = get_active_experiment_id(), client = mlflow_client()) {
+
+  assert_integerish(start_time)
+  assert_list(tags)
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
 
   tags <- tags %>%
     imap(~ list(key = .y, value = .x)) %>%
@@ -118,6 +125,9 @@ create_run <- function(start_time = current_time(), tags = list(), experiment_id
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 delete_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
 
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
   if (identical(run_id, get_active_run_id())) {
     abort("Cannot delete an active run.")
   }
@@ -143,6 +153,7 @@ delete_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
 restore_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
 
   assert_string(run_id)
+  assert_mlflow_client(client)
 
   data <- list(run_id = run_id)
   call_mlflow_api(
@@ -167,6 +178,9 @@ restore_run <- function(run_id = get_active_run_id(), client = mlflow_client()) 
 #' @export
 get_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
 
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
   response <- call_mlflow_api(
     "runs", "get",
     client = client,
@@ -184,6 +198,9 @@ get_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
 #' Log a batch of metrics, params, and/or tags for a run. The server will respond with an error (non-200 status code)
 #'   if any data failed to be persisted. In case of error (due to internal server error or an invalid request), partial
 #'   data may be written.
+#'
+#' @importFrom checkmate assert_data_frame
+#'
 #' @param metrics A dataframe of metrics to log, containing the following columns: "key", "value",
 #'  "step", "timestamp". This dataframe cannot contain any missing ('NA') entries.
 #' @param params A dataframe of params to log, containing the following columns: "key", "value".
@@ -194,6 +211,12 @@ get_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @export
 log_batch <- function(metrics = data.frame(), params = data.frame(), tags = data.frame(), run_id = get_active_run_id(), client = mlflow_client()) {
+
+  assert_data_frame(metrics)
+  assert_data_frame(params)
+  assert_data_frame(tags)
+  assert_string(run_id)
+  assert_mlflow_client(client)
 
   validate_batch_input("metrics", metrics, c("key", "value", "step", "timestamp"))
   validate_batch_input("params", params, c("key", "value"))
@@ -256,6 +279,7 @@ set_tag <- function(key, value, run_id = get_active_run_id(), client = mlflow_cl
 
   assert_string(key)
   assert_string(value)
+  assert_mlflow_client(client)
 
   data <- list(
     run_id = run_id,
@@ -292,6 +316,8 @@ delete_tag <- function(key, run_id = get_active_run_id(), client = mlflow_client
 
   check_required(key)
   assert_string(key)
+  assert_string(run_id)
+  assert_mlflow_client(client)
 
   data <- list(
     run_id = run_id,
@@ -343,6 +369,9 @@ param_value_to_rest <- function(value) {
 #' @export
 log_params <- function(..., run_id = get_active_run_id(), client = mlflow_client()) {
 
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
   params <- get_key_value_df(...)
   params$value <- param_value_to_rest(params$value)
 
@@ -370,6 +399,8 @@ get_metric_history <- function(metric_key, run_id = get_active_run_id(), client 
 
   check_required(metric_key)
   assert_string(metric_key)
+  assert_string(run_id)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "metrics", "get-history",
@@ -428,8 +459,11 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
     experiment_ids <- list(experiment_ids)
   }
 
-  experiment_ids <- assert_list(experiment_ids)
+  assert_list(experiment_ids)
   run_view_type <- match.arg(run_view_type)
+  assert_list(order_by)
+  assert_string(filter)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "runs", "search",
@@ -463,6 +497,10 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
 #'
 #' @export
 list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = mlflow_client()) {
+
+  assert_string(path, null.ok = TRUE)
+  assert_string(run_id)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "artifacts", "list",
@@ -717,8 +755,12 @@ record_logged_model <- function(model_spec, run_id = get_active_run_id(), client
 start_run <- function(run_id = Sys.getenv("MLFLOW_RUN_ID"), experiment_id = get_active_experiment_id(), client = mlflow_client(), nested = FALSE) {
 
   assert_logical(nested)
+  assert_string(run_id)
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
 
   active_run_id <- get_active_run_id()
+
   if (!is.null(active_run_id) && !nested) {
     abort(
       paste(
@@ -788,9 +830,12 @@ get_run_context.default <- function(client, experiment_id, ...) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), end_time = NULL, run_id = get_active_run_id(), client = mlflow_client()) {
+end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), end_time = current_time() * 1000, run_id = get_active_run_id(), client = mlflow_client()) {
+
   status <- match.arg(status)
-  end_time <- end_time %||% (current_time() * 1000) ## convert to ms
+  assert_integerish(end_time)
+  assert_string(run_id)
+  assert_mlflow_client()
 
   run <- set_terminated(
     client = client,

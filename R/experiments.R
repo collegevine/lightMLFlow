@@ -3,6 +3,7 @@
 #' Creates an MLflow experiment and returns its id.
 #'
 #' @importFrom purrr is_empty
+#' @importFrom checkmate assert_class assert_list
 #'
 #' @param name The name of the experiment to create.
 #' @param artifact_location Location where all artifacts for this experiment are stored. If
@@ -16,6 +17,9 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
   if (is_missing(name)) abort("You must specify an experiment name")
 
   assert_string(name)
+  assert_string(artifact_location)
+  assert_mlflow_client(client)
+  assert_list(tags)
 
   tags <- tags %>%
     imap(~ list(key = .y, value = .x)) %>%
@@ -72,6 +76,7 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
 list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
 
   view_type <- match.arg(view_type)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "experiments", "list",
@@ -119,6 +124,8 @@ set_experiment_tag <- function(key, value, experiment_id = get_active_experiment
 
   assert_string(key)
   assert_string(value)
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
 
   call_mlflow_api(
     "experiments",
@@ -151,7 +158,9 @@ get_experiment <- function(experiment_id = get_active_experiment_id(), name = NU
     abort("Only one of `name` or `experiment_id` should be specified.")
   }
 
-  if (!is.null(name)) assert_string(name)
+  assert_string(experiment_id, null.ok = TRUE)
+  assert_string(name, null.ok = TRUE)
+  assert_mlflow_client(client)
 
   response <- if (!is_missing(name)) {
     call_mlflow_api("experiments", "get-by-name",
@@ -188,6 +197,9 @@ delete_experiment <- function(experiment_id, client = mlflow_client()) {
 
   check_required(experiment_id)
 
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
+
   if (identical(experiment_id, get_active_experiment_id())) {
     abort("Cannot delete an active experiment.")
   }
@@ -220,6 +232,9 @@ restore_experiment <- function(experiment_id, client = mlflow_client()) {
 
   check_required(experiment_id)
 
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
+
   call_mlflow_api(
     "experiments", "restore",
     client = client,
@@ -245,7 +260,10 @@ restore_experiment <- function(experiment_id, client = mlflow_client()) {
 rename_experiment <- function(new_name, experiment_id = get_active_experiment_id(), client = mlflow_client()) {
 
   check_required(new_name)
+
   assert_string(new_name)
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
 
   call_mlflow_api(
     "experiments", "update",
