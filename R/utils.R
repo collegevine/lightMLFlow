@@ -32,9 +32,9 @@ get_active_run_id_or_start_run <- function() {
 
 
 get_experiment_id_from_env <- function(client = mlflow_client()) {
-  name <- Sys.getenv("MLFLOW_EXPERIMENT_NAME", unset = NA)
+  experiment_name <- Sys.getenv("MLFLOW_EXPERIMENT_NAME", unset = NA)
   if (!is.na(name)) {
-    get_experiment(client = client, name = name)$experiment_id
+    get_experiment(client = client, experiment_name = experiment_name)$experiment_id
   } else {
     id <- Sys.getenv("MLFLOW_EXPERIMENT_ID", unset = NA)
     if (is.na(id)) NULL else id
@@ -235,16 +235,6 @@ mlflow_id.mlflow_run <- function(object) {
 #' @export
 mlflow_id.mlflow_experiment <- function(object) {
   object$experiment_id %||% abort("Cannot extract Experiment ID.")
-}
-
-#' @importFrom rlang is_missing
-resolve_client <- function(client) {
-  if (is_missing(client)) {
-    mlflow_client()
-  } else {
-    if (!inherits(client, "mlflow_client")) abort("`client` must be an `mlflow_client` object.")
-    client
-  }
 }
 
 #' @importFrom rlang is_symbol inject

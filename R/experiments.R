@@ -14,7 +14,7 @@
 #' @export
 create_experiment <- function(name, artifact_location = "", client = mlflow_client(), tags = list()) {
 
-  if (is_missing(name)) abort("You must specify an experiment name")
+  if (missing(name)) abort("You must specify an experiment name")
 
   assert_string(name)
   assert_string(artifact_location)
@@ -48,7 +48,7 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
         )
 
         get_experiment(
-          name = name
+          experiment_name = experiment_name
         )
       } else {
         abort(
@@ -148,25 +148,25 @@ set_experiment_tag <- function(key, value, experiment_id = get_active_experiment
 #' active experiment if both `experiment_id` and `name` are unspecified.
 #'
 #' @param experiment_id ID of the experiment.
-#' @param name The experiment name. Only one of `name` or `experiment_id` should be specified.
+#' @param experiment_name The experiment name. Only one of `name` or `experiment_id` should be specified.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-get_experiment <- function(experiment_id = get_active_experiment_id(), name = NULL, client = mlflow_client()) {
+get_experiment <- function(experiment_id = get_active_experiment_id(), experiment_name = NULL, client = mlflow_client()) {
 
-  if (!is.null(name) && !is.null(experiment_id)) {
+  if (!is.null(experiment_name) && !is.null(experiment_id)) {
     abort("Only one of `name` or `experiment_id` should be specified.")
   }
 
   assert_string(experiment_id, null.ok = TRUE)
-  assert_string(name, null.ok = TRUE)
+  assert_string(experiment_name, null.ok = TRUE)
   assert_mlflow_client(client)
 
-  response <- if (!is_missing(name)) {
+  response <- if (!is.null(experiment_name)) {
     call_mlflow_api("experiments", "get-by-name",
       client = client,
       query = list(
-        experiment_name = name
+        experiment_name = experiment_name
       )
     )
   } else {
