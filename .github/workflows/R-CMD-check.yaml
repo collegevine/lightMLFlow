@@ -46,7 +46,9 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
-      - uses: r-lib/actions/check-r-package@v1
+      - name: Check
+        shell: Rscript {0}
+        run: rcmdcheck::rcmdcheck(error_on = "note")
 
   clobber-db:
     needs: R-CMD-check
