@@ -4,7 +4,7 @@
 \alias{download_artifact}
 \title{Download Artifact}
 \usage{
-download_artifact(path, run_id, ...)
+download_artifact(path, run_id = get_active_run_id(), ...)
 }
 \arguments{
 \item{path}{Relative source path to the desired artifact.}

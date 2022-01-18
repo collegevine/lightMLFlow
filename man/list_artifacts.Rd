@@ -4,7 +4,11 @@
 \alias{list_artifacts}
 \title{List Artifacts}
 \usage{
-list_artifacts(path = NULL, run_id, client)
+list_artifacts(
+  path = NULL,
+  run_id = get_active_run_id(),
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{path}{The run's relative artifact path to list from. If not specified, it is

@@ -5,8 +5,8 @@
 \title{Set Git tracking tags outside of an MLFlow Project}
 \usage{
 set_git_tracking_tags(
-  run_id,
-  client,
+  run_id = get_active_run_id(),
+  client = mlflow_client(),
   git_repo_url = Sys.getenv("GIT_REPO_URL"),
   git_repo_subdir,
   source_git_commit = system("git rev-parse HEAD", intern = TRUE),

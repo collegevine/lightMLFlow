@@ -4,7 +4,12 @@
 \alias{start_run}
 \title{Start Run}
 \usage{
-start_run(run_id, experiment_id, start_time, tags, client, nested = FALSE)
+start_run(
+  run_id = Sys.getenv("MLFLOW_RUN_ID"),
+  experiment_id = get_active_experiment_id(),
+  client = mlflow_client(),
+  nested = FALSE
+)
 }
 \arguments{
 \item{run_id}{If specified, get the run with the specified UUID and log metrics
@@ -14,10 +19,6 @@ running, but the run's other attributes remain unchanged.}
 \item{experiment_id}{Used only when \code{run_id} is unspecified. ID of the experiment under
 which to create the current run. If unspecified, the run is created under
 a new experiment with a randomly generated name.}
-
-\item{start_time}{Unix timestamp of when the run started in milliseconds. Only used when \code{client} is specified.}
-
-\item{tags}{Additional metadata for run in key-value pairs. Only used when \code{client} is specified.}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 

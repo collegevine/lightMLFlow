@@ -4,12 +4,16 @@
 \alias{get_experiment}
 \title{Get Experiment}
 \usage{
-get_experiment(experiment_id, name, client)
+get_experiment(
+  experiment_id = get_active_experiment_id(),
+  experiment_name = NULL,
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{experiment_id}{ID of the experiment.}
 
-\item{name}{The experiment name. Only one of \code{name} or \code{experiment_id} should be specified.}
+\item{experiment_name}{The experiment name. Only one of \code{name} or \code{experiment_id} should be specified.}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }

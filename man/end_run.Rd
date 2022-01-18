@@ -6,9 +6,9 @@
 \usage{
 end_run(
   status = c("FINISHED", "FAILED", "KILLED"),
-  end_time = NULL,
-  run_id,
-  client
+  end_time = current_time() * 1000,
+  run_id = get_active_run_id(),
+  client = mlflow_client()
 )
 }
 \arguments{

@@ -5,23 +5,23 @@
 \title{Search Runs}
 \usage{
 search_runs(
-  filter = NULL,
+  experiment_ids,
   run_view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"),
-  experiment_ids = NULL,
   order_by = list(),
-  client = NULL
+  filter = "",
+  client = mlflow_client()
 )
 }
 \arguments{
-\item{filter}{A filter expression over params, metrics, and tags, allowing returning a subset of runs.
-The syntax is a subset of SQL which allows only ANDing together binary operations between a param/metric/tag and a constant.}
-
-\item{run_view_type}{Run view type.}
-
 \item{experiment_ids}{List of string experiment IDs (or a single string experiment ID) to search
 over. Attempts to use active experiment if not specified.}
 
+\item{run_view_type}{Run view type.}
+
 \item{order_by}{List of properties to order by. Example: "metrics.acc DESC".}
+
+\item{filter}{A filter expression over params, metrics, and tags, allowing returning a subset of runs.
+The syntax is a subset of SQL which allows only ANDing together binary operations between a param/metric/tag and a constant.}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }

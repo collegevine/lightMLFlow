@@ -4,7 +4,7 @@
 \alias{get_run}
 \title{Get Run}
 \usage{
-get_run(run_id, client)
+get_run(run_id = get_active_run_id(), client = mlflow_client())
 }
 \arguments{
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}

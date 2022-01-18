@@ -205,13 +205,6 @@
       "Repository": "CRAN",
       "Hash": "77bd60a6157420d4ffa93b27cf6a58b8"
     },
-    "forge": {
-      "Package": "forge",
-      "Version": "0.2.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "b98a63142d3aa952bb551968fea8a56c"
-    },
     "fs": {
       "Package": "fs",
       "Version": "1.5.0",
@@ -452,15 +445,10 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "0.99.0.9003",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "rlang",
-      "RemoteRef": "main",
-      "RemoteSha": "266f80977d3a4d9b0f294935609890e0b7f62c58",
-      "Hash": "0ac7cb645e5185e1002a3d2e76514846"
+      "Version": "0.4.12",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0879f5388fe6e4d56d7ef0b7ccb031e5"
     },
     "rmarkdown": {
       "Package": "rmarkdown",

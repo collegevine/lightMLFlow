@@ -4,7 +4,7 @@
 \alias{update_registered_model}
 \title{Update a registered model}
 \usage{
-update_registered_model(name, description, client)
+update_registered_model(name, description = "", client = mlflow_client())
 }
 \arguments{
 \item{name}{The name of the registered model.}

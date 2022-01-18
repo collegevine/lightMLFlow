@@ -32,9 +32,9 @@ get_active_run_id_or_start_run <- function() {
 
 
 get_experiment_id_from_env <- function(client = mlflow_client()) {
-  name <- Sys.getenv("MLFLOW_EXPERIMENT_NAME", unset = NA)
-  if (!is.na(name)) {
-    get_experiment(client = client, name = name)$experiment_id
+  experiment_name <- Sys.getenv("MLFLOW_EXPERIMENT_NAME", unset = NA)
+  if (!is.na(experiment_name)) {
+    get_experiment(client = client, experiment_name = experiment_name)$experiment_id
   } else {
     id <- Sys.getenv("MLFLOW_EXPERIMENT_ID", unset = NA)
     if (is.na(id)) NULL else id
@@ -62,7 +62,10 @@ infer_experiment_id <- function() {
 #' @param ... Arguments to be passed to future methods
 #'
 #' @return No return value. Called for side effects
+#'
+#' @method with mlflow_run
 #' @export with.mlflow_run
+#' @export
 with.mlflow_run <- function(data, expr, ...) {
   run_id <- mlflow_id(data)
   if (!identical(run_id, get_active_run_id())) {
@@ -197,95 +200,6 @@ parse_run_data <- function(d) {
   }
 }
 
-resolve_args <- function(...) {
-  list(...) %>%
-    imap(resolve_arg)
-}
-
-resolve_arg <- function(value, name) {
-  switch(
-    name,
-    tags = resolve_tags(value),
-    experiment_id = resolve_experiment_id(value),
-    run_id = resolve_run_id(value),
-    client = resolve_client(value),
-    run_link = resolve_run_link(value),
-    stages = resolve_stages(value),
-    start_time = resolve_timestamp(value),
-    timestamp = resolve_timestamp(value),
-    artifact_location = resolve_artifact_location(value),
-    name = resolve_name(value),
-    description = resolve_description(value),
-    step = resolve_step(value),
-    abort(sprintf("Could not find a way to resolve '%s'.", name))
-  )
-}
-
-resolve_step <- function(step) {
-  if (is_missing(step)) step <- 1
-
-  assert_integerish(step)
-}
-
-resolve_description <- function(description) {
-  if (is_missing(description)) description <- ""
-
-  assert_string(description)
-}
-
-
-resolve_name <- function(name) {
-  assert_string(name)
-}
-
-resolve_artifact_location <- function(artifact_location) {
-  if (is_missing(artifact_location)) artifact_location <- ""
-
-  assert_string(artifact_location)
-}
-
-#' @importFrom checkmate assert_integerish
-resolve_timestamp <- function(start_time) {
-  if (is_missing(start_time)) start_time <- current_time()
-
-  assert_integerish(start_time)
-}
-
-#' @importFrom checkmate assert_list
-resolve_stages <- function(stages) {
-  if (is_missing(stages)) stages <- list("None", "Archived", "Staging", "Production")
-
-  assert_list(stages)
-}
-
-resolve_tags <- function(tags) {
-  if (is_missing(tags))  tags <- list()
-
-  assert_list(tags)
-}
-
-resolve_run_link <- function(run_link) {
-  if (is_missing(run_link)) run_link <- ""
-
-  assert_string(run_link)
-}
-
-resolve_experiment_id <- function(experiment_id) {
-
-  if (is_missing(experiment_id)) experiment_id <- infer_experiment_id()
-  if (is.null(experiment_id)) abort("`experiment_id` must be specified when there is no active experiment.")
-
-  assert_string(experiment_id)
-}
-
-resolve_run_id <- function(run_id) {
-  if (is_missing(run_id)) run_id <- get_active_run_id()
-
-  if (is.null(run_id)) abort("`run_id` must be specified when there is no active run.")
-
-  assert_string(run_id)
-}
-
 new_mlflow_experiment <- function(x) {
   dx <- as_tibble(x)
   class(dx) <- c("mlflow_experiment", class(dx))
@@ -323,16 +237,6 @@ mlflow_id.mlflow_experiment <- function(object) {
   object$experiment_id %||% abort("Cannot extract Experiment ID.")
 }
 
-#' @importFrom rlang is_missing
-resolve_client <- function(client) {
-  if (is_missing(client)) {
-    mlflow_client()
-  } else {
-    if (!inherits(client, "mlflow_client")) abort("`client` must be an `mlflow_client` object.")
-    client
-  }
-}
-
 #' @importFrom rlang is_symbol inject
 is_missing0 <- function (arg, env)  {
   is_symbol(arg) && inject(missing(!!arg), env)
@@ -363,4 +267,18 @@ stop_for_missing_args <- function(...) {
   }
 
   invisible()
+}
+
+assert_mlflow_client <- function(client) {
+  assert_class(client, c("mlflow_http_client", "mlflow_client"))
+}
+
+check_required <- function(arg) {
+  if (missing(arg)) {
+    abort(
+      sprintf(
+        "You must provide a value for `%s`", deparse(substitute(arg))
+      )
+    )
+  }
 }

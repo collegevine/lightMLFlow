@@ -28,7 +28,7 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
   )
 
   by_name <- get_experiment(
-    name = n1
+    experiment_name = n1
   )
 
   expect_identical(

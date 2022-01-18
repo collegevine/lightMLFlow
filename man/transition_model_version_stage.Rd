@@ -2,14 +2,14 @@
 % Please edit documentation in R/registry.R
 \name{transition_model_version_stage}
 \alias{transition_model_version_stage}
-\title{Transition ModelVersion Stage}
+\title{Transition Model Version Stage}
 \usage{
 transition_model_version_stage(
   name,
   version,
   stage,
   archive_existing_versions = FALSE,
-  client
+  client = mlflow_client()
 )
 }
 \arguments{

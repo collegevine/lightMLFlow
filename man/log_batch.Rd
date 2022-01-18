@@ -8,8 +8,8 @@ log_batch(
   metrics = data.frame(),
   params = data.frame(),
   tags = data.frame(),
-  run_id,
-  client
+  run_id = get_active_run_id(),
+  client = mlflow_client()
 )
 }
 \arguments{

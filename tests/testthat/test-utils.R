@@ -1,4 +1,4 @@
-test_that("Runs work", {
+test_that("Utils work", {
   a <- 1
   b <- "c"
   kv <- get_key_value_df(

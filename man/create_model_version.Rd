@@ -4,7 +4,15 @@
 \alias{create_model_version}
 \title{Create a model version}
 \usage{
-create_model_version(name, source, run_id, tags, run_link, description, client)
+create_model_version(
+  name,
+  source,
+  run_id = get_active_run_id(),
+  tags = list(),
+  run_link = "",
+  description = "",
+  client = mlflow_client()
+)
 }
 \arguments{
 \item{name}{Register model under this name.}

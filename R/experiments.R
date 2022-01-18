@@ -3,6 +3,7 @@
 #' Creates an MLflow experiment and returns its id.
 #'
 #' @importFrom purrr is_empty
+#' @importFrom checkmate assert_class assert_list
 #'
 #' @param name The name of the experiment to create.
 #' @param artifact_location Location where all artifacts for this experiment are stored. If
@@ -11,20 +12,16 @@
 #' @param tags Experiment tags to set on the experiment upon experiment creation.
 #'
 #' @export
-create_experiment <- function(name, artifact_location, client, tags) {
+create_experiment <- function(name, artifact_location = "", client = mlflow_client(), tags = list()) {
 
-  if (is_missing(name)) abort("You must specify an experiment name")
+  if (missing(name)) abort("You must specify an experiment name")
 
   assert_string(name)
+  assert_string(artifact_location)
+  assert_mlflow_client(client)
+  assert_list(tags)
 
-  .args <- resolve_args(
-    name = name,
-    client = maybe_missing(client),
-    artifact_location = maybe_missing(artifact_location),
-    tags = maybe_missing(tags)
-  )
-
-  .args$tags <- .args$tags %>%
+  tags <- tags %>%
     imap(~ list(key = .y, value = .x)) %>%
     unname()
 
@@ -32,12 +29,12 @@ create_experiment <- function(name, artifact_location, client, tags) {
     {
       call_mlflow_api(
         "experiments", "create",
-        client = .args$client,
+        client = client,
         verb = "POST",
         data = list(
-          name = .args$name,
-          artifact_location = .args$artifact_location,
-          tags = .args$tags
+          name = name,
+          artifact_location = artifact_location,
+          tags = tags
         )
       )
     },
@@ -46,12 +43,12 @@ create_experiment <- function(name, artifact_location, client, tags) {
         warn(
           sprintf(
             "An experiment named %s already exists.",
-            .args$name
+            name
           )
         )
 
         get_experiment(
-          name = .args$name
+          experiment_name = name
         )
       } else {
         abort(
@@ -76,10 +73,10 @@ create_experiment <- function(name, artifact_location, client, tags) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client) {
+list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
 
-  client <- resolve_client(maybe_missing(client))
   view_type <- match.arg(view_type)
+  assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "experiments", "list",
@@ -123,23 +120,20 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
 #' @param client An MLFlow client. Will be auto-generated if not specified.
 #'
 #' @export
-set_experiment_tag <- function(key, value, experiment_id, client) {
+set_experiment_tag <- function(key, value, experiment_id = get_active_experiment_id(), client = mlflow_client()) {
 
   assert_string(key)
   assert_string(value)
-
-  .args <- resolve_args(
-    client = maybe_missing(client),
-    experiment_id = maybe_missing(experiment_id)
-  )
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
 
   call_mlflow_api(
     "experiments",
     "set-experiment-tag",
-    client = .args$client,
+    client = client,
     verb = "POST",
     data = list(
-      experiment_id = .args$experiment_id,
+      experiment_id = experiment_id,
       key = key,
       value = value
     )
@@ -154,26 +148,25 @@ set_experiment_tag <- function(key, value, experiment_id, client) {
 #' active experiment if both `experiment_id` and `name` are unspecified.
 #'
 #' @param experiment_id ID of the experiment.
-#' @param name The experiment name. Only one of `name` or `experiment_id` should be specified.
+#' @param experiment_name The experiment name. Only one of `name` or `experiment_id` should be specified.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-get_experiment <- function(experiment_id, name, client) {
+get_experiment <- function(experiment_id = get_active_experiment_id(), experiment_name = NULL, client = mlflow_client()) {
 
-  if (!is_missing(name) && !is_missing(experiment_id)) {
+  if (!is.null(experiment_name) && !is.null(experiment_id)) {
     abort("Only one of `name` or `experiment_id` should be specified.")
   }
 
-  if (!is_missing(name))  assert_string(name)
+  assert_string(experiment_id, null.ok = TRUE)
+  assert_string(experiment_name, null.ok = TRUE)
+  assert_mlflow_client(client)
 
-  client <- resolve_client(maybe_missing(client))
-  if (!is_missing(experiment_id)) experiment_id <- resolve_experiment_id(experiment_id)
-
-  response <- if (!is_missing(name)) {
+  response <- if (!is.null(experiment_name)) {
     call_mlflow_api("experiments", "get-by-name",
       client = client,
       query = list(
-        experiment_name = name
+        experiment_name = experiment_name
       )
     )
   } else {
@@ -200,22 +193,23 @@ get_experiment <- function(experiment_id, name, client) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-delete_experiment <- function(experiment_id, client) {
-  .args <- resolve_args(
-    client = maybe_missing(client),
-    experiment_id = maybe_missing(experiment_id)
-  )
+delete_experiment <- function(experiment_id, client = mlflow_client()) {
 
-  if (identical(.args$experiment_id, get_active_experiment_id())) {
+  check_required(experiment_id)
+
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
+
+  if (identical(experiment_id, get_active_experiment_id())) {
     abort("Cannot delete an active experiment.")
   }
 
   call_mlflow_api(
     "experiments", "delete",
     verb = "POST",
-    client = .args$client,
+    client = client,
     data = list(
-      experiment_id = .args$experiment_id
+      experiment_id = experiment_id
     )
   )
 }
@@ -234,19 +228,19 @@ delete_experiment <- function(experiment_id, client) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-restore_experiment <- function(experiment_id, client) {
+restore_experiment <- function(experiment_id, client = mlflow_client()) {
 
-  .args <- resolve_args(
-    client = maybe_missing(client),
-    experiment_id = maybe_missing(experiment_id)
-  )
+  check_required(experiment_id)
+
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
 
   call_mlflow_api(
     "experiments", "restore",
-    client = .args$client,
+    client = client,
     verb = "POST",
     data = list(
-      experiment_id = .args$experiment_id
+      experiment_id = experiment_id
     )
   )
 
@@ -263,71 +257,23 @@ restore_experiment <- function(experiment_id, client) {
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-rename_experiment <- function(new_name, experiment_id, client) {
+rename_experiment <- function(new_name, experiment_id = get_active_experiment_id(), client = mlflow_client()) {
+
+  check_required(new_name)
 
   assert_string(new_name)
-
-  .args <- resolve_args(
-    client = maybe_missing(client),
-    experiment_id = maybe_missing(experiment_id)
-  )
+  assert_string(experiment_id)
+  assert_mlflow_client(client)
 
   call_mlflow_api(
     "experiments", "update",
-    client = .args$client,
+    client = client,
     verb = "POST",
     data = list(
-      experiment_id = .args$experiment_id,
+      experiment_id = experiment_id,
       new_name = new_name
     )
   )
 
   invisible()
-}
-
-#' Set Experiment
-#'
-#' Sets an experiment as the active experiment. Either the name or ID of the experiment can be provided.
-#'   If the a name is provided but the experiment does not exist, this function creates an experiment
-#'   with provided name. Returns the ID of the active experiment.
-#'
-#' @param experiment_name Name of experiment to be activated.
-#' @param experiment_id ID of experiment to be activated.
-#' @param artifact_location Location where all artifacts for this experiment are stored. If
-#'   not provided, the remote server will select an appropriate default.
-#' @export
-set_experiment <- function(experiment_name, experiment_id, artifact_location) {
-
-  if (!is_missing(experiment_name) && !is_missing(experiment_id)) {
-    abort("Only one of `experiment_name` or `experiment_id` should be specified.")
-  }
-
-  if (is_missing(experiment_name) && missing(experiment_id)) {
-    abort("Exactly one of `experiment_name` or `experiment_id` should be specified.")
-  }
-
-  client <- mlflow_client()
-
-  final_experiment_id <- if (!is_missing(experiment_name)) {
-    tryCatch(
-      mlflow_id(get_experiment(client = client, name = assert_string(experiment_name))),
-      error = function(e) {
-        if (grepl(e$message, "Could not find experiment with name")) {
-
-          inform("Experiment `", experiment_name, "` does not exist. Creating a new experiment.")
-          create_experiment(
-            client = client,
-            name = experiment_name,
-            artifact_location = artifact_location
-          )
-        } else {
-          abort(e)
-        }
-      }
-    )
-  } else {
-    assert_string(experiment_id)
-  }
-
-  invisible(set_active_experiment_id(final_experiment_id))
 }
