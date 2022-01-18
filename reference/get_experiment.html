@@ -18,7 +18,7 @@ active experiment if both experiment_id and name are unspecified."><!-- mathjax 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -46,14 +46,18 @@ active experiment if both <code>experiment_id</code> and <code>name</code> are u
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_experiment</span><span class="op">(</span><span class="va">experiment_id</span>, <span class="va">name</span>, <span class="va">client</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_experiment</span><span class="op">(</span>
+  experiment_id <span class="op">=</span> <span class="fu"><a href="get_active_experiment_id.html">get_active_experiment_id</a></span><span class="op">(</span><span class="op">)</span>,
+  experiment_name <span class="op">=</span> <span class="cn">NULL</span>,
+  client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>experiment_id</dt>
 <dd><p>ID of the experiment.</p></dd>
-<dt>name</dt>
+<dt>experiment_name</dt>
 <dd><p>The experiment name. Only one of <code>name</code> or <code>experiment_id</code> should be specified.</p></dd>
 <dt>client</dt>
 <dd><p>An MLFlow client. Defaults to <code>NULL</code> and will be auto-generated.</p></dd>

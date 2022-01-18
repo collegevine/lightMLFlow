@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -47,10 +47,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_artifact</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, <span class="va">filename</span>, <span class="va">run_id</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for default</span>
-<span class="fu">log_artifact</span><span class="op">(</span><span class="va">x</span>, FUN <span class="op">=</span> <span class="va">saveRDS</span>, <span class="va">filename</span>, <span class="va">run_id</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">log_artifact</span><span class="op">(</span><span class="va">x</span>, FUN <span class="op">=</span> <span class="va">saveRDS</span>, <span class="va">filename</span>, run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for ggplot</span>
-<span class="fu">log_artifact</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, <span class="va">filename</span>, <span class="va">run_id</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">log_artifact</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, <span class="va">filename</span>, run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">

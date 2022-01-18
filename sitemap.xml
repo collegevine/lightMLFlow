@@ -145,7 +145,7 @@
     <loc>/reference/search_runs.html</loc>
   </url>
   <url>
-    <loc>/reference/set_experiment.html</loc>
+    <loc>/reference/set_active_experiment_id.html</loc>
   </url>
   <url>
     <loc>/reference/set_experiment_tag.html</loc>

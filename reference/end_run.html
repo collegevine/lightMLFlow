@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -46,9 +46,9 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">end_run</span><span class="op">(</span>
   status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FINISHED"</span>, <span class="st">"FAILED"</span>, <span class="st">"KILLED"</span><span class="op">)</span>,
-  end_time <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">run_id</span>,
-  <span class="va">client</span>
+  end_time <span class="op">=</span> <span class="fu">current_time</span><span class="op">(</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1000</span>,
+  run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>,
+  client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
