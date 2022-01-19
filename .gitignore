@@ -38,6 +38,3 @@ rsconnect/
 
 .DS_Store
 docs
-
-## tests
-tests/testthat/helper.R
