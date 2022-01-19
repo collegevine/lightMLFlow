@@ -51,5 +51,6 @@ Suggests:
     testthat (>= 3.0.0),
     carrier,
     covr,
-    ggplot2
+    ggplot2,
+    secret
 Config/testthat/edition: 3
