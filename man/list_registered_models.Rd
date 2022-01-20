@@ -7,7 +7,8 @@
 list_registered_models(
   max_results = 100,
   page_token = NULL,
-  client = mlflow_client()
+  client = mlflow_client(),
+  parse = FALSE
 )
 }
 \arguments{
@@ -17,6 +18,9 @@ list_registered_models(
 previous query.}
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
+
+\item{parse}{Logical indicating whether to return the \code{registered_models} element
+as a list (FALSE) or tibble (TRUE)}
 }
 \description{
 Retrieves a list of registered models.
