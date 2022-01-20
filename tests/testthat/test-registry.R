@@ -14,7 +14,7 @@ test_that("Model registry works", {
     experiment_name
   )
 
-  all_models <- list_registered_models()
+  all_models <- list_registered_models(parse = FALSE)
 
   all_model_names <- all_models$registered_models %>%
     purrr::transpose() %>%
@@ -24,6 +24,10 @@ test_that("Model registry works", {
   expect_true(
     model$name %in% all_model_names
   )
+
+  all_models <- list_registered_models(parse = TRUE)
+
+  expect_true(is.data.frame(all_models$registered_models))
 
   expect_equal(
     names(get_registered_model(model$name)),
