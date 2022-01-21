@@ -5,13 +5,13 @@
 \title{Get a registered model run id}
 \usage{
 get_registered_model_run_id(
-  experiment_name,
+  model_name,
   client = mlflow_client(),
   stage = "Production"
 )
 }
 \arguments{
-\item{experiment_name}{An experiment name.}
+\item{model_name}{A model name.}
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 

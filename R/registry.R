@@ -202,21 +202,21 @@ list_registered_models <- function(max_results = 100, page_token = NULL, client 
   res
 }
 
-parse_versions <- function(verions) {
-  if(is.null(verions)) {
+parse_versions <- function(versions) {
+  if(is.null(versions)) {
     return(tibble())
   }
   res <- tibble(
-    name = map_chr(verions, "name"),
-    version = map_chr(verions, "version"),
-    creation_timestamp = map_chr(verions, "creation_timestamp") %>% milliseconds_to_datetime(),
-    last_updated_timestamp = map_chr(verions, "last_updated_timestamp") %>% milliseconds_to_datetime(),
-    current_stage = map_chr(verions, "current_stage"),
-    description = map_chr(verions, "description"),
-    source = map_chr(verions, "source"),
-    run_id = map_chr(verions, "run_id"),
-    status = map_chr(verions, "status"),
-    run_link = map_chr(verions, "run_link")
+    name = map_chr(versions, "name"),
+    version = map_chr(versions, "version"),
+    creation_timestamp = map_chr(versions, "creation_timestamp") %>% milliseconds_to_datetime(),
+    last_updated_timestamp = map_chr(versions, "last_updated_timestamp") %>% milliseconds_to_datetime(),
+    current_stage = map_chr(versions, "current_stage"),
+    description = map_chr(versions, "description"),
+    source = map_chr(versions, "source"),
+    run_id = map_chr(versions, "run_id"),
+    status = map_chr(versions, "status"),
+    run_link = map_chr(versions, "run_link")
   )
 }
 
@@ -244,18 +244,18 @@ parse_registered_models <- function(registered_models) {
 
 #' Get a registered model run id
 #'
-#' @param experiment_name An experiment name.
+#' @param model_name A model name.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @param stage A model stage. Set to `NULL` to return all results.
 #' @importFrom purrr pluck
-get_registered_model_run_id <- function(experiment_name, client = mlflow_client(), stage = "Production") {
+get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
 
-  versions <- get_registered_model(name = experiment_name, client = client)
+  versions <- get_registered_model(name = model_name, client = client)
   latest_versions <- versions %>% pluck("latest_versions")
 
   if(is.null(latest_versions)) {
     abort(
-      sprintf("No registered models for %s.", experiment_name)
+      sprintf("No registered models for %s.", model_name)
     )
   }
 
