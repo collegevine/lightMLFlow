@@ -172,8 +172,10 @@ delete_registered_model <- function(name, client = mlflow_client()) {
 #' @param page_token Pagination token to go to the next page based on a
 #'   previous query.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#' @param parse Logical indicating whether to return the `registered_models` element
+#' as a list (FALSE) or tibble (TRUE)
 #' @export
-list_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client()) {
+list_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client(), parse = FALSE) {
 
   assert_integerish(max_results)
   assert_mlflow_client(client)
@@ -189,12 +191,53 @@ list_registered_models <- function(max_results = 100, page_token = NULL, client 
     )
   )
 
-  return(
-    list(
-      registered_models = response$registered_model,
-      next_page_token = response$next_page_token
-    )
+  res <- list(
+    registered_models = response$registered_model,
+    next_page_token = response$next_page_token
   )
+  if(isFALSE(parse)) {
+    return(res)
+  }
+  res$registered_models <- parse_registered_models(res$registered_models)
+  res
+}
+
+#' @importFrom purrr transpose
+parse_registered_models <- function(registered_models) {
+
+  registered_models_t <- transpose(registered_models)
+  ul <- function(x) unlist(registered_models_t[[x]])
+  parent <- tibble(
+    name = ul("name"),
+    creation_timestamp = ul("creation_timestamp") %>% milliseconds_to_datetime(),
+    last_updated_timestamp = ul("last_updated_timestamp") %>% milliseconds_to_datetime()
+  )
+  versions <- map(registered_models, "latest_versions")
+
+  parse_versions <- function(v) {
+    if(is.null(v)) {
+      return(tibble())
+    }
+    res <- tibble(
+      name = map_chr(v, "name"),
+      version = map_chr(v, "version"),
+      creation_timestamp = map_chr(v, "creation_timestamp") %>% milliseconds_to_datetime(),
+      last_updated_timestamp = map_chr(v, "last_updated_timestamp") %>% milliseconds_to_datetime(),
+      current_stage = map_chr(v, "current_stage"),
+      description = map_chr(v, "description"),
+      source = map_chr(v, "source"),
+      run_id = map_chr(v, "run_id"),
+      status = map_chr(v, "status"),
+      run_link = map_chr(v, "run_link")
+    )
+  }
+  parsed_versions <- versions %>% map(parse_versions)
+
+  cbind(
+    parent,
+    tibble(latest_versions = parsed_versions)
+  ) %>%
+    as_tibble()
 }
 
 #' Get latest model versions
