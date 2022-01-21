@@ -202,6 +202,24 @@ list_registered_models <- function(max_results = 100, page_token = NULL, client 
   res
 }
 
+parse_versions <- function(versions) {
+  if(is.null(versions)) {
+    return(tibble())
+  }
+  res <- tibble(
+    name = map_chr(versions, "name"),
+    version = map_chr(versions, "version"),
+    creation_timestamp = map_chr(versions, "creation_timestamp") %>% milliseconds_to_datetime(),
+    last_updated_timestamp = map_chr(versions, "last_updated_timestamp") %>% milliseconds_to_datetime(),
+    current_stage = map_chr(versions, "current_stage"),
+    description = map_chr(versions, "description"),
+    source = map_chr(versions, "source"),
+    run_id = map_chr(versions, "run_id"),
+    status = map_chr(versions, "status"),
+    run_link = map_chr(versions, "run_link")
+  )
+}
+
 #' @importFrom purrr transpose
 parse_registered_models <- function(registered_models) {
 
@@ -214,23 +232,6 @@ parse_registered_models <- function(registered_models) {
   )
   versions <- map(registered_models, "latest_versions")
 
-  parse_versions <- function(v) {
-    if(is.null(v)) {
-      return(tibble())
-    }
-    res <- tibble(
-      name = map_chr(v, "name"),
-      version = map_chr(v, "version"),
-      creation_timestamp = map_chr(v, "creation_timestamp") %>% milliseconds_to_datetime(),
-      last_updated_timestamp = map_chr(v, "last_updated_timestamp") %>% milliseconds_to_datetime(),
-      current_stage = map_chr(v, "current_stage"),
-      description = map_chr(v, "description"),
-      source = map_chr(v, "source"),
-      run_id = map_chr(v, "run_id"),
-      status = map_chr(v, "status"),
-      run_link = map_chr(v, "run_link")
-    )
-  }
   parsed_versions <- versions %>% map(parse_versions)
 
   cbind(
@@ -238,6 +239,48 @@ parse_registered_models <- function(registered_models) {
     tibble(latest_versions = parsed_versions)
   ) %>%
     as_tibble()
+}
+
+validate_mlflow_stage <- function(stage = c("Production", "Staging", "Archived"), ...) {
+  match.arg(stage, ...)
+}
+
+#' Get a registered model run id
+#'
+#' @param model_name A model name.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
+#' @param stage A model stage. Set to `NULL` or `NA` to return all results.
+#' @importFrom purrr pluck
+get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
+
+  versions <- get_registered_model(name = model_name, client = client)
+  latest_versions <- versions %>% pluck("latest_versions")
+
+  if(is.null(latest_versions)) {
+    abort(
+      sprintf("No registered models for %s.", model_name)
+    )
+  }
+
+  parsed_versions <- latest_versions %>% parse_versions()
+  if(isFALSE(is.null(stage)) || isFALSE(is.na(stage))) {
+    validate_mlflow_stage(stage)
+    parsed_versions <- parsed_versions[parsed_versions$current_stage == stage, ]
+  }
+
+  n_versions <- nrow(parsed_versions)
+  if(n_versions > 1) {
+    warn(
+      sprintf("Returning more than 1 `run_id` (%s).", n_versions)
+    )
+  }
+
+  if(n_versions == 0) {
+    abort(
+      sprintf('No registered models found for `stage = "%s".', stage)
+    )
+  }
+  parsed_versions$run_id
 }
 
 #' Get latest model versions

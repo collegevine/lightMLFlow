@@ -1,14 +1,26 @@
 test_that("Runs work", {
+  experiment_name <- paste0(
+    "integration-test-",
+    get_timestamp()
+  )
+
   run_test_experiment <- create_experiment(
-    paste0(
-      "integration-test-",
-      get_timestamp()
-    )
+    experiment_name
   )
 
   start_run(experiment_id = run_test_experiment)
 
   model <- lm(pressure ~ temperature, data = pressure)
+
+  ## Need both of these for a model that get_registered_model_run_id will detect.
+  create_registered_model(
+    experiment_name
+  )
+
+  create_model_version(
+    experiment_name,
+    source = Sys.getenv("S3_URI")
+  )
 
   log_artifact(
     x = model,
@@ -86,6 +98,35 @@ test_that("Runs work", {
   )
 
   r <- get_run()
+
+  expect_equal(
+    get_registered_model_run_id(experiment_name, stage = NULL),
+    r$run_id
+  )
+
+  transition_model_version_stage(
+    experiment_name,
+    version = "1",
+    stage = "Staging"
+  )
+
+  expect_equal(
+    get_registered_model_run_id(experiment_name, stage = "Staging"),
+    r$run_id
+  )
+
+  ## shouldn't be able to pass more than 1 stage into the function
+  expect_error(
+    get_registered_model_run_id(experiment_name, stage = c("Production", "Staging"))
+  )
+
+  expect_error(
+    transition_model_version_stage(
+      experiment_name,
+      version = "1",
+      stage = "bad"
+    )
+  )
 
   expect_equal(
     length(r$params[[1]]),
