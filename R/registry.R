@@ -251,6 +251,7 @@ validate_mlflow_stage <- function(stage = c("Production", "Staging", "Archived")
 #' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @param stage A model stage. Set to `NULL` or `NA` to return all results.
 #' @importFrom purrr pluck
+#' @export
 get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
 
   versions <- get_registered_model(name = model_name, client = client)
