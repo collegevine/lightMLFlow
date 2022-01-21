@@ -241,12 +241,15 @@ parse_registered_models <- function(registered_models) {
     as_tibble()
 }
 
+validate_mlflow_stage <- function(stage = c("Production", "Staging", "Archived"), ...) {
+  match.arg(stage, ...)
+}
 
 #' Get a registered model run id
 #'
 #' @param model_name A model name.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
-#' @param stage A model stage. Set to `NULL` to return all results.
+#' @param stage A model stage. Set to `NULL` or `NA` to return all results.
 #' @importFrom purrr pluck
 get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
 
@@ -260,11 +263,8 @@ get_registered_model_run_id <- function(model_name, client = mlflow_client(), st
   }
 
   parsed_versions <- latest_versions %>% parse_versions()
-  if(isFALSE(is.null(stage))) {
-    stopifnot(
-      is.character(stage),
-      length(stage) == 1
-    )
+  if(isFALSE(is.null(stage)) || isFALSE(is.na(stage))) {
+    validate_mlflow_stage(stage)
     parsed_versions <- parsed_versions[parsed_versions$current_stage == stage, ]
   }
 

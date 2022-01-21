@@ -15,7 +15,7 @@ get_registered_model_run_id(
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 
-\item{stage}{A model stage. Set to \code{NULL} to return all results.}
+\item{stage}{A model stage. Set to \code{NULL} or \code{NA} to return all results.}
 }
 \description{
 Get a registered model run id
