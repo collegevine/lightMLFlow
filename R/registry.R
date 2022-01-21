@@ -202,6 +202,24 @@ list_registered_models <- function(max_results = 100, page_token = NULL, client 
   res
 }
 
+parse_versions <- function(verions) {
+  if(is.null(verions)) {
+    return(tibble())
+  }
+  res <- tibble(
+    name = map_chr(verions, "name"),
+    version = map_chr(verions, "version"),
+    creation_timestamp = map_chr(verions, "creation_timestamp") %>% milliseconds_to_datetime(),
+    last_updated_timestamp = map_chr(verions, "last_updated_timestamp") %>% milliseconds_to_datetime(),
+    current_stage = map_chr(verions, "current_stage"),
+    description = map_chr(verions, "description"),
+    source = map_chr(verions, "source"),
+    run_id = map_chr(verions, "run_id"),
+    status = map_chr(verions, "status"),
+    run_link = map_chr(verions, "run_link")
+  )
+}
+
 #' @importFrom purrr transpose
 parse_registered_models <- function(registered_models) {
 
@@ -214,23 +232,6 @@ parse_registered_models <- function(registered_models) {
   )
   versions <- map(registered_models, "latest_versions")
 
-  parse_versions <- function(v) {
-    if(is.null(v)) {
-      return(tibble())
-    }
-    res <- tibble(
-      name = map_chr(v, "name"),
-      version = map_chr(v, "version"),
-      creation_timestamp = map_chr(v, "creation_timestamp") %>% milliseconds_to_datetime(),
-      last_updated_timestamp = map_chr(v, "last_updated_timestamp") %>% milliseconds_to_datetime(),
-      current_stage = map_chr(v, "current_stage"),
-      description = map_chr(v, "description"),
-      source = map_chr(v, "source"),
-      run_id = map_chr(v, "run_id"),
-      status = map_chr(v, "status"),
-      run_link = map_chr(v, "run_link")
-    )
-  }
   parsed_versions <- versions %>% map(parse_versions)
 
   cbind(
@@ -238,6 +239,41 @@ parse_registered_models <- function(registered_models) {
     tibble(latest_versions = parsed_versions)
   ) %>%
     as_tibble()
+}
+
+
+#' Get a registered model run id
+#'
+#' @param experiment_name An experiment name.
+#' @param stage A model stage. If not provided, all `stages` are considered.
+#' @importFrom purrr pluck
+get_registered_model_run_id <- function(experiment_name, stage = "Production") {
+
+  versions <- get_registered_model(experiment_name)
+  latest_versions <- versions %>% pluck("latest_versions")
+
+  if(is.null(latest_versions)) {
+    abort(
+      sprintf("No registered models for %s.", experiment_name)
+    )
+  }
+
+  parsed_versions <- latest_versions %>% parse_versions()
+  if(isFALSE(missing(stage))) {
+    stopifnot(
+      is.character(stage),
+      length(stage) == 1
+    )
+    parsed_versions <- parsed_versions[parsed_versions$current_stage == stage, ]
+  }
+
+  n_versions <- nrow(parsed_versions)
+  if(n_versions > 1) {
+    warn(
+      sprintf("Returning more than 1 `run_id` (%s).", n_versions)
+    )
+  }
+  parsed_versions$run_id
 }
 
 #' Get latest model versions
