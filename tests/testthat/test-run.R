@@ -115,6 +115,19 @@ test_that("Runs work", {
     r$run_id
   )
 
+  ## shouldn't be able to pass more than 1 stage into the function
+  expect_error(
+    get_registered_model_run_id(experiment_name, stage = c("Production", "Staging"))
+  )
+
+  expect_error(
+    transition_model_version_stage(
+      experiment_name,
+      version = "1",
+      stage = "bad"
+    )
+  )
+
   expect_equal(
     length(r$params[[1]]),
     4
