@@ -245,11 +245,12 @@ parse_registered_models <- function(registered_models) {
 #' Get a registered model run id
 #'
 #' @param experiment_name An experiment name.
+#' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @param stage A model stage. If not provided, all `stages` are considered.
 #' @importFrom purrr pluck
-get_registered_model_run_id <- function(experiment_name, stage = "Production") {
+get_registered_model_run_id <- function(experiment_name, client = mlflow_client(), stage = "Production") {
 
-  versions <- get_registered_model(experiment_name)
+  versions <- get_registered_model(name = experiment_name, client = client)
   latest_versions <- versions %>% pluck("latest_versions")
 
   if(is.null(latest_versions)) {
