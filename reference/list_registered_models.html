@@ -47,7 +47,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">list_registered_models</span><span class="op">(</span>
   max_results <span class="op">=</span> <span class="fl">100</span>,
   page_token <span class="op">=</span> <span class="cn">NULL</span>,
-  client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>
+  client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>,
+  parse <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -60,6 +61,9 @@
 previous query.</p></dd>
 <dt>client</dt>
 <dd><p>An MLFlow client. Will be auto-generated if omitted.</p></dd>
+<dt>parse</dt>
+<dd><p>Logical indicating whether to return the <code>registered_models</code> element
+as a list (FALSE) or tibble (TRUE)</p></dd>
 </dl></div>
 
   </div>
