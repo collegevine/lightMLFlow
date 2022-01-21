@@ -8,7 +8,7 @@ test_that("Model registry works", {
     experiment_name
   )
 
-  r <- start_run(experiment_id = run_test_experiment)
+  start_run(experiment_id = run_test_experiment)
 
   model <- create_registered_model(
     experiment_name
