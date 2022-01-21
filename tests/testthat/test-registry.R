@@ -8,7 +8,7 @@ test_that("Model registry works", {
     experiment_name
   )
 
-  start_run(experiment_id = run_test_experiment)
+  r <- start_run(experiment_id = run_test_experiment)
 
   model <- create_registered_model(
     experiment_name
@@ -32,6 +32,11 @@ test_that("Model registry works", {
   expect_equal(
     names(get_registered_model(model$name)),
     c("name", "creation_timestamp", "last_updated_timestamp")
+  )
+
+  expect_equal(
+    get_registered_model_run_id(model$name),
+    r$run_id
   )
 
   new_name <- paste0(experiment_name, "2")
