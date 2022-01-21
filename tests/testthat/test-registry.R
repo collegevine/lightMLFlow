@@ -34,11 +34,6 @@ test_that("Model registry works", {
     c("name", "creation_timestamp", "last_updated_timestamp")
   )
 
-  expect_equal(
-    get_registered_model_run_id(model$name),
-    r$run_id
-  )
-
   new_name <- paste0(experiment_name, "2")
   rename_registered_model(
     experiment_name,
