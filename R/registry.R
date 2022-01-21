@@ -246,7 +246,7 @@ parse_registered_models <- function(registered_models) {
 #'
 #' @param experiment_name An experiment name.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
-#' @param stage A model stage. If not provided, all `stages` are considered.
+#' @param stage A model stage. Set to `NULL` to return all results.
 #' @importFrom purrr pluck
 get_registered_model_run_id <- function(experiment_name, client = mlflow_client(), stage = "Production") {
 
@@ -260,7 +260,7 @@ get_registered_model_run_id <- function(experiment_name, client = mlflow_client(
   }
 
   parsed_versions <- latest_versions %>% parse_versions()
-  if(isFALSE(missing(stage))) {
+  if(isFALSE(is.null(stage))) {
     stopifnot(
       is.character(stage),
       length(stage) == 1
@@ -272,6 +272,12 @@ get_registered_model_run_id <- function(experiment_name, client = mlflow_client(
   if(n_versions > 1) {
     warn(
       sprintf("Returning more than 1 `run_id` (%s).", n_versions)
+    )
+  }
+
+  if(n_versions == 0) {
+    abort(
+      sprintf('No registered models found for `stage = "%s".', stage)
     )
   }
   parsed_versions$run_id
