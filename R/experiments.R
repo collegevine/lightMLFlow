@@ -155,7 +155,7 @@ set_experiment_tag <- function(key, value, experiment_id = get_active_experiment
 get_experiment <- function(experiment_id = get_active_experiment_id(), experiment_name = NULL, client = mlflow_client()) {
 
   if (!is.null(experiment_name) && !is.null(experiment_id)) {
-    abort("Only one of `name` or `experiment_id` should be specified.")
+    abort("Only one of `experiment_name` or `experiment_id` should be specified.")
   }
 
   assert_string(experiment_id, null.ok = TRUE)
