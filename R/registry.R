@@ -290,7 +290,7 @@ get_registered_model_run <- function(model_name, client = mlflow_client(), stage
 #' @seealso get_registered_model_run
 #' @export
 get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
-  run <- get_registered_model_run(
+  get_registered_model_run(
     model_name = model_name,
     client = client,
     stage = stage
