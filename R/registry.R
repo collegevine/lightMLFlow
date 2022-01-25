@@ -245,14 +245,14 @@ validate_mlflow_stage <- function(stage = c("Production", "Staging", "Archived")
   match.arg(stage, ...)
 }
 
-#' Get a registered model run id
+#' Get a registered model run
 #'
 #' @param model_name A model name.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @param stage A model stage. Set to `NULL` or `NA` to return all results.
 #' @importFrom purrr pluck
 #' @export
-get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
+get_registered_model_run <- function(model_name, client = mlflow_client(), stage = "Production") {
 
   versions <- get_registered_model(name = model_name, client = client)
   latest_versions <- versions %>% pluck("latest_versions")
@@ -281,7 +281,20 @@ get_registered_model_run_id <- function(model_name, client = mlflow_client(), st
       sprintf('No registered models found for `stage = "%s".', stage)
     )
   }
-  parsed_versions$run_id
+  parsed_versions
+}
+
+#' Get a registered model run id
+#'
+#' @inheritParams get_registered_model_run
+#' @seealso get_registered_model_run
+#' @export
+get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
+  run <- get_registered_model_run(
+    model_name = model_name,
+    client = client,
+    stage = stage
+  )$run_id
 }
 
 #' Get latest model versions
