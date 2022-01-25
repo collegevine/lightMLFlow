@@ -17,7 +17,7 @@ create_experiment(
 \item{artifact_location}{Location where all artifacts for this experiment are stored. If
 not provided, the remote server will select an appropriate default.}
 
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
+\item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 
 \item{tags}{Experiment tags to set on the experiment upon experiment creation.}
 }

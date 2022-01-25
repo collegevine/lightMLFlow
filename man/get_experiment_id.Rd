@@ -7,9 +7,9 @@
 get_experiment_id(experiment_name, client = mlflow_client())
 }
 \arguments{
-\item{experiment_name}{The experiment name.}
+\item{experiment_name}{The experiment name. This field is required.}
 
-\item{client}{An MLFlow client.}
+\item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
 \description{
 Makes a call to \code{get_experiment} and returns just the ID.
