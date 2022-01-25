@@ -9,7 +9,7 @@ delete_experiment(experiment_id, client = mlflow_client())
 \arguments{
 \item{experiment_id}{ID of the associated experiment. This field is required.}
 
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
+\item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
 \description{
 Marks an experiment and associated runs, params, metrics, etc. for deletion. If the

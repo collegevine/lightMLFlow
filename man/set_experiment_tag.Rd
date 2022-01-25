@@ -20,7 +20,7 @@ guaranteed to support key values up to 5000 bytes in size. This field is require
 
 \item{experiment_id}{ID of the experiment.}
 
-\item{client}{An MLFlow client. Will be auto-generated if not specified.}
+\item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
 \description{
 Sets a tag on an experiment with the specified ID. Tags are experiment metadata that can be updated.

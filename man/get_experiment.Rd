@@ -13,11 +13,11 @@ get_experiment(
 \arguments{
 \item{experiment_id}{ID of the experiment.}
 
-\item{experiment_name}{The experiment name. Only one of \code{name} or \code{experiment_id} should be specified.}
+\item{experiment_name}{The experiment name. Only one of \code{experiment_name} or \code{experiment_id} should be specified.}
 
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
+\item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
 \description{
 Gets metadata for an experiment and a list of runs for the experiment. Attempts to obtain the
-active experiment if both \code{experiment_id} and \code{name} are unspecified.
+active experiment if both \code{experiment_id} and \code{experiment_name} are unspecified.
 }

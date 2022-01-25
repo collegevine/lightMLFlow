@@ -8,7 +8,7 @@
 #' @param name The name of the experiment to create.
 #' @param artifact_location Location where all artifacts for this experiment are stored. If
 #'   not provided, the remote server will select an appropriate default.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @param client An MLFlow client. If not provided, the client is sourced from the `MLFLOW_TRACKING_URI` environment variable.
 #' @param tags Experiment tags to set on the experiment upon experiment creation.
 #'
 #' @export
@@ -70,7 +70,7 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
 #' @importFrom tibble as_tibble
 #'
 #' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @inheritParams create_experiment
 #'
 #' @export
 list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
@@ -117,7 +117,7 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
 #' @param value String value of the tag being logged. All storage backends are
 #'   guaranteed to support key values up to 5000 bytes in size. This field is required.
 #' @param experiment_id ID of the experiment.
-#' @param client An MLFlow client. Will be auto-generated if not specified.
+#' @inheritParams create_experiment
 #'
 #' @export
 set_experiment_tag <- function(key, value, experiment_id = get_active_experiment_id(), client = mlflow_client()) {
@@ -145,11 +145,11 @@ set_experiment_tag <- function(key, value, experiment_id = get_active_experiment
 #' Get Experiment
 #'
 #' Gets metadata for an experiment and a list of runs for the experiment. Attempts to obtain the
-#' active experiment if both `experiment_id` and `name` are unspecified.
+#' active experiment if both `experiment_id` and `experiment_name` are unspecified.
 #'
 #' @param experiment_id ID of the experiment.
-#' @param experiment_name The experiment name. Only one of `name` or `experiment_id` should be specified.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @param experiment_name The experiment name. Only one of `experiment_name` or `experiment_id` should be specified.
+#' @inheritParams create_experiment
 #'
 #' @export
 get_experiment <- function(experiment_id = get_active_experiment_id(), experiment_name = NULL, client = mlflow_client()) {
@@ -184,13 +184,28 @@ get_experiment <- function(experiment_id = get_active_experiment_id(), experimen
     new_mlflow_experiment()
 }
 
+#' Get Experiment ID
+#'
+#' Makes a call to `get_experiment` and returns just the ID.
+#'
+#' @param experiment_name The experiment name. This field is required.
+#' @inheritParams create_experiment
+#'
+#' @export
+get_experiment_id <- function(experiment_name, client = mlflow_client()) {
+  get_experiment(
+    experiment_name = experiment_name,
+    client = client
+  )$experiment_id
+}
+
 #' Delete Experiment
 #'
 #' Marks an experiment and associated runs, params, metrics, etc. for deletion. If the
 #'   experiment uses FileStore, artifacts associated with experiment are also deleted.
 #'
 #' @param experiment_id ID of the associated experiment. This field is required.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @inheritParams create_experiment
 #'
 #' @export
 delete_experiment <- function(experiment_id, client = mlflow_client()) {
@@ -224,8 +239,7 @@ delete_experiment <- function(experiment_id, client = mlflow_client()) {
 #'
 #' Throws `RESOURCE_DOES_NOT_EXIST` if the experiment was never created or was permanently deleted.
 #'
-#' @param experiment_id ID of the associated experiment. This field is required.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @inheritParams delete_experiment
 #'
 #' @export
 restore_experiment <- function(experiment_id, client = mlflow_client()) {
@@ -251,10 +265,8 @@ restore_experiment <- function(experiment_id, client = mlflow_client()) {
 #'
 #' Renames an experiment.
 #'
-
-#' @param experiment_id ID of the associated experiment. This field is required.
 #' @param new_name The experiment's name will be changed to this. The new name must be unique.
-#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @inheritParams delete_experiment
 #'
 #' @export
 rename_experiment <- function(new_name, experiment_id = get_active_experiment_id(), client = mlflow_client()) {

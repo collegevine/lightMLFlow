@@ -12,7 +12,7 @@ list_experiments(
 \arguments{
 \item{view_type}{Qualifier for type of experiments to be returned. Defaults to \code{ACTIVE_ONLY}.}
 
-\item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
+\item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
 \description{
 Gets a list of all experiments.
