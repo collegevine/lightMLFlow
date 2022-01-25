@@ -184,6 +184,21 @@ get_experiment <- function(experiment_id = get_active_experiment_id(), experimen
     new_mlflow_experiment()
 }
 
+#' Get Experiment ID
+#'
+#' Makes a call to `get_experiment` and returns just the ID.
+#'
+#' @param experiment_name The experiment name.
+#' @param client An MLFlow client.
+#'
+#' @export
+get_experiment_id <- function(experiment_name, client = mlflow_client()) {
+  get_experiment(
+    experiment_name = experiment_name,
+    client = client
+  )$experiment_id
+}
+
 #' Delete Experiment
 #'
 #' Marks an experiment and associated runs, params, metrics, etc. for deletion. If the
