@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@
 <dd><p>Location where all artifacts for this experiment are stored. If
 not provided, the remote server will select an appropriate default.</p></dd>
 <dt>client</dt>
-<dd><p>An MLFlow client. Defaults to <code>NULL</code> and will be auto-generated.</p></dd>
+<dd><p>An MLFlow client. If not provided, the client is sourced from the <code>MLFLOW_TRACKING_URI</code> environment variable.</p></dd>
 <dt>tags</dt>
 <dd><p>Experiment tags to set on the experiment upon experiment creation.</p></dd>
 </dl></div>
