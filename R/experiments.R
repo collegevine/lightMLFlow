@@ -155,7 +155,7 @@ set_experiment_tag <- function(key, value, experiment_id = get_active_experiment
 get_experiment <- function(experiment_id = get_active_experiment_id(), experiment_name = NULL, client = mlflow_client()) {
 
   if (!is.null(experiment_name) && !is.null(experiment_id)) {
-    abort("Only one of `experiment_name` or `experiment_id` should be specified.")
+    warn("Both `experiment_name` and `experiment_id` were specified. This usually happens when you call `get_experiment` with an experiment name from inside of a run. Falling back on the supplied `experiment_name`.")
   }
 
   assert_string(experiment_id, null.ok = TRUE)
