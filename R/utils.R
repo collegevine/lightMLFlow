@@ -78,6 +78,12 @@ with.mlflow_run <- function(data, expr, ...) {
       end_run()
     },
     error = function(cnd) {
+      log_artifact(
+        cnd,
+        FUN = writeLines,
+        filename = "error.txt",
+        run_i = run_id
+      )
       end_run(status = "FAILED")
       abort(cnd$message)
     },
