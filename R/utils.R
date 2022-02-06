@@ -90,7 +90,7 @@ with.mlflow_run <- function(data, expr, ...) {
         error,
         FUN = writeLines,
         filename = "error.txt",
-        run_i = run_id
+        run_id = run_id
       )
       end_run(status = "FAILED")
       abort(cnd$message)
