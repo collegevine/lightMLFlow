@@ -1,6 +1,6 @@
 Package: lightMLFlow
 Title: A lightweight R wrapper for the MLFlow REST API
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: 
     person(given = "Matt",
            family = "Kaye",
