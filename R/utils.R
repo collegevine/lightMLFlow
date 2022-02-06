@@ -81,7 +81,7 @@ with.mlflow_run <- function(data, expr, ...) {
     },
     error = function(cnd) {
       error <- sprintf(
-        "Call: %s\n\nError: %s",
+        "**Call**\n```\n%s\n```\n\n**Error**\n```\n%s\n```",
         expr_deparse(cnd$call),
         cnd$message
       )
@@ -89,7 +89,7 @@ with.mlflow_run <- function(data, expr, ...) {
       log_artifact(
         error,
         FUN = writeLines,
-        filename = "error.txt",
+        filename = "error.md",
         run_id = run_id
       )
       end_run(status = "FAILED")
