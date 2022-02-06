@@ -50,6 +50,8 @@ infer_experiment_id <- function() {
 #'
 #' Adds some error handling on exit
 #'
+#' @importFrom rlang expr_deparse
+#'
 #' @param data data to use for constructing an environment. For the default with method this may be an environment, a list, a data frame, or an integer as in sys.call. For within, it can be a list or a data frame.
 #' @param expr expression to evaluate; particularly for within() often a “compound” expression, i.e., of the form
 #'
@@ -78,6 +80,18 @@ with.mlflow_run <- function(data, expr, ...) {
       end_run()
     },
     error = function(cnd) {
+      error <- sprintf(
+        "**Call**\n```\n%s\n```\n\n**Error**\n```\n%s\n```",
+        expr_deparse(cnd$call),
+        cnd$message
+      )
+
+      log_artifact(
+        error,
+        FUN = writeLines,
+        filename = "error.md",
+        run_id = run_id
+      )
       end_run(status = "FAILED")
       abort(cnd$message)
     },
