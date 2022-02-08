@@ -295,6 +295,8 @@ rename_experiment <- function(new_name, experiment_id = get_active_experiment_id
 #' We create `NODELETE` tags for experiments that we, uh, don't want to delete.
 #' `NODELETE` tags will only be set in either non-interactive sessions or by explicit request.
 #'
+#' @importFrom utils askYesNo
+#'
 #' @param experiment_id The experiment ID for which to set the NODELETE tag
 #'
 #' @return No return value. Called for side effects.
