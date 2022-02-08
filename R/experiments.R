@@ -289,3 +289,33 @@ rename_experiment <- function(new_name, experiment_id = get_active_experiment_id
 
   invisible()
 }
+
+#' Create a NODELETE tag for an experiment
+#'
+#' We create `NODELETE` tags for experiments that we, uh, don't want to delete.
+#' `NODELETE` tags will only be set in either non-interactive sessions or by explicit request.
+#'
+#' @importFrom utils askYesNo
+#'
+#' @param experiment_id The experiment ID for which to set the NODELETE tag
+#'
+#' @return No return value. Called for side effects.
+#' @export
+create_nodelete_tag <- function(experiment_id) {
+  if (!interactive() || isTRUE(askYesNo("Create NODELETE tag?"))) {
+    inform(
+      sprintf(
+        "Creating a NODELETE tag for %s.",
+        experiment_id
+      )
+    )
+
+    set_experiment_tag(
+      key = "NODELETE",
+      value = "true",
+      experiment_id = experiment_id
+    )
+  }
+
+  invisible()
+}
