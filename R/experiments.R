@@ -308,14 +308,12 @@ create_nodelete_tag <- function(experiment_id) {
       )
     )
 
-    if (FALSE) {
-      set_experiment_tag(
-        key = "NODELETE",
-        value = "true",
-        experiment_id = experiment_id
-      )
-    }
+    set_experiment_tag(
+      key = "NODELETE",
+      value = "true",
+      experiment_id = experiment_id
+    )
   }
 
-  get_experiment()
+  invisible()
 }
