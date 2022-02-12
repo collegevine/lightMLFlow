@@ -319,3 +319,26 @@ create_nodelete_tag <- function(experiment_id) {
 
   invisible()
 }
+
+#' List experiments without `NODELETE` tags
+#'
+#' @importFrom purrr map_lgl walk
+#'
+#' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
+#' @param client an MLFlow client
+#'
+#' @return A character vector of experiment IDs without `NODELETE` flags
+#' @export
+list_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+  all_experiments <- list_experiments(
+    view_type = view_type,
+    client = client
+  )
+
+  without_nodelete <- map_lgl(
+    all_experiments$tags,
+    ~ !("NODELETE" %in% names(unlist(.x))) ||  unlist(.x)[["NODELETE"]] != "true"
+  )
+
+  all_experiments$experiment_id[without_nodelete]
+}
