@@ -754,13 +754,11 @@ start_run <- function(run_id = Sys.getenv("MLFLOW_RUN_ID"), experiment_id = get_
   assert_string(experiment_id)
   assert_mlflow_client(client)
 
-  active_run_id <- get_active_run_id()
-
-  if (!is.null(active_run_id) && !nested) {
+  if (exists_active_run() && !nested) {
     abort(
       paste(
         "Run with id",
-        active_run_id,
+        get_active_run_id(),
         "is already active. To start a nested run, Call `start_run()` with `nested = TRUE`."
       )
     )
@@ -800,11 +798,10 @@ get_run_context.default <- function(client, experiment_id, ...) {
   tags[[MLFLOW_TAGS$MLFLOW_SOURCE_NAME]] <- get_source_name()
   tags[[MLFLOW_TAGS$MLFLOW_SOURCE_VERSION]] <- get_source_version()
   tags[[MLFLOW_TAGS$MLFLOW_SOURCE_TYPE]] <- MLFLOW_SOURCE_TYPE$LOCAL
-  parent_run_id <- get_active_run_id()
-  if (!is.null(parent_run_id)) {
+  if (exists_active_run()) {
     # create a tag containing the parent run ID so that MLflow UI can display
     # nested runs properly
-    tags[[MLFLOW_TAGS$MLFLOW_PARENT_run_id]] <- parent_run_id
+    tags[[MLFLOW_TAGS$MLFLOW_PARENT_run_id]] <- get_active_run_id()
   }
   list(
     client = client,
