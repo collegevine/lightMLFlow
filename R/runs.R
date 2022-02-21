@@ -127,7 +127,7 @@ delete_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
   assert_string(run_id)
   assert_mlflow_client(client)
 
-  if (identical(run_id, get_active_run_id())) {
+  if (exists_active_run() && identical(run_id, get_active_run_id())) {
     abort("Cannot delete an active run.")
   }
 
@@ -798,6 +798,7 @@ get_run_context.default <- function(client, experiment_id, ...) {
   tags[[MLFLOW_TAGS$MLFLOW_SOURCE_NAME]] <- get_source_name()
   tags[[MLFLOW_TAGS$MLFLOW_SOURCE_VERSION]] <- get_source_version()
   tags[[MLFLOW_TAGS$MLFLOW_SOURCE_TYPE]] <- MLFLOW_SOURCE_TYPE$LOCAL
+
   if (exists_active_run()) {
     # create a tag containing the parent run ID so that MLflow UI can display
     # nested runs properly
@@ -838,7 +839,7 @@ end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), end_time = curre
     end_time = end_time
   )
 
-  if (identical(run_id, get_active_run_id())) pop_active_run_id()
+  if (exists_active_run() && identical(run_id, get_active_run_id())) pop_active_run_id()
 
   run
 }

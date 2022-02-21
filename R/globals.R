@@ -33,7 +33,7 @@ exists_active_run <- function() {
       get_active_run_id()
       return(TRUE)
     },
-    error = function(e) {return(FALSE)}
+    error = function(e) return(FALSE)
   )
 }
 

@@ -27,7 +27,11 @@ get_source_version <- function() {
 }
 
 get_active_run_id_or_start_run <- function() {
-  get_active_run_id() %||% mlflow_id(start_run())
+  if (exists_active_run()) {
+    get_active_run_id()
+  } else {
+    mlflow_id(start_run())
+  }
 }
 
 
@@ -70,7 +74,7 @@ infer_experiment_id <- function() {
 #' @export
 with.mlflow_run <- function(data, expr, ...) {
   run_id <- mlflow_id(data)
-  if (!identical(run_id, get_active_run_id())) {
+  if (exists_active_run() && !identical(run_id, get_active_run_id())) {
     abort("`with()` should only be used with `start_run()`.")
   }
 
