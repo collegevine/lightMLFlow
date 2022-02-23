@@ -610,6 +610,7 @@ get_experiment_from_run <- function(run_id) {
 #' @param FUN the function to use to save the artifact
 #' @param filename the name of the file to save
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
+#' @param client An MLFlow client. Auto-generated if not provided
 #' @param ... Additional arguments to pass to `aws.s3::s3write_using`
 #'
 #' @details
@@ -627,13 +628,13 @@ get_experiment_from_run <- function(run_id) {
 #'
 #' @return The path to the file, invisibly
 #' @export
-log_artifact <- function(x, FUN, filename, run_id, ...) {
+log_artifact <- function(x, FUN, filename, run_id, client = mlflow_client(), ...) {
   UseMethod("log_artifact")
 }
 
 #' @rdname log_artifact
 #' @export
-log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active_run_id(), ...) {
+log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active_run_id(), client = mlflow_client(), ...) {
 
   check_required(x)
   check_required(filename)
@@ -659,7 +660,7 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
 #' @importFrom tools file_ext
 #' @rdname log_artifact
 #' @export
-log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), ...) {
+log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), client = mlflow_client(), ...) {
 
   check_required(x)
   check_required(FUN)
