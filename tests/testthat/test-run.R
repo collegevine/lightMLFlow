@@ -49,10 +49,19 @@ test_that("Runs work", {
     FUN = ggsave
   )
 
-  load_artifact(
+  model_loaded <- load_artifact(
     "model.rds"
-  ) %>%
-    expect_identical(model)
+  )
+
+  expect_identical(
+    model$coefficients,
+    model_loaded$coefficients
+  )
+
+  expect_identical(
+    model$residuals,
+    model_loaded$residuals
+  )
 
   expect_setequal(
     list_artifacts()$path,
