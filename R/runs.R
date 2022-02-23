@@ -500,11 +500,6 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
   assert_string(run_id)
   assert_mlflow_client(client)
 
-  artifacts <- list_artifacts(
-    run_id = run_id,
-    client = client
-  )
-
   experiment_id <- get_experiment_from_run(run_id = run_id)
 
   experiment <- get_experiment(
