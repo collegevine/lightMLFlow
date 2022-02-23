@@ -24,7 +24,7 @@ log_artifact(x, FUN, filename, run_id, ...)
 \item{...}{Additional arguments to pass to \code{aws.s3::s3write_using}}
 }
 \value{
-The path to the file
+The path to the file, invisibly
 }
 \description{
 Logs a specific file or directory as an artifact for a run. Modeled after \code{aws.s3::s3write_using}
