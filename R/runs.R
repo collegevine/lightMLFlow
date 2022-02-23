@@ -519,7 +519,7 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
     sep = "/"
   )
 
-  object <- aws.s3::s3read_using(
+  object <- s3read_using(
     FUN = FUN,
     ...,
     object = paste(artifact_location, artifact_name, sep = "/")
