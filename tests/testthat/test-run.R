@@ -49,6 +49,11 @@ test_that("Runs work", {
     FUN = ggsave
   )
 
+  load_artifact(
+    "model.rds"
+  ) %>%
+    expect_identical(model)
+
   expect_setequal(
     list_artifacts()$path,
     c("model.rds", "pressure.png")
