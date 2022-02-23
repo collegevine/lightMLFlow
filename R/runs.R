@@ -480,6 +480,54 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
   do.call("rbind", runs_list) %||% data.frame()
 }
 
+#' Load an artifact into an R object
+#'
+#' @importFrom checkmate assert_function
+#' @importFrom aws.s3 s3read_using
+#'
+#' @param artifact_name The name of the artifact to load
+#' @param run_id A run ID to find the URI for
+#' @param client An MLFlow client
+#' @param FUN a function to use to load the artifact
+#' @param \dots Additional arguments to pass on to `s3read_using`
+#'
+#' @return An R object. The result of `s3read_using`
+#' @export
+load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), ...) {
+
+  assert_function(FUN)
+  assert_string(artifact_name)
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
+  artifacts <- list_artifacts(
+    run_id = run_id,
+    client = client
+  )
+
+  experiment_id <- get_experiment_from_run(run_id = run_id)
+
+  experiment <- get_experiment(
+    experiment_id = experiment_id,
+    client = client
+  )
+
+  artifact_location <- paste(
+    experiment$artifact_location,
+    run_id,
+    "artifacts",
+    sep = "/"
+  )
+
+  object <- aws.s3::s3read_using(
+    FUN = FUN,
+    ...,
+    object = paste(artifact_location, artifact_name, sep = "/")
+  )
+
+  object
+}
+
 #' List Artifacts
 #'
 #' Gets a list of artifacts.
