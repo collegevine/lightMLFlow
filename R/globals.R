@@ -21,10 +21,20 @@ pop_active_run_id <- function() {
 #' @export
 get_active_run_id <- function() {
   if (length(.globals$active_run_stack) == 0) {
-    NULL
+    abort("No active run. Hint: Maybe either supply a `run_id` or start a run with `start_run`?")
   } else {
     .globals$active_run_stack[length(.globals$active_run_stack)]
   }
+}
+
+exists_active_run <- function() {
+  tryCatch(
+    {
+      get_active_run_id()
+      return(TRUE)
+    },
+    error = function(e) return(FALSE)
+  )
 }
 
 #' Set an experiment to `active`
