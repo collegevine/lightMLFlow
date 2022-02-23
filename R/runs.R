@@ -615,41 +615,6 @@ create_s3_path <- function(s3_prefix, experiment_id, run_id, fname) {
   )
 }
 
-#' Download Artifact
-#'
-#' Download an artifact file or directory from a run to a local directory if applicable,
-#'   and return a local path for it.
-#'
-#' @importFrom rlang !! .data
-#' @importFrom aws.s3 save_object
-#'
-#' @param path Relative source path to the desired artifact.
-#' @param run_id A run uuid. Automatically inferred if a run is currently active.
-#' @param ... Additional arguments to pass to `aws.s3::save_object`
-#' @export
-download_artifact <- function(path, run_id = get_active_run_id(), ...) {
-
-  experiment_id <- get_experiment_from_run(
-    run_id = run_id
-  )
-
-  s3_info <- get_s3_bucket_and_prefix()
-
-  s3_path <- create_s3_path(
-    s3_prefix = s3_info$prefix,
-    experiment_id = experiment_id,
-    run_id = run_id,
-    fname = path
-  )
-
-  save_object(
-    object = s3_path,
-    bucket = s3_info$bucket,
-    file = path,
-    ...
-  )
-}
-
 #' Log Artifact
 #'
 #' Logs a specific file or directory as an artifact for a run. Modeled after `aws.s3::s3write_using`
