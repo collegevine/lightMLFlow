@@ -28,6 +28,11 @@ test_that("Runs work", {
     filename = "model.rds"
   )
 
+  expect_equal(
+    list_artifacts()$path,
+    "model.rds"
+  )
+
   p <- ggplot2::ggplot(
     pressure,
     ggplot2::aes(x = temperature, y = pressure)
@@ -44,7 +49,29 @@ test_that("Runs work", {
     FUN = ggsave
   )
 
+  model_loaded <- load_artifact(
+    "model.rds"
+  )
+
+  expect_identical(
+    model$coefficients,
+    model_loaded$coefficients
+  )
+
+  expect_identical(
+    model$residuals,
+    model_loaded$residuals
+  )
+
+  expect_setequal(
+    list_artifacts()$path,
+    c("model.rds", "pressure.png")
+  )
   expect_true(is.character(log_artifact_path))
+  expect_equal(
+    log_artifact_path,
+    paste(get_artifact_path(), "pressure.png", sep = "/")
+  )
 
   model_summary <- summary(model)
 

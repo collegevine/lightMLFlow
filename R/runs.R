@@ -480,6 +480,62 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
   do.call("rbind", runs_list) %||% data.frame()
 }
 
+#' Load an artifact into an R object
+#'
+#' @importFrom checkmate assert_function
+#' @importFrom aws.s3 s3read_using
+#'
+#' @param artifact_name The name of the artifact to load
+#' @param run_id A run ID to find the URI for
+#' @param client An MLFlow client
+#' @param FUN a function to use to load the artifact
+#' @param \dots Additional arguments to pass on to `s3read_using`
+#'
+#' @return An R object. The result of `s3read_using`
+#' @export
+load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), ...) {
+
+  assert_function(FUN)
+  assert_string(artifact_name)
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
+  artifact_location <- get_artifact_path(
+    run_id = run_id,
+    client = client
+  )
+
+  object <- s3read_using(
+    FUN = FUN,
+    ...,
+    object = paste(artifact_location, artifact_name, sep = "/")
+  )
+
+  object
+}
+
+#' Get the artifact path for a run
+#'
+#' @param run_id A run id. Automatically inferred if a run is currently active.
+#' @param client An MLFlow client. Auto-generated if not provided.
+#'
+#' @return A path to the run's artifacts in S3
+#' @export
+get_artifact_path <- function(run_id = get_active_run_id(), client = mlflow_client()) {
+  experiment_id <- get_experiment_from_run(run_id = run_id)
+
+  experiment <- get_experiment(
+    experiment_id = experiment_id,
+    client = client
+  )
+
+  paste(
+    experiment$artifact_location,
+    run_id,
+    "artifacts",
+    sep = "/"
+  )
+}
 #' List Artifacts
 #'
 #' Gets a list of artifacts.
@@ -546,67 +602,6 @@ get_experiment_from_run <- function(run_id) {
     unique()
 }
 
-get_s3_bucket_and_prefix <- function(s3_uri = Sys.getenv("S3_URI")) {
-  if (str_sub(s3_uri, 1, 5) != "s3://") {
-    abort("Your S3_URI environment variable didn't start with 's3://'. Please set a valid URI for the environment variable and try again.\n")
-  }
-
-  s3_uri_split <- s3_uri %>%
-    str_remove("s3://") %>%
-    str_split("/", n = 2)
-
-  list(
-    bucket = s3_uri_split[[1]][[1]],
-    prefix = s3_uri_split[[1]][[2]]
-  )
-}
-
-create_s3_path <- function(s3_prefix, experiment_id, run_id, fname) {
-  paste(
-    s3_prefix,
-    experiment_id,
-    run_id,
-    "artifacts",
-    fname,
-    sep = "/"
-  )
-}
-
-#' Download Artifact
-#'
-#' Download an artifact file or directory from a run to a local directory if applicable,
-#'   and return a local path for it.
-#'
-#' @importFrom rlang !! .data
-#' @importFrom aws.s3 save_object
-#'
-#' @param path Relative source path to the desired artifact.
-#' @param run_id A run uuid. Automatically inferred if a run is currently active.
-#' @param ... Additional arguments to pass to `aws.s3::save_object`
-#' @export
-download_artifact <- function(path, run_id = get_active_run_id(), ...) {
-
-  experiment_id <- get_experiment_from_run(
-    run_id = run_id
-  )
-
-  s3_info <- get_s3_bucket_and_prefix()
-
-  s3_path <- create_s3_path(
-    s3_prefix = s3_info$prefix,
-    experiment_id = experiment_id,
-    run_id = run_id,
-    fname = path
-  )
-
-  save_object(
-    object = s3_path,
-    bucket = s3_info$bucket,
-    file = path,
-    ...
-  )
-}
-
 #' Log Artifact
 #'
 #' Logs a specific file or directory as an artifact for a run. Modeled after `aws.s3::s3write_using`
@@ -615,6 +610,7 @@ download_artifact <- function(path, run_id = get_active_run_id(), ...) {
 #' @param FUN the function to use to save the artifact
 #' @param filename the name of the file to save
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
+#' @param client An MLFlow client. Auto-generated if not provided
 #' @param ... Additional arguments to pass to `aws.s3::s3write_using`
 #'
 #' @details
@@ -630,46 +626,41 @@ download_artifact <- function(path, run_id = get_active_run_id(), ...) {
 #' @importFrom stringr str_remove str_split str_sub
 #' @importFrom aws.s3 s3write_using
 #'
-#' @return The path to the file
+#' @return The path to the file, invisibly
 #' @export
-log_artifact <- function(x, FUN, filename, run_id, ...) {
+log_artifact <- function(x, FUN, filename, run_id, client = mlflow_client(), ...) {
   UseMethod("log_artifact")
 }
 
 #' @rdname log_artifact
 #' @export
-log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active_run_id(), ...) {
+log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active_run_id(), client = mlflow_client(), ...) {
 
   check_required(x)
   check_required(filename)
 
-  experiment_id <- get_experiment_from_run(
-    run_id = run_id
+  artifact_dir = get_artifact_path(
+    run_id = run_id,
+    client = client
   )
 
-  s3_info <- get_s3_bucket_and_prefix()
-  s3_file <- create_s3_path(
-    s3_prefix = s3_info$prefix,
-    experiment_id = experiment_id,
-    run_id = run_id,
-    fname = filename
-  )
+  artifact_filepath <- paste(artifact_dir, filename, sep = "/")
 
   s3write_using(
     x = x,
     FUN = FUN,
     ...,
-    object = s3_file,
-    bucket = s3_info$bucket
+    object = artifact_filepath
   )
 
-  s3_file
+  invisible(artifact_filepath)
 }
 
 #' @importFrom aws.s3 put_object
+#' @importFrom tools file_ext
 #' @rdname log_artifact
 #' @export
-log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), ...) {
+log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), client = mlflow_client(), ...) {
 
   check_required(x)
   check_required(FUN)
@@ -683,20 +674,14 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
     )
   }
 
-  experiment_id <- get_experiment_from_run(
-    run_id = run_id
-  )
-
-  s3_info <- get_s3_bucket_and_prefix()
-  s3_file <- create_s3_path(
-    s3_prefix = s3_info$prefix,
-    experiment_id = experiment_id,
+  artifact_dir = get_artifact_path(
     run_id = run_id,
-    fname = filename
+    client = client
   )
 
-  ext_pos <- regexpr("\\.([[:alnum:]]+)$", filename)
-  ext <- ifelse(ext_pos > -1L, substring(filename, ext_pos + 1L), "")
+  artifact_filepath <- paste(artifact_dir, filename, sep = "/")
+
+  ext <- file_ext(artifact_filepath)
   temp_file <- tempfile(fileext = ext)
   on.exit(unlink(temp_file, recursive = TRUE))
 
@@ -704,11 +689,10 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
 
   put_object(
     file = temp_file,
-    object = s3_file,
-    bucket = s3_info$bucket
+    object = artifact_filepath
   )
 
-  s3_file
+  invisible(artifact_filepath)
 }
 
 #' Record logged model metadata with the tracking server.
