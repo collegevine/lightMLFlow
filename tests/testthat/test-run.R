@@ -223,3 +223,65 @@ test_that("Runs work", {
 
   end_run()
 })
+
+test_that("Metric logging works outside of a run", {
+  experiment_name <- paste0(
+    "metric-test-",
+    get_timestamp()
+  )
+
+  metric_test_experiment <- create_experiment(
+    experiment_name
+  )
+
+  start_run(
+    experiment_id = metric_test_experiment
+  )
+
+  run_id <- get_active_run_id()
+
+  log_metrics(
+    foo = 123,
+    step = 0
+  )
+
+  end_run()
+
+  foo_history <- get_metric_history(metric = "foo", run_id = run_id)
+
+  expect_equal(
+    foo_history$step,
+    0
+  )
+  expect_equal(
+    foo_history$key,
+    "foo"
+  )
+  expect_equal(
+    foo_history$value,
+    123
+  )
+
+  log_metrics(
+    foo = 456,
+    step = 1,
+    run_id = run_id
+  )
+
+  foo_history <- get_metric_history("foo", run_id = run_id)
+
+  expect_equal(
+    nrow(foo_history),
+    2
+  )
+
+  expect_identical(
+    foo_history$value,
+    c(123, 456)
+  )
+
+  expect_identical(
+    foo_history$step,
+    c(0L,1L)
+  )
+})
