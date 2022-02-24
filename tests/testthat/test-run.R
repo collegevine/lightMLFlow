@@ -106,15 +106,6 @@ test_that("Runs work", {
     r2_history$timestamp[1]
   )
 
-  expect_error(
-    log_metrics(
-      R2,
-      "F" = f,
-      "adj_r" = model_summary$adj.r.squared,
-      timestamp = c(1, 2)
-    )
-  )
-
   Sys.sleep(3)
 
   log_model(
@@ -134,12 +125,19 @@ test_that("Runs work", {
   m_batch <- data.frame(
     key = c("R2", "F"),
     value = c(1, 100),
-    step = 1,
-    timestamp = round(as.numeric(as.POSIXlt(Sys.time(), tz = "UTC")))
+    step = c(2,1),
+    timestamp = get_timestamp() %>% convert_timestamp_to_ms()
   )
 
   log_batch(
     metrics = m_batch
+  )
+
+  r2_history <- get_metric_history("R2")
+
+  expect_identical(
+    r2_history$step,
+    0L:2L
   )
 
   log_params(
@@ -210,12 +208,12 @@ test_that("Runs work", {
   ## have to round because mlflow does some rounding when we get history?!?
   expect_equal(
     r2_hist$value,
-    c(round(R2, 4), 1)
+    c(round(R2, 4), 1, 1)
   )
 
   expect_gt(
-    r2_hist$timestamp[2],
-    r2_hist$timestamp[1]
+    r2_hist$timestamp[3],
+    r2_hist$timestamp[2]
   )
 
   expect_equal(
