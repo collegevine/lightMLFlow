@@ -19,7 +19,7 @@ The MLflow Backend keeps track of historical metric values along two axes: times
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -48,25 +48,13 @@ The MLflow Backend keeps track of historical metric values along two axes: times
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_metrics</span><span class="op">(</span>
-  <span class="va">...</span>,
-  timestamp <span class="op">=</span> <span class="cn">NA</span>,
-  step <span class="op">=</span> <span class="cn">NA</span>,
-  run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>,
-  client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_metrics</span><span class="op">(</span><span class="va">...</span>, run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>, client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>...</dt>
 <dd><p>variable names from which a data.frame with <code>key</code> and <code>value</code> columns will be created.</p></dd>
-<dt>timestamp</dt>
-<dd><p>Timestamp at which to log the metric. Timestamp is rounded to the nearest
-integer. If unspecified, the number of milliseconds since the Unix epoch is used.</p></dd>
-<dt>step</dt>
-<dd><p>Step at which to log the metric. Step is rounded to the nearest integer. If
-unspecified, the default value of zero is used.</p></dd>
 <dt>run_id</dt>
 <dd><p>A run uuid. Automatically inferred if a run is currently active.</p></dd>
 <dt>client</dt>
