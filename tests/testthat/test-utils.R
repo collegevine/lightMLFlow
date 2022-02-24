@@ -26,6 +26,4 @@ test_that("Utils work", {
     value = c(1, 2)
   )
   timestamp <- c(3, 4, 5)
-  expect_error(assert_new_col_length(timestamp, metrics))
-  expect_true(assert_new_col_length(c(3, 4), metrics))
 })

@@ -21,23 +21,36 @@ get_key_value_df <- function(..., .which = -1) {
   )
 }
 
-#' @importFrom checkmate assert
-assert_new_col_length <- function(x, metrics) {
-  nm <- deparse(substitute(x))
-  n_metrics <- nrow(metrics)
-  n_x <- length(x)
-  cnd <- n_x == n_metrics | n_x == 1
-  if(cnd) {
-    return(TRUE)
-  }
-  abort(
-    sprintf(
-      'The length of `%s` should be 1 or the same as the number of metrics (%s), not %s.',
-      nm,
-      n_metrics,
-      n_x
-    )
+exists_metric <- function(metric_key, run_id, client) {
+  tryCatch(
+    {
+      get_metric_history(
+        metric_key = metric_key,
+        run_id = run_id,
+        client = client
+      )
+
+      return(TRUE)
+    },
+    error = function(e) {
+      return(FALSE)
+    }
   )
+}
+
+get_most_recent_step <- function(metric_history) {
+  max(metric_history$step, na.rm = TRUE)
+}
+
+increment_metric_step <- function(metric_key, run_id, client) {
+  get_metric_history(
+    metric_key = metric_key,
+    run_id = run_id,
+    client = client
+  ) %>%
+    get_most_recent_step() %>%
+    add(1) %>%
+    as.integer()
 }
 
 #' Log Metrics
@@ -47,27 +60,47 @@ assert_new_col_length <- function(x, metrics) {
 #'   The MLflow Backend keeps track of historical metric values along two axes: timestamp and step.
 #'
 #' @param ... variable names from which a data.frame with `key` and `value` columns will be created.
-#' @param timestamp Timestamp at which to log the metric. Timestamp is rounded to the nearest
-#'  integer. If unspecified, the number of milliseconds since the Unix epoch is used.
-#' @param step Step at which to log the metric. Step is rounded to the nearest integer. If
-#'  unspecified, the default value of zero is used.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #'
 #' @importFrom rlang maybe_missing
+#' @importFrom purrr imap_int
+#' @importFrom magrittr add
 #'
 #' @export
-log_metrics <- function(..., timestamp = NA, step = NA, run_id = get_active_run_id(), client = mlflow_client()) {
+log_metrics <- function(..., run_id = get_active_run_id(), client = mlflow_client()) {
 
   metrics <- get_key_value_df(...)
 
-  assert_new_col_length(timestamp, metrics)
-  assert_new_col_length(step, metrics)
   assert_string(run_id)
   assert_mlflow_client(client)
 
-  metrics$timestamp <- timestamp
-  metrics$step <- step
+  metrics$timestamp <- get_timestamp() %>%
+    convert_timestamp_to_ms()
+
+  metrics$step <- metrics$key %>%
+    set_names() %>%
+    map_lgl(
+      ~ exists_metric(
+        .x,
+        run_id = run_id,
+        client = client
+      )
+    ) %>%
+    imap_int(
+      function(.x, .y) {
+        if (isTRUE(.x)) {
+          increment_metric_step(
+            metric_key = .y,
+            run_id = run_id,
+            client = client
+          )
+        } else {
+          0L
+        }
+      }
+    ) %>%
+    unname()
 
   log_batch(
     metrics = metrics,
@@ -425,7 +458,7 @@ get_metric_history <- function(metric_key, run_id = get_active_run_id(), client 
         function(.x) {
           .x %>%
             list_modify(
-              timestamp = as.POSIXct(.x$timestamp, origin = '1970-01-01',tz='UTC')
+              timestamp = milliseconds_to_datetime(.x$timestamp)
             )
         }
       ) %>%
