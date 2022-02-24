@@ -21,25 +21,6 @@ get_key_value_df <- function(..., .which = -1) {
   )
 }
 
-#' @importFrom checkmate assert
-assert_new_col_length <- function(x, metrics) {
-  nm <- deparse(substitute(x))
-  n_metrics <- nrow(metrics)
-  n_x <- length(x)
-  cnd <- n_x == n_metrics | n_x == 1
-  if(cnd) {
-    return(TRUE)
-  }
-  abort(
-    sprintf(
-      'The length of `%s` should be 1 or the same as the number of metrics (%s), not %s.',
-      nm,
-      n_metrics,
-      n_x
-    )
-  )
-}
-
 exists_metric <- function(metric_key, run_id, client) {
   tryCatch(
     {
