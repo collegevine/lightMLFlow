@@ -86,8 +86,8 @@ test_that("Runs work", {
   r2_history <- get_metric_history("R2")
 
   expect_equal(
-    lubridate::date(r2_history$timestamp),
-    lubridate::today()
+    as.Date(as.POSIXct(r2_history$timestamp, origin="1970-01-01", tz = "UTC")),
+    as.Date(as.POSIXct(Sys.time(), origin="1970-01-01", tz = "UTC"))
   )
 
   Sys.sleep(1)
