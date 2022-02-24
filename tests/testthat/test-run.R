@@ -83,13 +83,27 @@ test_that("Runs work", {
     "F" = f
   )
 
-  r2_history <- get_metric_history(
-    "R2"
-  )
+  r2_history <- get_metric_history("R2")
 
   expect_equal(
     lubridate::date(r2_history$timestamp),
     lubridate::today()
+  )
+
+  Sys.sleep(1)
+
+  log_metrics(R2 = 1)
+
+  r2_history <- get_metric_history("R2")
+
+  expect_identical(
+    r2_history$step,
+    c(0L, 1L)
+  )
+
+  expect_gt(
+    r2_history$timestamp[2],
+    r2_history$timestamp[1]
   )
 
   expect_error(
