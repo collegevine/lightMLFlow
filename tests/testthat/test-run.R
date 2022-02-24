@@ -83,6 +83,15 @@ test_that("Runs work", {
     "F" = f
   )
 
+  r2_history <- get_metric_history(
+    "R2"
+  )
+
+  expect_equal(
+    lubridate::date(r2_history$timestamp),
+    lubridate::today()
+  )
+
   expect_error(
     log_metrics(
       R2,
