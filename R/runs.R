@@ -178,11 +178,10 @@ log_metrics <- function(..., run_id = get_active_run_id(), client = mlflow_clien
 #'
 #' @importFrom purrr imap
 #'
-#' @param start_time The start time of the run. Defaults to the current time.
 #' @param tags Additional tags to supply for the run
 #' @param experiment_id The ID of the experiment to register the run under.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-create_run <- function(start_time = current_time(), tags = list(), experiment_id = get_active_experiment_id(), client = mlflow_client()) {
+create_run <- function(tags = list(), experiment_id = get_active_experiment_id(), client = mlflow_client()) {
 
   assert_integerish(start_time)
   assert_list(tags)
@@ -195,7 +194,7 @@ create_run <- function(start_time = current_time(), tags = list(), experiment_id
 
   data <- list(
     experiment_id = experiment_id,
-    start_time = start_time * 1000,  ## convert to ms
+    start_time = convert_timestamp_to_ms(get_timestamp()),
     tags = tags
   )
 
@@ -900,12 +899,11 @@ get_run_context.default <- function(client, experiment_id, ...) {
 #'
 #' @param status Updated status of the run. Defaults to `FINISHED`. Can also be set to
 #' "FAILED" or "KILLED".
-#' @param end_time Unix timestamp of when the run ended in milliseconds.
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
 #' @export
-end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), end_time = current_time() * 1000, run_id = get_active_run_id(), client = mlflow_client()) {
+end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), run_id = get_active_run_id(), client = mlflow_client()) {
 
   status <- match.arg(status)
   assert_number(end_time)
@@ -916,7 +914,7 @@ end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), end_time = curre
     client = client,
     run_id = run_id,
     status = status,
-    end_time = end_time
+    end_time = convert_timestamp_to_ms(get_timestamp())
   )
 
   if (exists_active_run() && identical(run_id, get_active_run_id())) pop_active_run_id()

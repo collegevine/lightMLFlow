@@ -6,7 +6,6 @@
 \usage{
 end_run(
   status = c("FINISHED", "FAILED", "KILLED"),
-  end_time = current_time() * 1000,
   run_id = get_active_run_id(),
   client = mlflow_client()
 )
@@ -14,8 +13,6 @@ end_run(
 \arguments{
 \item{status}{Updated status of the run. Defaults to \code{FINISHED}. Can also be set to
 "FAILED" or "KILLED".}
-
-\item{end_time}{Unix timestamp of when the run ended in milliseconds.}
 
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
 
