@@ -13,6 +13,9 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/news/index.html</loc>
+  </url>
+  <url>
     <loc>/reference/check_api_status.html</loc>
   </url>
   <url>
@@ -67,10 +70,16 @@
     <loc>/reference/get_latest_versions.html</loc>
   </url>
   <url>
+    <loc>/reference/get_metric.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_metric_history.html</loc>
   </url>
   <url>
     <loc>/reference/get_model_version.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_param.html</loc>
   </url>
   <url>
     <loc>/reference/get_registered_model.html</loc>

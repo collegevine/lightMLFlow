@@ -17,13 +17,16 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -46,7 +49,6 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">end_run</span><span class="op">(</span>
   status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FINISHED"</span>, <span class="st">"FAILED"</span>, <span class="st">"KILLED"</span><span class="op">)</span>,
-  end_time <span class="op">=</span> <span class="fu">current_time</span><span class="op">(</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1000</span>,
   run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>,
   client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
@@ -57,8 +59,6 @@
     <dl><dt>status</dt>
 <dd><p>Updated status of the run. Defaults to <code>FINISHED</code>. Can also be set to
 "FAILED" or "KILLED".</p></dd>
-<dt>end_time</dt>
-<dd><p>Unix timestamp of when the run ended in milliseconds.</p></dd>
 <dt>run_id</dt>
 <dd><p>A run uuid. Automatically inferred if a run is currently active.</p></dd>
 <dt>client</dt>
