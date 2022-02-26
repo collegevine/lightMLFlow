@@ -10,7 +10,7 @@
 #' @param run_id An MLFlow run ID. Auto-generated if missing
 #' @param client An MLFlow client. Auto-generated if missing
 #' @param git_repo_url A URL for the Git repo where the code is being run from
-#' This is expected to be of the form `https://<<GITHUB_TOKEN>>@github.com/<<org>>/<<repo>>`
+#' This is expected to be of the form `https://github.com/<<org>>/<<repo>>`
 #' @param git_repo_subdir The subdirectory in the repo where your code lives
 #' @param source_git_commit A git commit hash to tag a run with. Defaults to \code{git2r::revparse_single(".", revision = "HEAD")$sha}
 #' @param source_git_branch The git branch the code is running on. Defaults to \code{system("git rev-parse --abbrev-ref HEAD", intern = TRUE)} (i.e. the current branch)
@@ -23,18 +23,22 @@ set_git_tracking_tags <- function(
   run_id = get_active_run_id(),
   client = mlflow_client(),
   git_repo_url = Sys.getenv("GIT_REPO_URL"),
-  git_repo_subdir,
+  git_repo_subdir = "",
   source_git_commit = system("git rev-parse HEAD", intern = TRUE),
   source_git_branch = system("git rev-parse --abbrev-ref HEAD", intern = TRUE),
   project_entrypoint = "main",
   project_backend = "local"
 ) {
 
-  source_name <- paste(
-    git_repo_url,
-    git_repo_subdir,
-    sep = "#"
-  )
+  if (git_repo_subdir == "") {
+    source_name <- git_repo_url
+  } else {
+    source_name <- paste(
+      git_repo_url,
+      git_repo_subdir,
+      sep = "#"
+    )
+  }
 
   set_tag(
     key = "mlflow.source.git.repoURL",
