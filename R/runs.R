@@ -96,8 +96,8 @@ get_metric <- function(metric_key, run_id = get_active_run_id(), client = mlflow
 #' @export
 get_param <- function(param, run_id = get_active_run_id(), client = mlflow_client()) {
 
-  check_required(metric_key)
-  assert_string(metric_key)
+  check_required(param)
+  assert_string(param)
   assert_string(run_id)
   assert_mlflow_client(client)
 
