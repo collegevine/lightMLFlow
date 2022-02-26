@@ -122,6 +122,13 @@ test_that("Runs work", {
     params = p_batch
   )
 
+  i <- get_param("intercept")
+
+  expect_equal(
+    i,
+    as.character(unname(coef(model))[1])
+  )
+
   m_batch <- data.frame(
     key = c("R2", "F"),
     value = c(1, 100),
@@ -131,6 +138,13 @@ test_that("Runs work", {
 
   log_batch(
     metrics = m_batch
+  )
+
+  curr_r2 <- get_metric("R2")
+
+  expect_equal(
+    curr_r2,
+    1
   )
 
   r2_history <- get_metric_history("R2")
@@ -268,7 +282,7 @@ test_that("Metric logging works outside of a run", {
 
   end_run()
 
-  foo_history <- get_metric_history(metric = "foo", run_id = run_id)
+  foo_history <- get_metric_history(metric_key = "foo", run_id = run_id)
 
   expect_equal(
     foo_history$step,
@@ -289,7 +303,7 @@ test_that("Metric logging works outside of a run", {
     run_id = run_id
   )
 
-  foo_history <- get_metric_history("foo", run_id = run_id)
+  foo_history <- get_metric_history(metric_key = "foo", run_id = run_id)
 
   expect_equal(
     nrow(foo_history),
