@@ -183,7 +183,6 @@ log_metrics <- function(..., run_id = get_active_run_id(), client = mlflow_clien
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 create_run <- function(tags = list(), experiment_id = get_active_experiment_id(), client = mlflow_client()) {
 
-  assert_integerish(start_time)
   assert_list(tags)
   assert_string(experiment_id)
   assert_mlflow_client(client)
@@ -814,7 +813,7 @@ record_logged_model <- function(model_spec, run_id = get_active_run_id(), client
 #'
 #' Starts a new run. If `client` is not provided, this function infers contextual information such as
 #'   source name and version, and also registers the created run as the active run. If `client` is provided,
-#'   no inference is done, and additional arguments such as `start_time` can be provided.
+#'   no inference is done.
 #'
 #' @param run_id If specified, get the run with the specified UUID and log metrics
 #'   and params under that run. The run's end time is unset and its status is set to
@@ -906,7 +905,6 @@ get_run_context.default <- function(client, experiment_id, ...) {
 end_run <- function(status = c("FINISHED", "FAILED", "KILLED"), run_id = get_active_run_id(), client = mlflow_client()) {
 
   status <- match.arg(status)
-  assert_number(end_time)
   assert_string(run_id)
   assert_mlflow_client(client)
 

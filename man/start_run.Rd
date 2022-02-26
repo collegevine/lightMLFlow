@@ -27,5 +27,5 @@ a new experiment with a randomly generated name.}
 \description{
 Starts a new run. If \code{client} is not provided, this function infers contextual information such as
 source name and version, and also registers the created run as the active run. If \code{client} is provided,
-no inference is done, and additional arguments such as \code{start_time} can be provided.
+no inference is done.
 }
