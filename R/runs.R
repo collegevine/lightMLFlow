@@ -80,10 +80,9 @@ get_metric <- function(metric_key, run_id = get_active_run_id(), client = mlflow
     return(NULL)
   }
 
-  subset(
-    metrics,
-    key == metric_key
-  )$value
+  metrics[
+    metrics$key == metric_key,
+  ]$value
 }
 
 #' Get a parameter for a run
