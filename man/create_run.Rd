@@ -5,15 +5,12 @@
 \title{Create an MLFlow run}
 \usage{
 create_run(
-  start_time = current_time(),
   tags = list(),
   experiment_id = get_active_experiment_id(),
   client = mlflow_client()
 )
 }
 \arguments{
-\item{start_time}{The start time of the run. Defaults to the current time.}
-
 \item{tags}{Additional tags to supply for the run}
 
 \item{experiment_id}{The ID of the experiment to register the run under.}
