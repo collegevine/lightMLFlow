@@ -4,13 +4,15 @@
 \alias{log_model}
 \title{Log Model}
 \usage{
-log_model(model, path, ...)
+log_model(model, path, run_id = get_active_run_id(), ...)
 }
 \arguments{
 \item{model}{The model that will perform a prediction.}
 
 \item{path}{Destination path where this MLflow compatible model
 will be saved.}
+
+\item{run_id}{The run id to log the model under. Defaults to the active run.}
 
 \item{...}{Optional additional arguments passed to \code{save_model()} when persisting the
 model. For example, \verb{conda_env = /path/to/conda.yaml} may be passed to specify a conda
