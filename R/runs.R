@@ -696,7 +696,6 @@ get_experiment_from_run <- function(run_id) {
 #' environment variables must be set to the corresponding key and secrets provided
 #' by Amazon IAM.
 #'
-#' @importFrom fs is_file
 #' @importFrom stringr str_remove str_split str_sub
 #' @importFrom aws.s3 s3write_using
 #'

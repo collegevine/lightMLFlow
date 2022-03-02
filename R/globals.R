@@ -71,12 +71,7 @@ set_tracking_uri <- function(uri) {
 #'
 #' Gets the remote tracking URI.
 #'
-#' @importFrom fs path_abs
-#'
 #' @export
 get_tracking_uri <- function() {
-  .globals$tracking_uri %||% {
-    env_uri <- Sys.getenv("MLFLOW_TRACKING_URI")
-    if (nchar(env_uri)) env_uri else paste("file://", path_abs("mlruns"), sep = "")
-  }
+  .globals$tracking_uri %||% Sys.getenv("MLFLOW_TRACKING_URI")
 }
