@@ -132,10 +132,10 @@ get_param <- function(param, run_id = get_active_run_id(), client = mlflow_clien
 #' @export
 log_metrics <- function(..., run_id = get_active_run_id(), client = mlflow_client()) {
 
-  metrics <- get_key_value_df(...)
-
   assert_string(run_id)
   assert_mlflow_client(client)
+
+  metrics <- get_key_value_df(...)
 
   metrics$timestamp <- get_timestamp() %>%
     convert_timestamp_to_ms()
