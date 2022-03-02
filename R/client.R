@@ -64,7 +64,7 @@ print.mlflow_host_creds <- function(x, ...) {
 }
 
 new_mlflow_client.default <- function(tracking_uri) {
-  abort(paste("Unsupported scheme: '", tracking_uri$scheme, "'", sep = ""))
+  abort("The tracking URI must have an 'http' or 'https' prefix. Did you forget to set the `MLFLOW_TRACKING_URI` environment variable?")
 }
 
 basic_http_client <- function(tracking_uri) {
