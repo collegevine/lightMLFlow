@@ -8,7 +8,6 @@ NULL
 
 push_active_run_id <- function(run_id) {
   .globals$active_run_stack <- c(.globals$active_run_stack, run_id)
-  register_tracking_event("active_run_id", list(run_id = run_id))
 }
 
 pop_active_run_id <- function() {
@@ -45,9 +44,6 @@ exists_active_run <- function() {
 #' @export
 set_active_experiment_id <- function(experiment_id) {
   .globals$active_experiment_id <- experiment_id
-  register_tracking_event(
-    "active_experiment_id", list(experiment_id = experiment_id)
-  )
 
   invisible()
 }
@@ -70,7 +66,6 @@ get_active_experiment_id <- function() {
 #' @export
 set_tracking_uri <- function(uri) {
   .globals$tracking_uri <- uri
-  register_tracking_event("tracking_uri", list(uri = uri))
 
   invisible(uri)
 }
