@@ -108,11 +108,6 @@ test_that("Runs work", {
 
   Sys.sleep(3)
 
-  log_model(
-    model = carrier::crate(function(x) predict(model, x)),
-    path = "carrier-model"
-  )
-
   p_batch <- data.frame(
     key = c("intercept", "temperature"),
     value = unname(coef(model))
@@ -243,17 +238,6 @@ test_that("Runs work", {
   expect_equal(
     get_run()$run_id,
     get_active_run_id()
-  )
-
-  artifacts <- list_artifacts("carrier-model")
-
-  artifacts %>%
-    nrow() %>%
-    expect_equal(2)
-
-  expect_setequal(
-    artifacts$path,
-    c("carrier-model/MLmodel", "carrier-model/crate.bin")
   )
 
   end_run()
