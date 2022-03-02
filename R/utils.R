@@ -1,7 +1,3 @@
-mlflow_relative_paths <- function(paths) {
-  gsub(paste0("^", file.path(getwd(), "")), "", paths)
-}
-
 get_executing_file_name <- function() {
   pattern <- "^--file="
   v <- grep(pattern, commandArgs(), value = TRUE)
@@ -123,31 +119,6 @@ convert_timestamp_to_ms <- function(timestamp) {
   )
 
   as.integer(ts) * 1000
-}
-
-wait_for <- function(f, wait, sleep) {
-  command_start <- Sys.time()
-
-  success <- FALSE
-  while (!success && Sys.time() < command_start + wait) {
-    success <- suppressWarnings({
-      tryCatch(
-        {
-          f()
-          TRUE
-        },
-        error = function(err) {
-          FALSE
-        }
-      )
-    })
-
-    if (!success) Sys.sleep(sleep)
-  }
-
-  if (!success) {
-    abort("Operation failed after waiting for ", wait, " seconds")
-  }
 }
 
 mlflow_user <- function() {
