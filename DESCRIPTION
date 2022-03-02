@@ -34,14 +34,12 @@ Imports:
 Collate: 
     'client.R'
     'experiments.R'
-    'observer.R'
     'globals.R'
     'lightMLFlow-package.R'
     'project.R'
     'registry.R'
     'rest.R'
     'runs.R'
-    'server.R'
     'utils-pipe.R'
     'utils.R'
 License: Apache License (>= 2)

@@ -117,7 +117,5 @@ mlflow_client <- function(tracking_uri = NULL) {
   tracking_uri <- new_mlflow_uri(tracking_uri %||% get_tracking_uri())
   client <- new_mlflow_client(tracking_uri)
 
-  if (inherits(client, "mlflow_file_client")) validate_server(client)
-
   client
 }

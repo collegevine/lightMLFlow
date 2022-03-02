@@ -3,9 +3,6 @@ utils::globalVariables(c("."))
 
 .globals <- new.env(parent = emptyenv())
 
-#' @include observer.R
-NULL
-
 push_active_run_id <- function(run_id) {
   .globals$active_run_stack <- c(.globals$active_run_stack, run_id)
 }
