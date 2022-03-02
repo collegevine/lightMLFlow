@@ -22,20 +22,24 @@ save_model <- function(model, path, model_spec = list(), ...) {
 #' @param model The model that will perform a prediction.
 #' @param path Destination path where this MLflow compatible model
 #'   will be saved.
+#' @param run_id The run id to log the model under. Defaults to the active run.
 #' @param ... Optional additional arguments passed to `save_model()` when persisting the
 #'   model. For example, `conda_env = /path/to/conda.yaml` may be passed to specify a conda
 #'   dependencies file for flavors (e.g. keras) that support conda environments.
 #'
 #' @importFrom fs path_temp
 #' @export
-log_model <- function(model, path, ...) {
+log_model <- function(model, path, run_id = get_active_run_id(), ...) {
+
+  check_required(model)
+  check_required(path)
 
   model_spec <- save_model(
     model,
     path = path,
     model_spec = list(
       utc_time_created = get_timestamp(),
-      run_id = get_active_run_id_or_start_run(),
+      run_id = run_id,
       artifact_path = path,
       flavors = list()
     )
