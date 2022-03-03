@@ -1,5 +1,6 @@
 test_that("API is up", {
 
+  skip_on_cran()
   .alive <- function() {
     tryCatch(
       check_api_status(),

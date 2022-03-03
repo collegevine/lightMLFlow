@@ -1,4 +1,6 @@
 test_that("Model registry works", {
+  skip_on_cran()
+
   experiment_name <- paste0(
     "integration-test-",
     get_timestamp()

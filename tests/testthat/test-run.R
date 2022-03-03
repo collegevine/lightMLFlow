@@ -1,4 +1,5 @@
 test_that("Runs work", {
+  skip_on_cran()
   experiment_name <- paste0(
     "integration-test-",
     get_timestamp()
@@ -244,6 +245,7 @@ test_that("Runs work", {
 })
 
 test_that("Metric logging works outside of a run", {
+  skip_on_cran()
   experiment_name <- paste0(
     "metric-test-",
     get_timestamp()

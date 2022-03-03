@@ -2,10 +2,16 @@ Package: lightMLFlow
 Title: A lightweight R wrapper for the MLFlow REST API
 Version: 0.6.0
 Authors@R: 
+    c(
     person(given = "Matt",
            family = "Kaye",
            role = c("aut", "cre"),
-           email = "mrkaye97@gmail.com")
+           email = "mrkaye97@gmail.com"),
+    person(given = "Tony",
+           family = "ElHabr",
+           role = c("aut"),
+           email = "anthonyelhabr@gmail.com")
+    )
 Description: This package provides a lightweight R wrapper for the MLFlow
     REST API. It makes some assumtions (notably, that you already have
     MLFlow installed wherever this package is being used), but, in return,
