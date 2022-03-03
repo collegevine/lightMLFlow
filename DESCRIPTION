@@ -1,11 +1,17 @@
 Package: lightMLFlow
 Title: A lightweight R wrapper for the MLFlow REST API
-Version: 0.5.1
+Version: 0.6.0
 Authors@R: 
+    c(
     person(given = "Matt",
            family = "Kaye",
            role = c("aut", "cre"),
-           email = "mrkaye97@gmail.com")
+           email = "mrkaye97@gmail.com"),
+    person(given = "Tony",
+           family = "ElHabr",
+           role = c("aut"),
+           email = "anthonyelhabr@gmail.com")
+    )
 Description: This package provides a lightweight R wrapper for the MLFlow
     REST API. It makes some assumtions (notably, that you already have
     MLFlow installed wherever this package is being used), but, in return,
@@ -19,7 +25,6 @@ Imports:
     aws.s3,
     base64enc,
     checkmate,
-    fs,
     git2r,
     httr,
     jsonlite,
@@ -34,16 +39,12 @@ Imports:
 Collate: 
     'client.R'
     'experiments.R'
-    'observer.R'
     'globals.R'
     'lightMLFlow-package.R'
-    'model-crate.R'
-    'model.R'
     'project.R'
     'registry.R'
     'rest.R'
     'runs.R'
-    'server.R'
     'utils-pipe.R'
     'utils.R'
 License: Apache License (>= 2)

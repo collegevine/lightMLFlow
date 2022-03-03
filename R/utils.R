@@ -1,7 +1,3 @@
-mlflow_relative_paths <- function(paths) {
-  gsub(paste0("^", file.path(getwd(), "")), "", paths)
-}
-
 get_executing_file_name <- function() {
   pattern <- "^--file="
   v <- grep(pattern, commandArgs(), value = TRUE)
@@ -107,29 +103,22 @@ with.mlflow_run <- function(data, expr, ...) {
 
 milliseconds_to_datetime <- function(x) as.POSIXct(as.double(x) / 1000, origin = "1970-01-01", tz = "UTC")
 
-wait_for <- function(f, wait, sleep) {
-  command_start <- Sys.time()
+#' @importFrom withr with_options
+get_timestamp <- function() {
+  format(
+    as.POSIXlt(Sys.time(), tz = "UTC"),
+    "%y-%m-%dT%H:%M:%S.%OS"
+  )
+}
 
-  success <- FALSE
-  while (!success && Sys.time() < command_start + wait) {
-    success <- suppressWarnings({
-      tryCatch(
-        {
-          f()
-          TRUE
-        },
-        error = function(err) {
-          FALSE
-        }
-      )
-    })
+convert_timestamp_to_ms <- function(timestamp) {
+  ts <- as.POSIXct(
+    timestamp,
+    format = "%y-%m-%dT%H:%M:%S.%OS",
+    tz = "UTC"
+  )
 
-    if (!success) Sys.sleep(sleep)
-  }
-
-  if (!success) {
-    abort("Operation failed after waiting for ", wait, " seconds")
-  }
+  as.integer(ts) * 1000
 }
 
 mlflow_user <- function() {

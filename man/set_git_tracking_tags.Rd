@@ -8,7 +8,7 @@ set_git_tracking_tags(
   run_id = get_active_run_id(),
   client = mlflow_client(),
   git_repo_url = Sys.getenv("GIT_REPO_URL"),
-  git_repo_subdir,
+  git_repo_subdir = "",
   source_git_commit = system("git rev-parse HEAD", intern = TRUE),
   source_git_branch = system("git rev-parse --abbrev-ref HEAD", intern = TRUE),
   project_entrypoint = "main",
@@ -21,7 +21,7 @@ set_git_tracking_tags(
 \item{client}{An MLFlow client. Auto-generated if missing}
 
 \item{git_repo_url}{A URL for the Git repo where the code is being run from
-This is expected to be of the form \verb{https://<<GITHUB_TOKEN>>@github.com/<<org>>/<<repo>>}}
+This is expected to be of the form \verb{https://github.com/<<org>>/<<repo>>}}
 
 \item{git_repo_subdir}{The subdirectory in the repo where your code lives}
 

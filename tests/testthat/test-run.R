@@ -1,4 +1,5 @@
 test_that("Runs work", {
+  skip_on_cran()
   experiment_name <- paste0(
     "integration-test-",
     get_timestamp()
@@ -107,11 +108,6 @@ test_that("Runs work", {
   )
 
   Sys.sleep(3)
-
-  log_model(
-    model = carrier::crate(function(x) predict(model, x)),
-    path = "carrier-model"
-  )
 
   p_batch <- data.frame(
     key = c("intercept", "temperature"),
@@ -245,21 +241,11 @@ test_that("Runs work", {
     get_active_run_id()
   )
 
-  artifacts <- list_artifacts("carrier-model")
-
-  artifacts %>%
-    nrow() %>%
-    expect_equal(2)
-
-  expect_setequal(
-    artifacts$path,
-    c("carrier-model/MLmodel", "carrier-model/crate.bin")
-  )
-
   end_run()
 })
 
 test_that("Metric logging works outside of a run", {
+  skip_on_cran()
   experiment_name <- paste0(
     "metric-test-",
     get_timestamp()

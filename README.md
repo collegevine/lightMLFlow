@@ -13,7 +13,9 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 # Setup
 
-`lightMLFlow` is not on CRAN. You can install it from Github as follows:
+`lightMLFlow` will soon be on CRAN!
+
+For now, you can install it from Github as follows:
 
 ``` r
 # install.packages("devtools")

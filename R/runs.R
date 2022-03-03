@@ -132,10 +132,10 @@ get_param <- function(param, run_id = get_active_run_id(), client = mlflow_clien
 #' @export
 log_metrics <- function(..., run_id = get_active_run_id(), client = mlflow_client()) {
 
-  metrics <- get_key_value_df(...)
-
   assert_string(run_id)
   assert_mlflow_client(client)
+
+  metrics <- get_key_value_df(...)
 
   metrics$timestamp <- get_timestamp() %>%
     convert_timestamp_to_ms()
@@ -204,7 +204,6 @@ create_run <- function(tags = list(), experiment_id = get_active_experiment_id()
   )
 
   run_id <- response$run$info$run_id
-  register_tracking_event("create_run", data)
 
   get_run(run_id = run_id, client = client)
 }
@@ -232,7 +231,6 @@ delete_run <- function(run_id = get_active_run_id(), client = mlflow_client()) {
     data = data
   )
 
-  register_tracking_event("delete_run", data)
   invisible()
 }
 
@@ -254,7 +252,6 @@ restore_run <- function(run_id = get_active_run_id(), client = mlflow_client()) 
     verb = "POST",
     data = data
   )
-  register_tracking_event("restore_run", data)
 
   get_run(run_id, client = client)
 }
@@ -330,11 +327,6 @@ log_batch <- function(metrics = data.frame(), params = data.frame(), tags = data
     data = data
   )
 
-  register_tracking_event(
-    "log_batch",
-    data
-  )
-
   invisible()
 }
 
@@ -386,11 +378,6 @@ set_tag <- function(key, value, run_id = get_active_run_id(), client = mlflow_cl
     data = data
   )
 
-  register_tracking_event(
-    "set_tag",
-    data
-  )
-
   invisible()
 }
 
@@ -421,11 +408,6 @@ delete_tag <- function(key, run_id = get_active_run_id(), client = mlflow_client
     client = client,
     verb = "POST",
     data = data
-  )
-
-  register_tracking_event(
-    "delete_tag",
-    data
   )
 
   invisible()
@@ -683,7 +665,6 @@ set_terminated <- function(status, end_time, run_id, client) {
   )
 
   response <- call_mlflow_api("runs", "update", verb = "POST", client = client, data = data)
-  register_tracking_event("set_terminated", data)
 
   get_run(client = client, run_id = response$run_info$run_id)
 }
@@ -715,7 +696,6 @@ get_experiment_from_run <- function(run_id) {
 #' environment variables must be set to the corresponding key and secrets provided
 #' by Amazon IAM.
 #'
-#' @importFrom fs is_file
 #' @importFrom stringr str_remove str_split str_sub
 #' @importFrom aws.s3 s3write_using
 #'
