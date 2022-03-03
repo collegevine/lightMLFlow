@@ -118,12 +118,6 @@
     <loc>/reference/load_artifact.html</loc>
   </url>
   <url>
-    <loc>/reference/load_flavor.html</loc>
-  </url>
-  <url>
-    <loc>/reference/load_model.html</loc>
-  </url>
-  <url>
     <loc>/reference/log_artifact.html</loc>
   </url>
   <url>
@@ -131,9 +125,6 @@
   </url>
   <url>
     <loc>/reference/log_metrics.html</loc>
-  </url>
-  <url>
-    <loc>/reference/log_model.html</loc>
   </url>
   <url>
     <loc>/reference/log_params.html</loc>
@@ -151,9 +142,6 @@
     <loc>/reference/record_logged_model.html</loc>
   </url>
   <url>
-    <loc>/reference/register_external_observer.html</loc>
-  </url>
-  <url>
     <loc>/reference/rename_experiment.html</loc>
   </url>
   <url>
@@ -164,9 +152,6 @@
   </url>
   <url>
     <loc>/reference/restore_run.html</loc>
-  </url>
-  <url>
-    <loc>/reference/save_model.html</loc>
   </url>
   <url>
     <loc>/reference/search_runs.html</loc>

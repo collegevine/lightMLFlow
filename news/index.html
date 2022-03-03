@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -42,6 +42,12 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.0" id="lightmlflow-060">lightMLFlow 0.6.0<a class="anchor" aria-label="anchor" href="#lightmlflow-060"></a></h2>
+<ul><li>Rips out lots of unused code that’s only useful for MLFlow running on local (which is not the goal of this project to enable)</li>
+<li>Rips out the MLFlow <code>models</code> infrastructure. The idea for this package – at least in the short-term – is to save models as artifacts with the intention of using them in Plumber APIs, etc. If you wanted to load an (e.g.) XGBoost model into Sagemaker, you could use <code>log_artifact</code> in tandem with <code>FUN = xgboost::xgb.save</code> to make this easy.</li>
+<li>Adds some more helpful hints for MLFlow clients</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.1" id="lightmlflow-051">lightMLFlow 0.5.1<a class="anchor" aria-label="anchor" href="#lightmlflow-051"></a></h2>
 <ul><li>Fixes a bug that would leave a GH token in plain text in the run</li>
 </ul></div>
@@ -64,7 +70,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Matt Kaye.</p>
+  <p></p><p>Developed by Matt Kaye, Tony ElHabr.</p>
 </div>
 
 <div class="pkgdown">
