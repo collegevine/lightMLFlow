@@ -69,7 +69,7 @@ set_tracking_uri <- function(uri) {
 
 #' Get Remote Tracking URI
 #'
-#' Gets the remote tracking URI.
+#' Gets the remote tracking URI. If no global is specified, defaults to the `MLFLOW_TRACKING_URI` environment variable.
 #'
 #' @export
 get_tracking_uri <- function() {
