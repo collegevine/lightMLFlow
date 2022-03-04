@@ -1,26 +1,18 @@
 Package: lightMLFlow
-Title: A lightweight R wrapper for the MLFlow REST API
+Title: A Lightweight R Wrapper for the MLFlow REST API
 Version: 0.6.0
-Authors@R: 
-    c(
-    person(given = "Matt",
-           family = "Kaye",
-           role = c("aut", "cre"),
-           email = "mrkaye97@gmail.com"),
-    person(given = "Tony",
-           family = "ElHabr",
-           role = c("aut"),
-           email = "anthonyelhabr@gmail.com")
-    )
-Description: This package provides a lightweight R wrapper for the MLFlow
-    REST API. It makes some assumtions (notably, that you already have
-    MLFlow installed wherever this package is being used), but, in return,
-    you get some benefits: A simpler API, not needing `reticulate`,
-    relying on `aws.s3` where possible, etc.
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+Authors@R: c(
+    person("Matt", "Kaye", , "mrkaye97@gmail.com", role = c("aut", "cre")),
+    person("Tony", "ElHabr", , "anthonyelhabr@gmail.com", role = "aut")
+  )
+Description: MLFlow is an open-source tool for tracking, versioning, and
+    deploying machine learning models. This package provides a lightweight
+    R wrapper for the MLFlow REST API. It makes some assumptions (notably,
+    that you already have an MLFlow instance running, you want to use S3
+    for artifact storage, and you intend to deploy models in an (e.g.)
+    `plumber` API), but, in return, you get some benefits: A simpler API,
+    not needing 'reticulate', relying on 'aws.s3' where possible, etc.
+License: Apache License (>= 2)
 Imports:
     aws.s3,
     base64enc,
@@ -36,6 +28,17 @@ Imports:
     tibble,
     withr,
     yaml
+Suggests: 
+    carrier,
+    covr,
+    ggplot2,
+    secret,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
 Collate: 
     'client.R'
     'experiments.R'
@@ -47,11 +50,3 @@ Collate:
     'runs.R'
     'utils-pipe.R'
     'utils.R'
-License: Apache License (>= 2)
-Suggests: 
-    testthat (>= 3.0.0),
-    carrier,
-    covr,
-    ggplot2,
-    secret
-Config/testthat/edition: 3
