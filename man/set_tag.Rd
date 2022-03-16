@@ -15,6 +15,9 @@ set_tag(key, value, run_id = get_active_run_id(), client = mlflow_client())
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Sets a tag on a run. Tags are run metadata that can be updated during a run and
 after a run completes.

@@ -11,6 +11,9 @@ get_run(run_id = get_active_run_id(), client = mlflow_client())
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+Metadata on the run, including the ID, the \code{experiment_id}, the \code{status}, etc.
+}
 \description{
 Gets metadata, params, tags, and metrics for a run. Returns a single value for each metric
 key: the most recently logged metric value at the largest step.

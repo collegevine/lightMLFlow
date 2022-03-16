@@ -17,6 +17,9 @@ get_experiment(
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
+\value{
+A tibble with metadata on the experiment requested.
+}
 \description{
 Gets metadata for an experiment and a list of runs for the experiment. Attempts to obtain the
 active experiment if both \code{experiment_id} and \code{experiment_name} are unspecified.

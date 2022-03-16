@@ -26,6 +26,9 @@ This dataframe cannot contain any missing ('NA') entries.}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Log a batch of metrics, params, and/or tags for a run. The server will respond with an error (non-200 status code)
 if any data failed to be persisted. In case of error (due to internal server error or an invalid request), partial

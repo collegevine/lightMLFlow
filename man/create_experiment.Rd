@@ -21,6 +21,9 @@ not provided, the remote server will select an appropriate default.}
 
 \item{tags}{Experiment tags to set on the experiment upon experiment creation.}
 }
+\value{
+The \code{experiment_id} of the newly-created experiment
+}
 \description{
 Creates an MLflow experiment and returns its id.
 }

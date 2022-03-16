@@ -1,16 +1,16 @@
 Package: lightMLFlow
-Title: A Lightweight R Wrapper for the MLFlow REST API
-Version: 0.6.0
+Title: A Lightweight, Opinionated R Wrapper for the 'MLFlow' REST API
+Version: 0.6.1
 Authors@R: c(
     person("Matt", "Kaye", , "mrkaye97@gmail.com", role = c("aut", "cre")),
     person("Tony", "ElHabr", , "anthonyelhabr@gmail.com", role = "aut")
   )
-Description: MLFlow is an open-source tool for tracking, versioning, and
+Description: 'MLFlow' <https://www.mlflow.org/> is an open-source tool for tracking, versioning, and
     deploying machine learning models. This package provides a lightweight
-    R wrapper for the MLFlow REST API. It makes some assumptions (notably,
-    that you already have an MLFlow instance running, you want to use S3
+    R wrapper for the 'MLFlow' REST API <https://www.mlflow.org/docs/latest/rest-api.html>. It makes some assumptions (notably,
+    that you already have an 'MLFlow' instance running, you want to use S3
     for artifact storage, and you intend to deploy models in an (e.g.)
-    `plumber` API), but, in return, you get some benefits: A simpler API,
+    'plumber' API), but, in return, you get some benefits: A simpler API,
     not needing 'reticulate', relying on 'aws.s3' where possible, etc.
 License: Apache License (>= 2)
 Imports:

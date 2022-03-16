@@ -13,6 +13,9 @@ log_metrics(..., run_id = get_active_run_id(), client = mlflow_client())
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Logs a metric for a run. Metrics key-value pair that records a single float measure.
 During a single execution of a run, a particular metric can be logged several times.

@@ -17,6 +17,9 @@ get_registered_model_run(
 
 \item{stage}{A model stage. Set to \code{NULL} or \code{NA} to return all results.}
 }
+\value{
+Run metadata for the provided registered model and stage
+}
 \description{
 Get a registered model run
 }

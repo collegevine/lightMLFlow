@@ -15,6 +15,9 @@ mlflow_id(object)
 \arguments{
 \item{object}{An \code{mlflow_run} or \code{mlflow_experiment} object.}
 }
+\value{
+An MLFlow ID
+}
 \description{
 Extracts the ID of the run or experiment.
 }

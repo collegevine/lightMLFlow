@@ -6,6 +6,9 @@
 \usage{
 get_tracking_uri()
 }
+\value{
+The tracking URI
+}
 \description{
 Gets the remote tracking URI. If no global is specified, defaults to the \code{MLFLOW_TRACKING_URI} environment variable.
 }

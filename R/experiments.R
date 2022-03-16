@@ -11,6 +11,7 @@
 #' @param client An MLFlow client. If not provided, the client is sourced from the `MLFLOW_TRACKING_URI` environment variable.
 #' @param tags Experiment tags to set on the experiment upon experiment creation.
 #'
+#' @return The `experiment_id` of the newly-created experiment
 #' @export
 create_experiment <- function(name, artifact_location = "", client = mlflow_client(), tags = list()) {
 
@@ -72,6 +73,7 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
 #' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
 #' @inheritParams create_experiment
 #'
+#' @return A `data.frame` of experiments, with columns `experiment_id`, `name`, `artifact_location`, `lifecycle_stage`, and `tags`
 #' @export
 list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
 
@@ -119,6 +121,7 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
 #' @param experiment_id ID of the experiment.
 #' @inheritParams create_experiment
 #'
+#' @return No return value. Called for side effects.
 #' @export
 set_experiment_tag <- function(key, value, experiment_id = get_active_experiment_id(), client = mlflow_client()) {
 
@@ -151,6 +154,7 @@ set_experiment_tag <- function(key, value, experiment_id = get_active_experiment
 #' @param experiment_name The experiment name. Only one of `experiment_name` or `experiment_id` should be specified.
 #' @inheritParams create_experiment
 #'
+#' @return A tibble with metadata on the experiment requested.
 #' @export
 get_experiment <- function(experiment_id = get_active_experiment_id(), experiment_name = NULL, client = mlflow_client()) {
 
@@ -191,6 +195,7 @@ get_experiment <- function(experiment_id = get_active_experiment_id(), experimen
 #' @param experiment_name The experiment name. This field is required.
 #' @inheritParams create_experiment
 #'
+#' @return The `experiment_id`
 #' @export
 get_experiment_id <- function(experiment_name, client = mlflow_client()) {
   get_experiment(
@@ -207,6 +212,7 @@ get_experiment_id <- function(experiment_name, client = mlflow_client()) {
 #' @param experiment_id ID of the associated experiment. This field is required.
 #' @inheritParams create_experiment
 #'
+#' @return No return value. Called for side effects.
 #' @export
 delete_experiment <- function(experiment_id, client = mlflow_client()) {
 
@@ -227,6 +233,8 @@ delete_experiment <- function(experiment_id, client = mlflow_client()) {
       experiment_id = experiment_id
     )
   )
+
+  invisible()
 }
 
 
@@ -241,6 +249,7 @@ delete_experiment <- function(experiment_id, client = mlflow_client()) {
 #'
 #' @inheritParams delete_experiment
 #'
+#' @return No return value. Called for side effects.
 #' @export
 restore_experiment <- function(experiment_id, client = mlflow_client()) {
 
@@ -268,6 +277,7 @@ restore_experiment <- function(experiment_id, client = mlflow_client()) {
 #' @param new_name The experiment's name will be changed to this. The new name must be unique.
 #' @inheritParams delete_experiment
 #'
+#' @return No return value. Called for side effects.
 #' @export
 rename_experiment <- function(new_name, experiment_id = get_active_experiment_id(), client = mlflow_client()) {
 

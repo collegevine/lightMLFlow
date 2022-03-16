@@ -11,6 +11,9 @@ delete_run(run_id = get_active_run_id(), client = mlflow_client())
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Deletes the run with the specified ID.
 }

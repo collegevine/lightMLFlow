@@ -216,6 +216,9 @@ new_mlflow_run <- function(x) {
 #' Extracts the ID of the run or experiment.
 #'
 #' @param object An `mlflow_run` or `mlflow_experiment` object.
+#'
+#' @return An MLFlow ID
+#'
 #' @export
 mlflow_id <- function(object) {
   UseMethod("mlflow_id")

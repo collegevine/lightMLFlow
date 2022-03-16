@@ -14,6 +14,9 @@ list_experiments(
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
+\value{
+A \code{data.frame} of experiments, with columns \code{experiment_id}, \code{name}, \code{artifact_location}, \code{lifecycle_stage}, and \code{tags}
+}
 \description{
 Gets a list of all experiments.
 }

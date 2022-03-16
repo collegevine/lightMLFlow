@@ -17,6 +17,9 @@ get_registered_model_run_id(
 
 \item{stage}{A model stage. Set to \code{NULL} or \code{NA} to return all results.}
 }
+\value{
+The \code{run_id} of the registered model of the stage provided.
+}
 \description{
 Get a registered model run id
 }

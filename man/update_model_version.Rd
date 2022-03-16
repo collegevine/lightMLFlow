@@ -15,6 +15,9 @@ update_model_version(name, version, description = "", client = mlflow_client())
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+A list of metadata on the newly-created model version.
+}
 \description{
 Updates a model version
 }

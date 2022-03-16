@@ -23,6 +23,9 @@ transition_model_version_stage(
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+A list of metadata on the model version.
+}
 \description{
 Transition a model version to a different stage.
 }

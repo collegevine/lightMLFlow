@@ -18,6 +18,9 @@ end_run(
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+Metadata on the newly-ended run.
+}
 \description{
 Terminates a run. Attempts to end the current active run if \code{run_id} is not specified.
 }

@@ -11,6 +11,9 @@ delete_registered_model(name, client = mlflow_client())
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Deletes an existing registered model by name
 }

@@ -4,12 +4,17 @@
 \name{lightMLFlow-package}
 \alias{lightMLFlow}
 \alias{lightMLFlow-package}
-\title{lightMLFlow: A lightweight R wrapper for the MLFlow REST API}
+\title{lightMLFlow: A Lightweight, Opinionated R Wrapper for the 'MLFlow' REST API}
 \description{
-This package provides a lightweight R wrapper for the MLFlow REST API. It makes some assumtions (notably, that you already have MLFlow installed wherever this package is being used), but, in return, you get some benefits: A simpler API, not needing `reticulate`, relying on `aws.s3` where possible, etc.
+'MLFlow' <https://www.mlflow.org/> is an open-source tool for tracking, versioning, and deploying machine learning models. This package provides a lightweight R wrapper for the 'MLFlow' REST API <https://www.mlflow.org/docs/latest/rest-api.html>. It makes some assumptions (notably, that you already have an 'MLFlow' instance running, you want to use S3 for artifact storage, and you intend to deploy models in an (e.g.) 'plumber' API), but, in return, you get some benefits: A simpler API, not needing 'reticulate', relying on 'aws.s3' where possible, etc.
 }
 \author{
 \strong{Maintainer}: Matt Kaye \email{mrkaye97@gmail.com}
+
+Authors:
+\itemize{
+  \item Tony ElHabr \email{anthonyelhabr@gmail.com}
+}
 
 }
 \keyword{internal}

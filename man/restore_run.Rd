@@ -11,6 +11,9 @@ restore_run(run_id = get_active_run_id(), client = mlflow_client())
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+Metadata on the newly-restored run.
+}
 \description{
 Restores the run with the specified ID.
 }

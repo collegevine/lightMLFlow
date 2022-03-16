@@ -24,6 +24,9 @@ a new experiment with a randomly generated name.}
 
 \item{nested}{Controls whether the run to be started is nested in a parent run. \code{TRUE} creates a nest run.}
 }
+\value{
+Metadata on the newly-started run.
+}
 \description{
 Starts a new run. If \code{client} is not provided, this function infers contextual information such as
 source name and version, and also registers the created run as the active run. If \code{client} is provided,

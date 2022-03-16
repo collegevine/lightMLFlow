@@ -11,6 +11,9 @@ restore_experiment(experiment_id, client = mlflow_client())
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Restores an experiment marked for deletion. This also restores associated metadata,
 runs, metrics, and params. If experiment uses FileStore, underlying artifacts

@@ -22,6 +22,9 @@ previous query.}
 \item{parse}{Logical indicating whether to return the \code{registered_models} element
 as a list (FALSE) or tibble (TRUE)}
 }
+\value{
+A list of registered models and metadata on them.
+}
 \description{
 Retrieves a list of registered models.
 }

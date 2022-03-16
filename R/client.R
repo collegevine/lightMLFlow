@@ -111,6 +111,8 @@ new_mlflow_client.mlflow_https <- function(tracking_uri) {
 #'  set by `mlflow_set_tracking_uri()`.
 #'
 #' @importFrom rlang `%||%`
+#'
+#' @return An MLFlow client
 #' @export
 mlflow_client <- function(tracking_uri = NULL) {
 

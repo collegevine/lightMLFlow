@@ -13,6 +13,9 @@ rename_registered_model(name, new_name, client = mlflow_client())
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+Metadata on the registered model, including the \code{name} and the \code{creation_timestamp} and \code{last_updated_timestamp}
+}
 \description{
 Renames a model in the Model Registry.
 }
