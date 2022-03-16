@@ -23,6 +23,10 @@ get_active_run_id <- function() {
   }
 }
 
+#' Check if an active run exists
+#'
+#' @return `TRUE` if an active run exists, `FALSE` otherwise
+#' @export
 exists_active_run <- function() {
   tryCatch(
     {
