@@ -31,6 +31,9 @@ generated this model version.}
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+A list of metadata on the newly-created model version.
+}
 \description{
 Create a model version
 }

@@ -6,6 +6,8 @@
 #' @param tags Additional metadata for the registered model (Optional).
 #' @param description Description for the registered model (Optional).
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return A list of metadata on the registered model, including the `name` and the `creation_timestamp` and `last_updated_timestamp`
 #' @export
 create_registered_model <- function(name, tags = list(), description = "", client = mlflow_client()) {
 
@@ -62,6 +64,8 @@ create_registered_model <- function(name, tags = list(), description = "", clien
 #'
 #' @param name The name of the model to retrieve.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return Metadata on the registered model, including the `name` and the `creation_timestamp` and `last_updated_timestamp`
 #' @export
 get_registered_model <- function(name, client = mlflow_client()) {
 
@@ -87,6 +91,9 @@ get_registered_model <- function(name, client = mlflow_client()) {
 #' @param name The current name of the model.
 #' @param new_name The new name for the model.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return Metadata on the registered model, including the `name` and the `creation_timestamp` and `last_updated_timestamp`
+#'
 #' @export
 rename_registered_model <- function(name, new_name, client = mlflow_client()) {
 
@@ -118,6 +125,9 @@ rename_registered_model <- function(name, new_name, client = mlflow_client()) {
 #' @param name The name of the registered model.
 #' @param description The updated description for this registered model.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return Metadata on the registered model, including the `name` and the `creation_timestamp` and `last_updated_timestamp`
+#'
 #' @export
 update_registered_model <- function(name, description = "", client = mlflow_client()) {
 
@@ -146,6 +156,9 @@ update_registered_model <- function(name, description = "", client = mlflow_clie
 #'
 #' @param name The name of the model to delete
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return No return value. Called for side effects.
+#'
 #' @export
 delete_registered_model <- function(name, client = mlflow_client()) {
 
@@ -160,6 +173,8 @@ delete_registered_model <- function(name, client = mlflow_client()) {
     verb = "DELETE",
     data = list(name = name)
   )
+
+  invisible()
 }
 
 #' List registered models
@@ -174,6 +189,9 @@ delete_registered_model <- function(name, client = mlflow_client()) {
 #' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @param parse Logical indicating whether to return the `registered_models` element
 #' as a list (FALSE) or tibble (TRUE)
+#'
+#' @return A list of registered models and metadata on them.
+#'
 #' @export
 list_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client(), parse = FALSE) {
 
@@ -251,6 +269,8 @@ validate_mlflow_stage <- function(stage = c("Production", "Staging", "Archived")
 #' @param client An MLFlow client. Will be auto-generated if omitted.
 #' @param stage A model stage. Set to `NULL` or `NA` to return all results.
 #' @importFrom purrr pluck
+#'
+#' @return Run metadata for the provided registered model and stage
 #' @export
 get_registered_model_run <- function(model_name, client = mlflow_client(), stage = "Production") {
 
@@ -288,6 +308,8 @@ get_registered_model_run <- function(model_name, client = mlflow_client(), stage
 #'
 #' @inheritParams get_registered_model_run
 #' @seealso get_registered_model_run
+#'
+#' @return The `run_id` of the registered model of the stage provided.
 #' @export
 get_registered_model_run_id <- function(model_name, client = mlflow_client(), stage = "Production") {
   get_registered_model_run(
@@ -307,6 +329,8 @@ get_registered_model_run_id <- function(model_name, client = mlflow_client(), st
 #' @param stages A list of desired stages. If the input list is missing, return
 #'   latest versions for ALL_STAGES.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return A list of metadata on the latest versions of a registered model.
 #' @export
 get_latest_versions <- function(name, stages = list("None", "Archived", "Staging", "Production"), client = mlflow_client()) {
 
@@ -347,6 +371,8 @@ get_latest_versions <- function(name, stages = list("None", "Archived", "Staging
 #'   generated this model version.
 #' @param description Description for model version.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return A list of metadata on the newly-created model version.
 #' @export
 create_model_version <- function(name, source, run_id = get_active_run_id(), tags = list(), run_link = "", description = "", client = mlflow_client()) {
 
@@ -387,6 +413,9 @@ create_model_version <- function(name, source, run_id = get_active_run_id(), tag
 #' @param name Name of the registered model.
 #' @param version Model version number.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return A list of metadata on the model version.
+#'
 #' @export
 get_model_version <- function(name, version, client = mlflow_client()) {
 
@@ -423,6 +452,9 @@ get_model_version <- function(name, version, client = mlflow_client()) {
 #' @param version Model version number.
 #' @param description Description of this model version.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return A list of metadata on the newly-created model version.
+#'
 #' @export
 update_model_version <- function(name, version, description = "", client = mlflow_client()) {
 
@@ -453,6 +485,9 @@ update_model_version <- function(name, version, description = "", client = mlflo
 #' @param name Name of the registered model.
 #' @param version Model version number.
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return No return value. Called for side effects.
+#'
 #' @export
 delete_model_version <- function(name, version, client = mlflow_client()) {
 
@@ -473,6 +508,8 @@ delete_model_version <- function(name, version, client = mlflow_client()) {
       version = version
     )
   )
+
+  invisible()
 }
 
 #' Transition Model Version Stage
@@ -485,6 +522,9 @@ delete_model_version <- function(name, version, client = mlflow_client()) {
 #' @param stage Transition `model_version` to this tage.
 #' @param archive_existing_versions (Optional)
 #' @param client An MLFlow client. Will be auto-generated if omitted.
+#'
+#' @return A list of metadata on the model version.
+#'
 #' @export
 transition_model_version_stage <- function(name, version, stage, archive_existing_versions = FALSE, client = mlflow_client()) {
 

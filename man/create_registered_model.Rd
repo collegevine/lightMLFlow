@@ -20,6 +20,9 @@ create_registered_model(
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+A list of metadata on the registered model, including the \code{name} and the \code{creation_timestamp} and \code{last_updated_timestamp}
+}
 \description{
 Creates a new registered model in the model registry
 }

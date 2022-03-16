@@ -60,6 +60,7 @@ get_active_experiment_id <- function() {
 #'
 #' @param uri The URI to the remote MLflow server.
 #'
+#' @return The tracking URI, invisibly
 #' @export
 set_tracking_uri <- function(uri) {
   .globals$tracking_uri <- uri
@@ -71,6 +72,7 @@ set_tracking_uri <- function(uri) {
 #'
 #' Gets the remote tracking URI. If no global is specified, defaults to the `MLFLOW_TRACKING_URI` environment variable.
 #'
+#' @return The tracking URI
 #' @export
 get_tracking_uri <- function() {
   .globals$tracking_uri %||% Sys.getenv("MLFLOW_TRACKING_URI")

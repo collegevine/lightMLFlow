@@ -17,6 +17,9 @@ get_metric_history(
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+A \code{data.frame} of the history of the metric provided.
+}
 \description{
 Get a list of all values for the specified metric for a given run.
 }

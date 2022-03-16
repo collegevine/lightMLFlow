@@ -18,6 +18,9 @@ latest versions for ALL_STAGES.}
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+A list of metadata on the latest versions of a registered model.
+}
 \description{
 Retrieves a list of the latest model versions for a given model.
 }

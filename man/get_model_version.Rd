@@ -13,6 +13,9 @@ get_model_version(name, version, client = mlflow_client())
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+A list of metadata on the model version.
+}
 \description{
 Get a model version
 }

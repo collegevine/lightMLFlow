@@ -11,6 +11,9 @@ delete_experiment(experiment_id, client = mlflow_client())
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Marks an experiment and associated runs, params, metrics, etc. for deletion. If the
 experiment uses FileStore, artifacts associated with experiment are also deleted.

@@ -10,6 +10,9 @@ mlflow_client(tracking_uri = NULL)
 \item{tracking_uri}{The tracking URI. If not provided, defaults to the service
 set by \code{mlflow_set_tracking_uri()}.}
 }
+\value{
+An MLFlow client
+}
 \description{
 Initializes and returns an MLflow client that communicates with the tracking server or store
 at the specified URI.

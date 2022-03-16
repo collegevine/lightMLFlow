@@ -22,6 +22,9 @@ guaranteed to support key values up to 5000 bytes in size. This field is require
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Sets a tag on an experiment with the specified ID. Tags are experiment metadata that can be updated.
 }

@@ -9,6 +9,9 @@ set_tracking_uri(uri)
 \arguments{
 \item{uri}{The URI to the remote MLflow server.}
 }
+\value{
+The tracking URI, invisibly
+}
 \description{
 Specifies the URI to the remote MLflow server that will be used
 to track experiments.

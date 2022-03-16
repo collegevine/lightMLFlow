@@ -13,6 +13,9 @@ delete_model_version(name, version, client = mlflow_client())
 
 \item{client}{An MLFlow client. Will be auto-generated if omitted.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Delete a model version
 }

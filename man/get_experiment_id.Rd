@@ -11,6 +11,9 @@ get_experiment_id(experiment_name, client = mlflow_client())
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
+\value{
+The \code{experiment_id}
+}
 \description{
 Makes a call to \code{get_experiment} and returns just the ID.
 }

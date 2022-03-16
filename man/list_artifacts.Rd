@@ -18,6 +18,9 @@ set to the root artifact path}
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+A \code{data.frame} of the artifacts at the path provided for the run provided.
+}
 \description{
 Gets a list of artifacts.
 }

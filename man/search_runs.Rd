@@ -25,6 +25,9 @@ The syntax is a subset of SQL which allows only ANDing together binary operation
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+A data.frame of runs matching the search criteria.
+}
 \description{
 Search for runs that satisfy expressions. Search expressions can use Metric and Param keys.
 }

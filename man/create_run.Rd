@@ -17,6 +17,9 @@ create_run(
 
 \item{client}{An MLFlow client. Defaults to \code{NULL} and will be auto-generated.}
 }
+\value{
+Metadata on the newly-created run.
+}
 \description{
 Create an MLFlow run
 }

@@ -17,6 +17,9 @@ rename_experiment(
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}
 }
+\value{
+No return value. Called for side effects.
+}
 \description{
 Renames an experiment.
 }
