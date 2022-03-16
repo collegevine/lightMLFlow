@@ -52,6 +52,12 @@
     <loc>/reference/end_run.html</loc>
   </url>
   <url>
+    <loc>/reference/gather_model_metadata.html</loc>
+  </url>
+  <url>
+    <loc>/reference/gather_production_model_metadata.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_active_experiment_id.html</loc>
   </url>
   <url>
