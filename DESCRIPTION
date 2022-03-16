@@ -1,6 +1,6 @@
 Package: lightMLFlow
 Title: A Lightweight R Wrapper for the MLFlow REST API
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(
     person("Matt", "Kaye", , "mrkaye97@gmail.com", role = c("aut", "cre")),
     person("Tony", "ElHabr", , "anthonyelhabr@gmail.com", role = "aut")
