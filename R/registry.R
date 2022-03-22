@@ -576,13 +576,15 @@ gather_model_metadata <- function(registered_model_name, version, client = mlflo
   experiment_name <- get_experiment(experiment_id = experiment_id, client = client)$name
   model_version <- model_version_meta$version
   run_id <- model_version_meta$run_id
+  stage <- model_version_meta$current_stage
 
   list(
     registered_model_name = registered_model_name,
     experiment_id = experiment_id,
     experiment_name = experiment_name,
     run_id = run_id,
-    model_version = model_version
+    model_version = model_version,
+    stage = stage
   )
 }
 
