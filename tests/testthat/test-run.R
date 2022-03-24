@@ -305,4 +305,9 @@ test_that("Metric logging works outside of a run", {
     foo_history$step,
     c(0L,1L)
   )
+
+  purrr::walk(
+    list_experiments()$experiment_id,
+    delete_experiment
+  )
 })

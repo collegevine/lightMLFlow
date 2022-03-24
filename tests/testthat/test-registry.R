@@ -75,4 +75,10 @@ test_that("Model registry works", {
   )
 
   end_run()
+
+
+  purrr::walk(
+    list_experiments()$experiment_id,
+    delete_experiment
+  )
 })
