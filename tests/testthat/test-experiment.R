@@ -108,10 +108,4 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
     get_experiment(id1)$name[1],
     new_name
   )
-
-
-  purrr::walk(
-    list_experiments()$experiment_id,
-    delete_experiment
-  )
 })
