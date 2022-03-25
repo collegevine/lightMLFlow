@@ -70,12 +70,14 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
   delete_experiment(id1)
   delete_experiment(id2)
 
-  list_experiments() %>%
+  exp_list <- list_experiments()
+  if (!is.null(exp_list)) {
     subset(
       name %in% c(n1, n2)
     ) %>%
-    nrow() %>%
-    expect_equal(0)
+      nrow() %>%
+      expect_equal(0)
+  }
 
   expect_equal(
     get_experiment(id1)$lifecycle_stage[1],
