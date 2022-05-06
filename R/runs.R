@@ -833,7 +833,7 @@ start_run <- function(run_id = Sys.getenv("MLFLOW_RUN_ID"), experiment_id = get_
 
   assert_logical(nested)
   assert_string(run_id)
-  assert_string(experiment_id)
+  assert_string(experiment_id, null.ok = (!is.null(run_id) & run_id != ""))
   assert_mlflow_client(client)
 
   if (exists_active_run() && !nested) {
