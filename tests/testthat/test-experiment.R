@@ -73,6 +73,7 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
   exp_list <- list_experiments()
   if (!is.null(exp_list)) {
     subset(
+      exp_list,
       name %in% c(n1, n2)
     ) %>%
       nrow() %>%
