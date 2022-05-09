@@ -26,8 +26,7 @@ Imports:
     rlang,
     stringr,
     tibble,
-    withr,
-    yaml
+    withr
 Suggests: 
     carrier,
     covr,
