@@ -6,11 +6,11 @@ on:
   pull_request:
     branches: main
 
+name: R-CMD-check
+
 concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
-
-name: R-CMD-check
 
 jobs:
   R-CMD-check:
