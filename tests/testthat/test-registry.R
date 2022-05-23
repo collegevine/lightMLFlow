@@ -57,10 +57,17 @@ test_that("Model registry works", {
     model$name
   )
 
-  model_version <- create_model_version(
-    model$name,
-    source = ""
+  expect_error(
+    create_model_version(
+      model$name,
+      source = ""
+    )
   )
+
+  model_version <- create_model_version(
+    model$name
+  )
+
 
   get_model_version(
     model_version$name,
