@@ -42,6 +42,11 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.5" id="lightmlflow-065">lightMLFlow 0.6.5<a class="anchor" aria-label="anchor" href="#lightmlflow-065"></a></h2>
+<ul><li>Fixes a bug where MLFlow <code>1.26.0+</code> now requires the <code>source</code> parameter when creating a model version. In <code>lightMLFlow</code>, this is defaulted to the artifact URI of the current run.</li>
+<li>CI improvements</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="lightmlflow-060">lightMLFlow 0.6.0<a class="anchor" aria-label="anchor" href="#lightmlflow-060"></a></h2>
 <ul><li>Rips out lots of unused code that’s only useful for MLFlow running on local (which is not the goal of this project to enable)</li>
 <li>Rips out the MLFlow <code>models</code> infrastructure. The idea for this package – at least in the short-term – is to save models as artifacts with the intention of using them in Plumber APIs, etc. If you wanted to load an (e.g.) XGBoost model into Sagemaker, you could use <code>log_artifact</code> in tandem with <code>FUN = xgboost::xgb.save</code> to make this easy.</li>
