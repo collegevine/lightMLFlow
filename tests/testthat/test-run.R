@@ -23,6 +23,17 @@ test_that("Runs work", {
     source = Sys.getenv("S3_URI")
   )
 
+  expect_error(
+    create_model_version(
+      experiment_name,
+      source = NULL
+    )
+  )
+
+  create_model_version(
+    experiment_name
+  )
+
   log_artifact(
     x = model,
     FUN = saveRDS,

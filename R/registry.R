@@ -363,7 +363,7 @@ get_latest_versions <- function(name, stages = list("None", "Archived", "Staging
 #' Create a model version
 #'
 #' @param name Register model under this name.
-#' @param source URI indicating the location of the model artifacts.
+#' @param source URI indicating the location of the model artifacts. Tries to default to the artifact URI of the active run. If no run is active, this will error.
 #' @param run_id MLflow run ID for correlation, if `source` was generated
 #'   by an experiment run in MLflow Tracking.
 #' @param tags Additional metadata.
@@ -374,7 +374,7 @@ get_latest_versions <- function(name, stages = list("None", "Archived", "Staging
 #'
 #' @return A list of metadata on the newly-created model version.
 #' @export
-create_model_version <- function(name, source, run_id = get_active_run_id(), tags = list(), run_link = "", description = "", client = mlflow_client()) {
+create_model_version <- function(name, source = get_run()$artifact_uri, run_id = get_active_run_id(), tags = list(), run_link = "", description = "", client = mlflow_client()) {
 
   check_required(name)
   check_required(source)

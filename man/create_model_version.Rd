@@ -6,7 +6,7 @@
 \usage{
 create_model_version(
   name,
-  source,
+  source = get_run()$artifact_uri,
   run_id = get_active_run_id(),
   tags = list(),
   run_link = "",
@@ -17,7 +17,7 @@ create_model_version(
 \arguments{
 \item{name}{Register model under this name.}
 
-\item{source}{URI indicating the location of the model artifacts.}
+\item{source}{URI indicating the location of the model artifacts. Tries to default to the artifact URI of the active run. If no run is active, this will error.}
 
 \item{run_id}{MLflow run ID for correlation, if \code{source} was generated
 by an experiment run in MLflow Tracking.}

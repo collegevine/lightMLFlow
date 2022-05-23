@@ -1,3 +1,8 @@
+# lightMLFlow 0.6.5
+
+* Fixes a bug where MLFlow `1.26.0+` now requires the `source` parameter when creating a model version. In `lightMLFlow`, this is defaulted to the artifact URI of the current run.
+* CI improvements
+
 # lightMLFlow 0.6.0
 
 * Rips out lots of unused code that's only useful for MLFlow running on local (which is not the goal of this project to enable)
