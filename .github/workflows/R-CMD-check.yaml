@@ -12,6 +12,9 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    concurrency:
+      group: ${{ github.head_ref }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
