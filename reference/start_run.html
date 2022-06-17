@@ -19,7 +19,7 @@ no inference is done."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.6</span>
       </span>
     </div>
 
@@ -65,18 +65,27 @@ no inference is done.</p>
 <dd><p>If specified, get the run with the specified UUID and log metrics
 and params under that run. The run's end time is unset and its status is set to
 running, but the run's other attributes remain unchanged.</p></dd>
+
+
 <dt>experiment_id</dt>
 <dd><p>Used only when <code>run_id</code> is unspecified. ID of the experiment under
 which to create the current run. If unspecified, the run is created under
 a new experiment with a randomly generated name.</p></dd>
+
+
 <dt>client</dt>
 <dd><p>An MLFlow client. Defaults to <code>NULL</code> and will be auto-generated.</p></dd>
+
+
 <dt>nested</dt>
 <dd><p>Controls whether the run to be started is nested in a parent run. <code>TRUE</code> creates a nest run.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Metadata on the newly-started run.</p>
+    
+
+<p>Metadata on the newly-started run.</p>
     </div>
 
   </div>
@@ -91,7 +100,7 @@ a new experiment with a randomly generated name.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.6</span>
       </span>
     </div>
 
@@ -52,6 +52,9 @@
   FUN <span class="op">=</span> <span class="va">readRDS</span>,
   run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>,
   client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>,
+  pause_base <span class="op">=</span> <span class="fl">0.5</span>,
+  max_times <span class="op">=</span> <span class="fl">5</span>,
+  pause_cap <span class="op">=</span> <span class="fl">60</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -60,18 +63,35 @@
     <h2>Arguments</h2>
     <dl><dt>artifact_name</dt>
 <dd><p>The name of the artifact to load</p></dd>
+
+
 <dt>FUN</dt>
 <dd><p>a function to use to load the artifact</p></dd>
+
+
 <dt>run_id</dt>
 <dd><p>A run ID to find the URI for</p></dd>
+
+
 <dt>client</dt>
 <dd><p>An MLFlow client</p></dd>
+
+
+<dt>pause_base, max_times, pause_cap</dt>
+<dd><p>See <a href="https://purrr.tidyverse.org/reference/insistently.html" class="external-link">insistently</a></p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments to pass on to <code>s3read_using</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An R object. The result of <code>s3read_using</code></p>
+    
+
+<p>An R object. The result of <code>s3read_using</code></p>
+
+
     </div>
 
   </div>
@@ -86,7 +106,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

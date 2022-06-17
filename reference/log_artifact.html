@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.6</span>
       </span>
     </div>
 
@@ -47,7 +47,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_artifact</span><span class="op">(</span><span class="va">x</span>, <span class="va">FUN</span>, <span class="va">filename</span>, <span class="va">run_id</span>, client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_artifact</span><span class="op">(</span>
+  <span class="va">x</span>,
+  <span class="va">FUN</span>,
+  <span class="va">filename</span>,
+  <span class="va">run_id</span>,
+  client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>,
+  pause_base <span class="op">=</span> <span class="fl">0.5</span>,
+  max_times <span class="op">=</span> <span class="fl">5</span>,
+  pause_cap <span class="op">=</span> <span class="fl">60</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
 
 <span class="co"># S3 method for default</span>
 <span class="fu">log_artifact</span><span class="op">(</span>
@@ -56,6 +66,9 @@
   <span class="va">filename</span>,
   run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>,
   client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>,
+  pause_base <span class="op">=</span> <span class="fl">0.5</span>,
+  max_times <span class="op">=</span> <span class="fl">5</span>,
+  pause_cap <span class="op">=</span> <span class="fl">60</span>,
   <span class="va">...</span>
 <span class="op">)</span>
 
@@ -66,6 +79,9 @@
   <span class="va">filename</span>,
   run_id <span class="op">=</span> <span class="fu"><a href="get_active_run_id.html">get_active_run_id</a></span><span class="op">(</span><span class="op">)</span>,
   client <span class="op">=</span> <span class="fu"><a href="mlflow_client.html">mlflow_client</a></span><span class="op">(</span><span class="op">)</span>,
+  pause_base <span class="op">=</span> <span class="fl">0.5</span>,
+  max_times <span class="op">=</span> <span class="fl">5</span>,
+  pause_cap <span class="op">=</span> <span class="fl">60</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -74,20 +90,37 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>The object to log as an artifact</p></dd>
+
+
 <dt>FUN</dt>
 <dd><p>the function to use to save the artifact</p></dd>
+
+
 <dt>filename</dt>
 <dd><p>the name of the file to save</p></dd>
+
+
 <dt>run_id</dt>
 <dd><p>A run uuid. Automatically inferred if a run is currently active.</p></dd>
+
+
 <dt>client</dt>
 <dd><p>An MLFlow client. Auto-generated if not provided</p></dd>
+
+
+<dt>pause_base, max_times, pause_cap</dt>
+<dd><p>See <a href="https://purrr.tidyverse.org/reference/insistently.html" class="external-link">insistently</a></p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments to pass to <code><a href="https://rdrr.io/pkg/aws.s3/man/s3read_using.html" class="external-link">aws.s3::s3write_using</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The path to the file, invisibly</p>
+    
+
+<p>The path to the file, invisibly</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -110,7 +143,7 @@ by Amazon IAM.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

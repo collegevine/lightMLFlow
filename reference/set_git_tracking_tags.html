@@ -20,7 +20,7 @@ to clone a repo to get the same benefits."><!-- mathjax --><script src="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lightMLFlow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.6</span>
       </span>
     </div>
 
@@ -69,25 +69,44 @@ to clone a repo to get the same benefits.</p>
     <h2>Arguments</h2>
     <dl><dt>run_id</dt>
 <dd><p>An MLFlow run ID. Auto-generated if missing</p></dd>
+
+
 <dt>client</dt>
 <dd><p>An MLFlow client. Auto-generated if missing</p></dd>
+
+
 <dt>git_repo_url</dt>
 <dd><p>A URL for the Git repo where the code is being run from
 This is expected to be of the form <code>https://github.com/&lt;&lt;org&gt;&gt;/&lt;&lt;repo&gt;&gt;</code></p></dd>
+
+
 <dt>git_repo_subdir</dt>
 <dd><p>The subdirectory in the repo where your code lives</p></dd>
+
+
 <dt>source_git_commit</dt>
 <dd><p>A git commit hash to tag a run with. Defaults to <code>git2r::revparse_single(".", revision = "HEAD")$sha</code></p></dd>
+
+
 <dt>source_git_branch</dt>
 <dd><p>The git branch the code is running on. Defaults to <code>system("git rev-parse --abbrev-ref HEAD", intern = TRUE)</code> (i.e. the current branch)</p></dd>
+
+
 <dt>project_entrypoint</dt>
 <dd><p>An entrypoint for the project. Defaults to <code>"main"</code></p></dd>
+
+
 <dt>project_backend</dt>
 <dd><p>A backend for the project. Defaults to <code>"local"</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a list of tags for the <code>run_id</code></p>
+    
+
+<p>Returns a list of tags for the <code>run_id</code></p>
+
+
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -106,7 +125,7 @@ This is expected to be of the form <code>https://github.com/&lt;&lt;org&gt;&gt;/
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
