@@ -62,10 +62,12 @@ test_that("Runs work", {
 
   expect_error(
     suppressMessages({
-      load_artifact(
-        artifact_name = "foobarbaz",
-        FUN = logging_fun
-      )
+      capture.output({
+        load_artifact(
+          artifact_name = "foobarbaz",
+          FUN = logging_fun
+        )
+      })
     }),
     "Request failed after 5 attempts"
   )

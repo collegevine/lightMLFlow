@@ -616,12 +616,6 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
     quiet = FALSE
   )
 
-  insistently_read(
-    FUN = FUN,
-    object = uri,
-    ...
-  )
-
   object <- insistently_read(
     FUN = FUN,
     ...,
