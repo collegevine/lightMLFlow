@@ -6,7 +6,17 @@
 \alias{log_artifact.ggplot}
 \title{Log Artifact}
 \usage{
-log_artifact(x, FUN, filename, run_id, client = mlflow_client(), ...)
+log_artifact(
+  x,
+  FUN,
+  filename,
+  run_id,
+  client = mlflow_client(),
+  pause_base = 0.5,
+  max_times = 5,
+  pause_cap = 60,
+  ...
+)
 
 \method{log_artifact}{default}(
   x,
@@ -14,6 +24,9 @@ log_artifact(x, FUN, filename, run_id, client = mlflow_client(), ...)
   filename,
   run_id = get_active_run_id(),
   client = mlflow_client(),
+  pause_base = 0.5,
+  max_times = 5,
+  pause_cap = 60,
   ...
 )
 
@@ -23,6 +36,9 @@ log_artifact(x, FUN, filename, run_id, client = mlflow_client(), ...)
   filename,
   run_id = get_active_run_id(),
   client = mlflow_client(),
+  pause_base = 0.5,
+  max_times = 5,
+  pause_cap = 60,
   ...
 )
 }
@@ -36,6 +52,8 @@ log_artifact(x, FUN, filename, run_id, client = mlflow_client(), ...)
 \item{run_id}{A run uuid. Automatically inferred if a run is currently active.}
 
 \item{client}{An MLFlow client. Auto-generated if not provided}
+
+\item{pause_base, max_times, pause_cap}{See \link[purrr]{insistently}}
 
 \item{...}{Additional arguments to pass to \code{aws.s3::s3write_using}}
 }

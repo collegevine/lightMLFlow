@@ -9,6 +9,9 @@ load_artifact(
   FUN = readRDS,
   run_id = get_active_run_id(),
   client = mlflow_client(),
+  pause_base = 0.5,
+  max_times = 5,
+  pause_cap = 60,
   ...
 )
 }
@@ -20,6 +23,8 @@ load_artifact(
 \item{run_id}{A run ID to find the URI for}
 
 \item{client}{An MLFlow client}
+
+\item{pause_base, max_times, pause_cap}{See \link[purrr]{insistently}}
 
 \item{\dots}{Additional arguments to pass on to \code{s3read_using}}
 }
