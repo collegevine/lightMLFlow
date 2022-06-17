@@ -604,7 +604,25 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
     client = client
   )
 
-  object <- s3read_using(
+  rate <- rate_backoff(
+    pause_base = .5,
+    max_times = 5,
+    pause_cap = 60
+  )
+
+  insistently_read <- insistently(
+    s3read_using,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  insistently_read(
+    FUN = FUN,
+    object = uri,
+    ...
+  )
+
+  object <- insistently_read(
     FUN = FUN,
     ...,
     object = paste(artifact_location, artifact_name, sep = "/")
@@ -721,6 +739,7 @@ get_experiment_from_run <- function(run_id) {
 #'
 #' @importFrom stringr str_remove str_split str_sub
 #' @importFrom aws.s3 s3write_using
+#' @importFrom purrr insistently rate_backoff
 #'
 #' @return The path to the file, invisibly
 #' @export
@@ -742,7 +761,19 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
 
   artifact_filepath <- paste(artifact_dir, filename, sep = "/")
 
-  s3write_using(
+  rate <- rate_backoff(
+    pause_base = .5,
+    max_times = 5,
+    pause_cap = 60
+  )
+
+  insistently_write <- insistently(
+    s3write_using,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  insistently_write(
     x = x,
     FUN = FUN,
     ...,
