@@ -589,10 +589,11 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
 #' @param client An MLFlow client
 #' @param FUN a function to use to load the artifact
 #' @param \dots Additional arguments to pass on to `s3read_using`
+#' @param pause_base,max_times,pause_cap See \link[purrr]{insistently}
 #'
 #' @return An R object. The result of `s3read_using`
 #' @export
-load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), ...) {
+load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
 
   assert_function(FUN)
   assert_string(artifact_name)
@@ -604,7 +605,19 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
     client = client
   )
 
-  object <- s3read_using(
+  rate <- rate_backoff(
+    pause_base = pause_base,
+    max_times = max_times,
+    pause_cap = pause_cap
+  )
+
+  insistently_read <- insistently(
+    s3read_using,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  object <- insistently_read(
     FUN = FUN,
     ...,
     object = paste(artifact_location, artifact_name, sep = "/")
@@ -708,6 +721,7 @@ get_experiment_from_run <- function(run_id) {
 #' @param filename the name of the file to save
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Auto-generated if not provided
+#' @param pause_base,max_times,pause_cap See \link[purrr]{insistently}
 #' @param ... Additional arguments to pass to `aws.s3::s3write_using`
 #'
 #' @details
@@ -721,16 +735,17 @@ get_experiment_from_run <- function(run_id) {
 #'
 #' @importFrom stringr str_remove str_split str_sub
 #' @importFrom aws.s3 s3write_using
+#' @importFrom purrr insistently rate_backoff
 #'
 #' @return The path to the file, invisibly
 #' @export
-log_artifact <- function(x, FUN, filename, run_id, client = mlflow_client(), ...) {
+log_artifact <- function(x, FUN, filename, run_id, client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
   UseMethod("log_artifact")
 }
 
 #' @rdname log_artifact
 #' @export
-log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active_run_id(), client = mlflow_client(), ...) {
+log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
 
   check_required(x)
   check_required(filename)
@@ -742,7 +757,19 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
 
   artifact_filepath <- paste(artifact_dir, filename, sep = "/")
 
-  s3write_using(
+  rate <- rate_backoff(
+    pause_base = pause_base,
+    max_times = max_times,
+    pause_cap = pause_cap
+  )
+
+  insistently_write <- insistently(
+    s3write_using,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  insistently_write(
     x = x,
     FUN = FUN,
     ...,
@@ -756,7 +783,7 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
 #' @importFrom tools file_ext
 #' @rdname log_artifact
 #' @export
-log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), client = mlflow_client(), ...) {
+log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
 
   check_required(x)
   check_required(FUN)
@@ -783,7 +810,19 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
 
   ggplot2::ggsave(filename = temp_file, plot = x, ...)
 
-  put_object(
+  rate <- rate_backoff(
+    pause_base = pause_base,
+    max_times = max_times,
+    pause_cap = pause_cap
+  )
+
+  insistently_put <- insistently(
+    put_object,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  insistently_put(
     file = temp_file,
     object = artifact_filepath
   )

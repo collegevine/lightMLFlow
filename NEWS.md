@@ -1,3 +1,7 @@
+# lightMLFlow 0.6.6
+
+* Uses `purrr::insistently` to retry artifact saves and loads, since S3's API has a habit of returning a `500` every once in a while. Five retries by default, with an exponential backoff.
+
 # lightMLFlow 0.6.5
 
 * Fixes a bug where MLFlow `1.26.0+` now requires the `source` parameter when creating a model version. In `lightMLFlow`, this is defaulted to the artifact URI of the current run.
