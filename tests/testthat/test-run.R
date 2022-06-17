@@ -45,6 +45,31 @@ test_that("Runs work", {
     "model.rds"
   )
 
+  logging_fun <- function(x, ...) {
+    stop("Failing intentionally")
+  }
+
+  expect_error(
+    suppressMessages({
+      log_artifact(
+        x = model,
+        FUN = logging_fun,
+        filename = "foobarbaz"
+      )
+    }),
+    "Request failed after 5 attempts"
+  )
+
+  expect_error(
+    suppressMessages({
+      load_artifact(
+        artifact_name = "foobarbaz",
+        FUN = logging_fun
+      )
+    }),
+    "Request failed after 5 attempts"
+  )
+
   p <- ggplot2::ggplot(
     pressure,
     ggplot2::aes(x = temperature, y = pressure)
