@@ -1,4 +1,4 @@
-#' @importFrom stringr str_remove str_sub
+#' @importFrom stringr str_extract
 generate_s3_key_bucket_ext <- function(artifact_name, run_id = get_active_run_id(), client = mlflow_client()) {
   artifact_location <- get_artifact_path(
     run_id = run_id,
@@ -10,7 +10,7 @@ generate_s3_key_bucket_ext <- function(artifact_name, run_id = get_active_run_id
     "s3://"
   )
 
-  bucket <- stringr::str_extract(
+  bucket <- str_extract(
     without_s3_prefix,
     ".+?(?=/)"
   )
@@ -278,17 +278,44 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
   invisible(paste("s3:/", s3_key_bucket_ext$bucket, s3_key_bucket_ext$key, sep = "/"))
 }
 
-s3_select_from_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
+#' Call the S3 SELECT API on a CSV artifact
+#'
+#' @param artifact_name The name of the artifact to `SELECT` from
+#' @param run_id A run id Automatically inferred if a run is currently active.
+#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#' @param pause_base,max_times,pause_cap See \link[purrr]{insistently}
+#' @param Expression,ExpressionType,InputSerialization,OutputSerialization See \link[paws.storage]{s3_select_object_content}
+#' @param \dots Additional arguments to pass to \link[paws.storage]{s3_select_object_content}
+#'
+#' @importFrom utils read.csv
+#'
+#' @return A data.frame of the query result
+#' @export
+s3_select_from_artifact <- function(
+    artifact_name,
+    run_id = get_active_run_id(),
+    client = mlflow_client(),
+    pause_base = .5,
+    max_times = 5,
+    pause_cap = 60,
+    Expression,
+    ExpressionType = "SQL",
+    InputSerialization = list(CSV = list(FileHeaderInfo = "NONE", RecordDelimiter = "\n", FieldDelimiter = ","), CompressionType = "NONE"),
+    OutputSerialization = list(CSV = list(RecordDelimiter = "\n", FieldDelimiter = ",", QuoteCharacter = '"', QuoteFields = "ASNEEDED")),
+    ...
+) {
 
-  assert_function(FUN)
   assert_string(artifact_name)
   assert_string(run_id)
   assert_mlflow_client(client)
 
-  artifact_location <- get_artifact_path(
+  s3_bucket_key_ext <- generate_s3_key_bucket_ext(
+    artifact_name = artifact_name,
     run_id = run_id,
     client = client
   )
+
+  s3 <- s3()
 
   rate <- rate_backoff(
     pause_base = pause_base,
@@ -297,16 +324,22 @@ s3_select_from_artifact <- function(artifact_name, FUN = readRDS, run_id = get_a
   )
 
   insistently_read <- insistently(
-    aws.s3::select_object,
+    s3$select_object_content,
     rate = rate,
     quiet = FALSE
   )
 
-  object <- insistently_read(
-    FUN = FUN,
-    ...,
-    object = paste(artifact_location, artifact_name, sep = "/")
+  result <- insistently_read(
+    Bucket = s3_bucket_key_ext$bucket,
+    Key = s3_bucket_key_ext$key,
+    Expression = Expression,
+    ExpressionType = ExpressionType,
+    InputSerialization = InputSerialization,
+    OutputSerialization = OutputSerialization,
+    ...
   )
 
-  object
+  read.csv(
+    text = result$Payload$Records$Payload
+  )
 }
