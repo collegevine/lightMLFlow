@@ -340,6 +340,7 @@ s3_select_from_artifact <- function(
   )
 
   read.csv(
-    text = result$Payload$Records$Payload
+    text = result$Payload$Records$Payload,
+    header = InputSerialization$CSV$FileHeaderInfo == "NONE" %||% FALSE
   )
 }
