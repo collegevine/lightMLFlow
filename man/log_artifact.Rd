@@ -55,7 +55,7 @@ log_artifact(
 
 \item{pause_base, max_times, pause_cap}{See \link[purrr]{insistently}}
 
-\item{...}{Additional arguments to pass to \code{aws.s3::s3write_using}}
+\item{...}{Additional arguments to pass to \code{FUN}}
 }
 \value{
 The path to the file, invisibly

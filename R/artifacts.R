@@ -37,7 +37,6 @@ generate_s3_key_bucket_ext <- function(artifact_name, run_id = get_active_run_id
 #' Load an artifact into an R object
 #'
 #' @importFrom checkmate assert_function
-#' @importFrom aws.s3 s3read_using
 #'
 #' @param artifact_name The name of the artifact to load
 #' @param run_id A run ID to find the URI for
@@ -166,7 +165,7 @@ list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = m
 #' @param run_id A run uuid. Automatically inferred if a run is currently active.
 #' @param client An MLFlow client. Auto-generated if not provided
 #' @param pause_base,max_times,pause_cap See \link[purrr]{insistently}
-#' @param ... Additional arguments to pass to `aws.s3::s3write_using`
+#' @param ... Additional arguments to pass to `FUN`
 #'
 #' @details
 #'
@@ -178,7 +177,6 @@ list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = m
 #' by Amazon IAM.
 #'
 #' @importFrom stringr str_remove str_split str_sub
-#' @importFrom aws.s3 s3write_using
 #' @importFrom purrr insistently rate_backoff
 #'
 #' @return The path to the file, invisibly
@@ -228,7 +226,6 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
   invisible(paste("s3:/", s3_key_bucket_ext$bucket, s3_key_bucket_ext$key, sep = "/"))
 }
 
-#' @importFrom aws.s3 put_object
 #' @importFrom tools file_ext
 #' @importFrom paws.storage s3
 #' @rdname log_artifact
