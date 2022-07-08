@@ -224,7 +224,7 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
     Body = tmp
   )
 
-  invisible()
+  invisible(paste("s3:/", s3_key_bucket_ext$bucket, s3_key_bucket_ext$key, sep = "/"))
 }
 
 #' @importFrom aws.s3 put_object
@@ -276,7 +276,7 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
     Body = temp_file
   )
 
-  invisible()
+  invisible(paste("s3:/", s3_key_bucket_ext$bucket, s3_key_bucket_ext$key, sep = "/"))
 }
 
 s3_select_from_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
