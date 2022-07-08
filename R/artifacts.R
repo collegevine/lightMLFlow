@@ -1,3 +1,4 @@
+#' @importFrom stringr str_remove str_sub
 generate_s3_key_bucket_ext <- function(artifact_name, run_id = get_active_run_id(), client = mlflow_client()) {
   artifact_location <- get_artifact_path(
     run_id = run_id,
@@ -15,16 +16,16 @@ generate_s3_key_bucket_ext <- function(artifact_name, run_id = get_active_run_id
   )
 
   path <- without_s3_prefix %>%
-    stringr::str_remove(
+    str_remove(
       ".+?(?=/)"
     ) %>%
-    stringr::str_sub(start = 2L)
+    str_sub(start = 2L)
 
   key <- paste(
     path, artifact_name, sep = "/"
   )
 
-  ext <- paste0(".", fs::path_ext(key))
+  ext <- paste0(".", file_ext(key))
 
   list(
     bucket = bucket,
@@ -60,7 +61,7 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
     client = client
   )
 
-  s3 <- paws.storage::s3()
+  s3 <- s3()
 
   tmp <- tempfile(fileext = s3_path_info$ext)
   on.exit(unlink(tmp, recursive = TRUE))
@@ -204,7 +205,7 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
     ...
   )
 
-  s3 <- paws.storage::s3()
+  s3 <- s3()
 
   rate <- rate_backoff(
     pause_base = pause_base,
@@ -229,6 +230,7 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
 
 #' @importFrom aws.s3 put_object
 #' @importFrom tools file_ext
+#' @importFrom paws.storage s3
 #' @rdname log_artifact
 #' @export
 log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
@@ -256,7 +258,7 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
 
   ggplot2::ggsave(filename = temp_file, plot = x, ...)
 
-  s3 <- paws.storage::s3()
+  s3 <- s3()
 
   rate <- rate_backoff(
     pause_base = pause_base,
