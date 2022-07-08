@@ -1,0 +1,230 @@
+#' Load an artifact into an R object
+#'
+#' @importFrom checkmate assert_function
+#' @importFrom aws.s3 s3read_using
+#'
+#' @param artifact_name The name of the artifact to load
+#' @param run_id A run ID to find the URI for
+#' @param client An MLFlow client
+#' @param FUN a function to use to load the artifact
+#' @param \dots Additional arguments to pass on to `s3read_using`
+#' @param pause_base,max_times,pause_cap See \link[purrr]{insistently}
+#'
+#' @return An R object. The result of `s3read_using`
+#' @export
+load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
+
+  assert_function(FUN)
+  assert_string(artifact_name)
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
+  artifact_location <- get_artifact_path(
+    run_id = run_id,
+    client = client
+  )
+
+  rate <- rate_backoff(
+    pause_base = pause_base,
+    max_times = max_times,
+    pause_cap = pause_cap
+  )
+
+  insistently_read <- insistently(
+    s3read_using,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  object <- insistently_read(
+    FUN = FUN,
+    ...,
+    object = paste(artifact_location, artifact_name, sep = "/")
+  )
+
+  object
+}
+
+#' Get the artifact path for a run
+#'
+#' @param run_id A run id. Automatically inferred if a run is currently active.
+#' @param client An MLFlow client. Auto-generated if not provided.
+#'
+#' @return A path to the run's artifacts in S3
+#' @export
+get_artifact_path <- function(run_id = get_active_run_id(), client = mlflow_client()) {
+  experiment_id <- get_experiment_from_run(run_id = run_id)
+
+  experiment <- get_experiment(
+    experiment_id = experiment_id,
+    client = client
+  )
+
+  paste(
+    experiment$artifact_location,
+    run_id,
+    "artifacts",
+    sep = "/"
+  )
+}
+#' List Artifacts
+#'
+#' Gets a list of artifacts.
+#'
+#' @param path The run's relative artifact path to list from. If not specified, it is
+#'  set to the root artifact path
+#' @param run_id A run id Automatically inferred if a run is currently active.
+#' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
+#'
+#' @importFrom purrr transpose
+#' @importFrom rlang inform
+#'
+#' @return A `data.frame` of the artifacts at the path provided for the run provided.
+#' @export
+list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = mlflow_client()) {
+
+  assert_string(path, null.ok = TRUE)
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
+  response <- call_mlflow_api(
+    "artifacts", "list",
+    client = client,
+    verb = "GET",
+    query = list(
+      run_id = run_id,
+      path = path
+    )
+  )
+
+  files_list <- if (!is.null(response$files)) response$files else list()
+  files_list <- map(files_list, function(file_info) {
+    if (is.null(file_info$file_size)) {
+      file_info$file_size <- NA
+    }
+    file_info
+  })
+
+  files_list %>%
+    transpose() %>%
+    map(unlist) %>%
+    as.data.frame()
+}
+
+#' Log Artifact
+#'
+#' Logs a specific file or directory as an artifact for a run. Modeled after `aws.s3::s3write_using`
+#'
+#' @param x The object to log as an artifact
+#' @param FUN the function to use to save the artifact
+#' @param filename the name of the file to save
+#' @param run_id A run uuid. Automatically inferred if a run is currently active.
+#' @param client An MLFlow client. Auto-generated if not provided
+#' @param pause_base,max_times,pause_cap See \link[purrr]{insistently}
+#' @param ... Additional arguments to pass to `aws.s3::s3write_using`
+#'
+#' @details
+#'
+#' When logging to Amazon S3, ensure that you have the s3:PutObject, s3:GetObject,
+#' s3:ListBucket, and s3:GetBucketLocation permissions on your bucket.
+#'
+#' Additionally, at least the \code{AWS_ACCESS_KEY_ID} and \code{AWS_SECRET_ACCESS_KEY}
+#' environment variables must be set to the corresponding key and secrets provided
+#' by Amazon IAM.
+#'
+#' @importFrom stringr str_remove str_split str_sub
+#' @importFrom aws.s3 s3write_using
+#' @importFrom purrr insistently rate_backoff
+#'
+#' @return The path to the file, invisibly
+#' @export
+log_artifact <- function(x, FUN, filename, run_id, client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
+  UseMethod("log_artifact")
+}
+
+#' @rdname log_artifact
+#' @export
+log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
+
+  check_required(x)
+  check_required(filename)
+
+  artifact_dir = get_artifact_path(
+    run_id = run_id,
+    client = client
+  )
+
+  artifact_filepath <- paste(artifact_dir, filename, sep = "/")
+
+  rate <- rate_backoff(
+    pause_base = pause_base,
+    max_times = max_times,
+    pause_cap = pause_cap
+  )
+
+  insistently_write <- insistently(
+    s3write_using,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  insistently_write(
+    x = x,
+    FUN = FUN,
+    ...,
+    object = artifact_filepath
+  )
+
+  invisible(artifact_filepath)
+}
+
+#' @importFrom aws.s3 put_object
+#' @importFrom tools file_ext
+#' @rdname log_artifact
+#' @export
+log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
+
+  check_required(x)
+  check_required(FUN)
+  check_required(filename)
+
+  ## based on https://github.com/hrbrmstr/hrbrthemes/blob/master/R/aaa.r
+  if (isFALSE(requireNamespace("ggplot2", quietly = TRUE))) {
+    abort(
+      "Package `ggplot2` required for `ggsave`.\n",
+      "Please install and try again."
+    )
+  }
+
+  artifact_dir = get_artifact_path(
+    run_id = run_id,
+    client = client
+  )
+
+  artifact_filepath <- paste(artifact_dir, filename, sep = "/")
+
+  ext <- file_ext(artifact_filepath)
+  temp_file <- tempfile(fileext = ext)
+  on.exit(unlink(temp_file, recursive = TRUE))
+
+  ggplot2::ggsave(filename = temp_file, plot = x, ...)
+
+  rate <- rate_backoff(
+    pause_base = pause_base,
+    max_times = max_times,
+    pause_cap = pause_cap
+  )
+
+  insistently_put <- insistently(
+    put_object,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  insistently_put(
+    file = temp_file,
+    object = artifact_filepath
+  )
+
+  invisible(artifact_filepath)
+}
