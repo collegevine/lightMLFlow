@@ -1,3 +1,8 @@
+# lightMLFlow 0.7.0
+
+* Uses `paws.storage` instead of `aws.s3` for interacting with S3
+* Adds a method to interact with the [S3 Select API](https://docs.aws.amazon.com/AmazonS3/latest/userguide/selecting-content-from-objects.html)
+
 # lightMLFlow 0.6.6
 
 * Uses `purrr::insistently` to retry artifact saves and loads, since S3's API has a habit of returning a `500` every once in a while. Five retries by default, with an exponential backoff.
