@@ -51,6 +51,13 @@
       "Repository": "CRAN",
       "Hash": "e8a22846fff485f0be3770c2da758713"
     },
+    "assertthat": {
+      "Package": "assertthat",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "50c838a310445e954bc13f26f26a6ecf"
+    },
     "aws.s3": {
       "Package": "aws.s3",
       "Version": "0.3.21",
@@ -204,13 +211,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "77bd60a6157420d4ffa93b27cf6a58b8"
-    },
-    "fs": {
-      "Package": "fs",
-      "Version": "1.5.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "44594a07a42e5f91fac9f93fda6d0109"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -366,6 +366,20 @@
       "Repository": "CRAN",
       "Hash": "f4dbc5a47fd93d3415249884d31d6791"
     },
+    "paws.common": {
+      "Package": "paws.common",
+      "Version": "0.3.17",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "5e4560e5d04ecef2c8975b7afd933b49"
+    },
+    "paws.storage": {
+      "Package": "paws.storage",
+      "Version": "0.1.12",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "533b13818105b2cff51ae444070e62f6"
+    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.6.2",
@@ -477,6 +491,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "6f76f71042411426ec8df6c54f34e6dd"
+    },
+    "secret": {
+      "Package": "secret",
+      "Version": "1.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "b66e4c16becd7f937c47f4a7b9cfe35d"
     },
     "stringi": {
       "Package": "stringi",

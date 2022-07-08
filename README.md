@@ -54,7 +54,7 @@ over `mlflow`:
 -   `lightMLFlow` is significantly more lightweight than `mlflow`. It
     doesn’t depend on `httpuv`, `reticulate`, or `swagger`, and has a
     more minimal footprint in general.
--   `lightMLFlow` uses `aws.s3` to put and save objects to and from S3,
+-   `lightMLFlow` uses `paws` to put and save objects to and from S3,
     which means you don’t need to have a `boto3` install on your machine
     running your `MLFlow` code. This is an essential change, as it means
     that `lightMLFlow` does not require *any* Python infrastructure, as
