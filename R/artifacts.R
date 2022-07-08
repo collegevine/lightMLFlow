@@ -1,3 +1,38 @@
+generate_s3_key_bucket_ext <- function(artifact_name, run_id = get_active_run_id(), client = mlflow_client()) {
+  artifact_location <- get_artifact_path(
+    run_id = run_id,
+    client = client
+  )
+
+  without_s3_prefix <- str_remove(
+    artifact_location,
+    "s3://"
+  )
+
+  bucket <- stringr::str_extract(
+    without_s3_prefix,
+    ".+?(?=/)"
+  )
+
+  path <- without_s3_prefix %>%
+    stringr::str_remove(
+      ".+?(?=/)"
+    ) %>%
+    stringr::str_sub(start = 2L)
+
+  key <- paste(
+    path, artifact_name, sep = "/"
+  )
+
+  ext <- paste0(".", fs::path_ext(key))
+
+  list(
+    bucket = bucket,
+    key = key,
+    ext = ext
+  )
+}
+
 #' Load an artifact into an R object
 #'
 #' @importFrom checkmate assert_function
@@ -19,10 +54,16 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
   assert_string(run_id)
   assert_mlflow_client(client)
 
-  artifact_location <- get_artifact_path(
+  s3_path_info <- generate_s3_key_bucket_ext(
+    artifact_name = artifact_name,
     run_id = run_id,
     client = client
   )
+
+  s3 <- paws.storage::s3()
+
+  tmp <- tempfile(fileext = s3_path_info$ext)
+  on.exit(unlink(tmp, recursive = TRUE))
 
   rate <- rate_backoff(
     pause_base = pause_base,
@@ -31,18 +72,21 @@ load_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_
   )
 
   insistently_read <- insistently(
-    s3read_using,
+    s3$download_file,
     rate = rate,
     quiet = FALSE
   )
 
-  object <- insistently_read(
-    FUN = FUN,
-    ...,
-    object = paste(artifact_location, artifact_name, sep = "/")
+  insistently_read(
+    Bucket = s3_path_info$bucket,
+    Key = s3_path_info$key,
+    Filename = tmp
   )
 
-  object
+  FUN(
+    tmp,
+    ...
+  )
 }
 
 #' Get the artifact path for a run
@@ -149,12 +193,18 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
   check_required(x)
   check_required(filename)
 
-  artifact_dir = get_artifact_path(
-    run_id = run_id,
-    client = client
+  s3_key_bucket_ext <- generate_s3_key_bucket_ext(filename, run_id, client)
+
+  tmp <- tempfile(fileext = s3_key_bucket_ext$ext)
+  on.exit(unlink(tmp, recursive = TRUE))
+
+  FUN(
+    x,
+    tmp,
+    ...
   )
 
-  artifact_filepath <- paste(artifact_dir, filename, sep = "/")
+  s3 <- paws.storage::s3()
 
   rate <- rate_backoff(
     pause_base = pause_base,
@@ -163,19 +213,18 @@ log_artifact.default <- function(x, FUN = saveRDS, filename, run_id = get_active
   )
 
   insistently_write <- insistently(
-    s3write_using,
+    s3$put_object,
     rate = rate,
     quiet = FALSE
   )
 
   insistently_write(
-    x = x,
-    FUN = FUN,
-    ...,
-    object = artifact_filepath
+    Bucket = s3_key_bucket_ext$bucket,
+    Key = s3_key_bucket_ext$key,
+    Body = tmp
   )
 
-  invisible(artifact_filepath)
+  invisible()
 }
 
 #' @importFrom aws.s3 put_object
@@ -196,18 +245,18 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
     )
   }
 
-  artifact_dir = get_artifact_path(
+  s3_key_bucket_ext <- generate_s3_key_bucket_ext(
+    artifact_name = filename,
     run_id = run_id,
     client = client
   )
 
-  artifact_filepath <- paste(artifact_dir, filename, sep = "/")
-
-  ext <- file_ext(artifact_filepath)
-  temp_file <- tempfile(fileext = ext)
+  temp_file <- tempfile(fileext = s3_key_bucket_ext$ext)
   on.exit(unlink(temp_file, recursive = TRUE))
 
   ggplot2::ggsave(filename = temp_file, plot = x, ...)
+
+  s3 <- paws.storage::s3()
 
   rate <- rate_backoff(
     pause_base = pause_base,
@@ -216,15 +265,49 @@ log_artifact.ggplot <- function(x, FUN, filename, run_id = get_active_run_id(), 
   )
 
   insistently_put <- insistently(
-    put_object,
+    s3$put_object,
     rate = rate,
     quiet = FALSE
   )
 
   insistently_put(
-    file = temp_file,
-    object = artifact_filepath
+    Bucket = s3_key_bucket_ext$bucket,
+    Key = s3_key_bucket_ext$key,
+    Body = temp_file
   )
 
-  invisible(artifact_filepath)
+  invisible()
+}
+
+s3_select_from_artifact <- function(artifact_name, FUN = readRDS, run_id = get_active_run_id(), client = mlflow_client(), pause_base = .5, max_times = 5, pause_cap = 60, ...) {
+
+  assert_function(FUN)
+  assert_string(artifact_name)
+  assert_string(run_id)
+  assert_mlflow_client(client)
+
+  artifact_location <- get_artifact_path(
+    run_id = run_id,
+    client = client
+  )
+
+  rate <- rate_backoff(
+    pause_base = pause_base,
+    max_times = max_times,
+    pause_cap = pause_cap
+  )
+
+  insistently_read <- insistently(
+    aws.s3::select_object,
+    rate = rate,
+    quiet = FALSE
+  )
+
+  object <- insistently_read(
+    FUN = FUN,
+    ...,
+    object = paste(artifact_location, artifact_name, sep = "/")
+  )
+
+  object
 }
