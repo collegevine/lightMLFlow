@@ -344,3 +344,49 @@ test_that("Metric logging works outside of a run", {
     c(0L,1L)
   )
 })
+
+test_that("Searching runs works", {
+  skip_on_cran()
+  experiment_name <- paste0(
+    "metric-test-",
+    get_timestamp()
+  )
+
+  metric_test_experiment <- create_experiment(
+    experiment_name
+  )
+
+  start_run(
+    experiment_id = metric_test_experiment
+  )
+
+  run_id <- get_active_run_id()
+
+  log_metrics(
+    foo = 123,
+    step = 0
+  )
+
+  log_params(
+    bar = 456
+  )
+
+  end_run()
+
+  start_run(
+    experiment_id = metric_test_experiment
+  )
+
+  ## this should work even if metrics is NULL and end_time is NA
+  expect_equal(
+    nrow(search_runs(metric_test_experiment)),
+    2
+  )
+
+  end_run()
+
+  expect_equal(
+    nrow(search_runs(metric_test_experiment, run_view_type = "DELETED")),
+    0
+  )
+})
