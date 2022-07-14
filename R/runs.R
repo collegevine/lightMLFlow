@@ -531,6 +531,29 @@ get_metric_history <- function(metric_key, run_id = get_active_run_id(), client 
   }
 }
 
+names_are_invalid <- function(x) {
+  x == "" | is.na(x)
+}
+
+is_named <- function(x) {
+  nms <- names(x)
+  if (is.null(nms)) return(FALSE)
+  if (any(names_are_invalid(nms))) return(FALSE)
+  TRUE
+}
+
+is_df_or_vector <- function(x) {
+  res <- is.data.frame(x) || is.atomic(x)
+  if (isFALSE(res)) stop("You must pass vector(s) and/or data.frame(s).")
+  TRUE
+}
+
+flatten <- function(lst) {
+  nested <- is_nested(lst)
+  res <- c(lst[!nested], unlist(lst[nested], recursive = FALSE))
+  if (sum(nested)) Recall(res) else return(res)
+}
+
 #' @source <https://github.com/nathaneastwood/poorman/blob/master/R/bind.R#L79>
 bind_rows <- function(..., .id = NULL) {
   lsts <- list(...)
