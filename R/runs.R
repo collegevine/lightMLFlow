@@ -531,6 +531,36 @@ get_metric_history <- function(metric_key, run_id = get_active_run_id(), client 
   }
 }
 
+#' @source <https://github.com/nathaneastwood/poorman/blob/master/R/bind.R#L79>
+bind_rows <- function(..., .id = NULL) {
+  lsts <- list(...)
+  lsts <- flatten(lsts)
+  lsts <- Filter(Negate(is.null), lsts)
+  lapply(lsts, function(x) is_df_or_vector(x))
+  lapply(lsts, function(x) if (is.atomic(x) && !is_named(x)) stop("Vectors must be named."))
+
+  if (!missing(.id)) {
+    lsts <- lapply(seq_along(lsts), function(i) {
+      nms <- names(lsts)
+      id_df <- data.frame(id = if (is.null(nms)) as.character(i) else nms[i], stringsAsFactors = FALSE)
+      colnames(id_df) <- .id
+      cbind(id_df, lsts[[i]])
+    })
+  }
+
+  nms <- unique(unlist(lapply(lsts, names)))
+  lsts <- lapply(
+    lsts,
+    function(x) {
+      if (!is.data.frame(x)) x <- data.frame(as.list(x), stringsAsFactors = FALSE)
+      for (i in nms[!nms %in% names(x)]) x[[i]] <- NA
+      x
+    }
+  )
+  names(lsts) <- NULL
+  do.call(rbind, lsts)
+}
+
 #' Search Runs
 #'
 #' Search for runs that satisfy expressions. Search expressions can use Metric and Param keys.
@@ -542,8 +572,6 @@ get_metric_history <- function(metric_key, run_id = get_active_run_id(), client 
 #' @param run_view_type Run view type.
 #' @param order_by List of properties to order by. Example: "metrics.acc DESC".
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
-#'
-#' @importFrom purrr flatten_chr map_dfr
 #'
 #' @return A data.frame of runs matching the search criteria.
 #'
@@ -578,15 +606,7 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
   runs_list <- response$run %>%
     map(parse_run)
 
-  max_names <- runs_list %>%
-    map(colnames) %>%
-    flatten_chr() %>%
-    unique()
-
-  template_df <- data.frame(matrix(ncol = length(max_names), nrow = 0))
-  colnames(template_df) <- max_names
-
-  map_dfr(runs_list, ~rbind(template_df, .x)) %||% data.frame()
+  do.call("bind_rows", runs_list) %||% data.frame()
 }
 
 #' Load an artifact into an R object
