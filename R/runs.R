@@ -543,6 +543,8 @@ get_metric_history <- function(metric_key, run_id = get_active_run_id(), client 
 #' @param order_by List of properties to order by. Example: "metrics.acc DESC".
 #' @param client An MLFlow client. Defaults to `NULL` and will be auto-generated.
 #'
+#' @importFrom purrr flatten_chr map_dfr
+#'
 #' @return A data.frame of runs matching the search criteria.
 #'
 #' @export
@@ -576,7 +578,15 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
   runs_list <- response$run %>%
     map(parse_run)
 
-  do.call("rbind", runs_list) %||% data.frame()
+  max_names <- runs_list %>%
+    map(colnames) %>%
+    flatten_chr() %>%
+    unique()
+
+  template_df <- data.frame(matrix(ncol = length(max_names), nrow = 0))
+  colnames(template_df) <- max_names
+
+  map_dfr(runs_list, ~rbind(d, .x)) %||% data.frame()
 }
 
 #' Load an artifact into an R object
