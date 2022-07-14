@@ -548,6 +548,8 @@ is_df_or_vector <- function(x) {
   TRUE
 }
 
+is_nested <- function(lst) vapply(lst, function(x) inherits(x[1L], "list"), FALSE)
+
 flatten <- function(lst) {
   nested <- is_nested(lst)
   res <- c(lst[!nested], unlist(lst[nested], recursive = FALSE))
