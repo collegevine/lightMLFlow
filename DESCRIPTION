@@ -14,7 +14,6 @@ Description: 'MLFlow' <https://www.mlflow.org/> is an open-source tool for track
     not needing 'reticulate', relying on 'aws.s3' where possible, etc.
 License: Apache License (>= 2)
 Imports:
-    aws.s3,
     base64enc,
     checkmate,
     git2r,
@@ -22,6 +21,7 @@ Imports:
     jsonlite,
     lifecycle,
     magrittr,
+    paws.storage,
     purrr,
     rlang,
     stringr,
@@ -39,6 +39,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Collate: 
+    'artifacts.R'
     'client.R'
     'experiments.R'
     'globals.R'

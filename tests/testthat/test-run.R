@@ -279,6 +279,29 @@ test_that("Runs work", {
     get_active_run_id()
   )
 
+  ## Tests for SELECT API
+  log_artifact(
+    iris,
+    write.csv,
+    "iris.csv"
+  )
+
+  result <- s3_select_from_artifact(
+    "iris.csv",
+    Expression = "SELECT \"Sepal.Length\" AS sl FROM s3object s WHERE CAST(\"Sepal.Length\" AS FLOAT) >= 5",
+    InputSerialization = list(CSV = list(FileHeaderInfo = "USE", RecordDelimiter = "\n", FieldDelimiter = ","), CompressionType = "NONE")
+  )
+
+  expect_equal(
+    nrow(result),
+    nrow(subset(iris, iris$Sepal.Length >= 5))
+  )
+
+  expect_equal(
+    ncol(result),
+    1
+  )
+
   end_run()
 })
 
