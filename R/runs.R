@@ -586,7 +586,7 @@ search_runs <- function(experiment_ids, run_view_type = c("ACTIVE_ONLY", "DELETE
   template_df <- data.frame(matrix(ncol = length(max_names), nrow = 0))
   colnames(template_df) <- max_names
 
-  map_dfr(runs_list, ~rbind(d, .x)) %||% data.frame()
+  map_dfr(runs_list, ~rbind(template_df, .x)) %||% data.frame()
 }
 
 #' Load an artifact into an R object
