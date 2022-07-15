@@ -1,3 +1,7 @@
+# lightMLFlow 0.6.7
+
+* Fixes a bug with `search_runs` where `rbind`-ing runs with different numbers of columns (e.g. possible due to no logged parameters or no end time for a run) resulted in an error.
+
 # lightMLFlow 0.6.6
 
 * Uses `purrr::insistently` to retry artifact saves and loads, since S3's API has a habit of returning a `500` every once in a while. Five retries by default, with an exponential backoff.
