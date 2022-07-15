@@ -42,6 +42,9 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.7" id="lightmlflow-067">lightMLFlow 0.6.7<a class="anchor" aria-label="anchor" href="#lightmlflow-067"></a></h2>
+<ul><li>Fixes a bug with <code>search_runs</code> where <code>rbind</code>-ing runs with different numbers of columns (e.g. possible due to no logged parameters or no end time for a run) resulted in an error.</li></ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.6" id="lightmlflow-066">lightMLFlow 0.6.6<a class="anchor" aria-label="anchor" href="#lightmlflow-066"></a></h2>
 <ul><li>Uses <code><a href="https://purrr.tidyverse.org/reference/insistently.html" class="external-link">purrr::insistently</a></code> to retry artifact saves and loads, since S3’s API has a habit of returning a <code>500</code> every once in a while. Five retries by default, with an exponential backoff.</li></ul></div>
     <div class="section level2">
