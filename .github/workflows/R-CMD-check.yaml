@@ -48,7 +48,8 @@ jobs:
 
       - name: Install libgit2-dev for git2r
         run: |
-          sudo apt-get libgit2-dev
+          sudo apt-get update
+          sudo apt-get install libgit2-dev
 
       - name: Check
         shell: Rscript {0}
