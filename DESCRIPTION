@@ -43,6 +43,7 @@ Collate:
     'experiments.R'
     'globals.R'
     'lightMLFlow-package.R'
+    'poorman.R'
     'project.R'
     'registry.R'
     'rest.R'
