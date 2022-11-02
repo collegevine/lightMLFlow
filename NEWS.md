@@ -1,3 +1,7 @@
+# lightMLFlow 0.6.8
+
+* Fixes an `rbind` bug in `list_experiment`. (The same issue resolved in `seach_runs` in version `0.6.7`.) All `rbind` calls replaced with the internal "lite" version of `dplyr::bind_rows()`.
+
 # lightMLFlow 0.6.7
 
 * Fixes a bug with `search_runs` where `rbind`-ing runs with different numbers of columns (e.g. possible due to no logged parameters or no end time for a run) resulted in an error.

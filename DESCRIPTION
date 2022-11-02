@@ -1,6 +1,6 @@
 Package: lightMLFlow
 Title: A Lightweight, Opinionated R Wrapper for the 'MLFlow' REST API
-Version: 0.6.7
+Version: 0.6.8
 Authors@R: c(
     person("Matt", "Kaye", , "mrkaye97@gmail.com", role = c("aut", "cre")),
     person("Tony", "ElHabr", , "anthonyelhabr@gmail.com", role = "aut")
@@ -28,6 +28,7 @@ Imports:
     tibble,
     withr
 Suggests: 
+    assertthat,
     carrier,
     covr,
     ggplot2,
@@ -43,6 +44,7 @@ Collate:
     'experiments.R'
     'globals.R'
     'lightMLFlow-package.R'
+    'poorman.R'
     'project.R'
     'registry.R'
     'rest.R'

@@ -173,7 +173,7 @@ parse_metric_data <- function(d) {
   } else {
     d %>%
       map(as.data.frame) %>%
-      reduce(rbind) %>%
+      reduce(bind_rows) %>%
       list()
   }
 }
