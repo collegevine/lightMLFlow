@@ -46,9 +46,9 @@ jobs:
 
       - uses: r-lib/actions/setup-renv@v2
 
-      - uses: r-lib/actions/check-r-package@v2
-        with:
-          upload-snapshots: false
+      - name: Check
+        shell: Rscript {0}
+        run: install.packages("devtools"); devtools::check(error_on = "note")
 
   clobber-db:
     needs: R-CMD-check
