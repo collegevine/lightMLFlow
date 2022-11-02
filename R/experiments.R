@@ -104,7 +104,7 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
 
   reduce(
     result,
-    rbind
+    bind_rows
   )
 }
 
