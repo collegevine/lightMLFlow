@@ -28,6 +28,7 @@ Imports:
     tibble,
     withr
 Suggests: 
+    assertthat,
     carrier,
     covr,
     ggplot2,
