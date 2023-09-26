@@ -669,7 +669,7 @@ list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = m
   assert_mlflow_client(client)
 
   response <- call_mlflow_api(
-    "artifacts", "list",
+    "artifacts", "search",
     client = client,
     verb = "GET",
     query = list(

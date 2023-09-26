@@ -200,7 +200,7 @@ list_registered_models <- function(max_results = 100, page_token = NULL, client 
 
   response <- call_mlflow_api(
     "registered-models",
-    "list",
+    "search",
     client = client,
     verb = "GET",
     query = list(

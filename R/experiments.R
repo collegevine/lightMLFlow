@@ -81,7 +81,7 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
   assert_mlflow_client(client)
 
   response <- call_mlflow_api(
-    "experiments", "list",
+    "experiments", "search",
     client = client,
     verb = "GET",
     query = list(
