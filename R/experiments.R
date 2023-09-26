@@ -75,7 +75,7 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
 #'
 #' @return A `data.frame` of experiments, with columns `experiment_id`, `name`, `artifact_location`, `lifecycle_stage`, and `tags`
 #' @export
-list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+search_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
 
   view_type <- match.arg(view_type)
   assert_mlflow_client(client)
@@ -106,6 +106,13 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
     result,
     bind_rows
   )
+}
+
+#' @rdname search_experiments
+#' @export
+list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+  .Deprecated("search_experiments")
+  search_artifacts(view_type = view_type, client = client)
 }
 
 #' Set Experiment Tag
