@@ -346,8 +346,8 @@ create_nodelete_tag <- function(experiment_id) {
 #'
 #' @return A character vector of experiment IDs without `NODELETE` flags
 #' @export
-list_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
-  all_experiments <- list_experiments(
+search_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+  all_experiments <- search_experiments(
     view_type = view_type,
     client = client
   )
@@ -358,4 +358,11 @@ list_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELE
   )
 
   all_experiments$experiment_id[without_nodelete]
+}
+
+#' @rdname search_experiments_without_nodelete
+#' @export
+list_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+  .Deprecated("search_experiments_without_nodelete")
+  list_experiments_without_nodelete(view_type = view_type, client = client)
 }

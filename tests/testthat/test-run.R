@@ -41,7 +41,7 @@ test_that("Runs work", {
   )
 
   expect_equal(
-    list_artifacts()$path,
+    search_artifacts()$path,
     "model.rds"
   )
 
@@ -103,7 +103,7 @@ test_that("Runs work", {
   )
 
   expect_setequal(
-    list_artifacts()$path,
+    search_artifacts()$path,
     c("model.rds", "pressure.png")
   )
   expect_true(is.character(log_artifact_path))
