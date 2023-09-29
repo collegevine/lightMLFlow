@@ -193,14 +193,14 @@ delete_registered_model <- function(name, client = mlflow_client()) {
 #' @return A list of registered models and metadata on them.
 #'
 #' @export
-list_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client(), parse = FALSE) {
+search_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client(), parse = FALSE) {
 
   assert_integerish(max_results)
   assert_mlflow_client(client)
 
   response <- call_mlflow_api(
     "registered-models",
-    "list",
+    "search",
     client = client,
     verb = "GET",
     query = list(
@@ -218,6 +218,13 @@ list_registered_models <- function(max_results = 100, page_token = NULL, client 
   }
   res$registered_models <- parse_registered_models(res$registered_models)
   res
+}
+
+#' @rdname search_registered_models
+#' @export
+list_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client(), parse = FALSE) {
+  .Deprecated("search_registered_models")
+  search_registered_models(max_results = max_results, page_token = page_token, client = client, parse = parse)
 }
 
 parse_versions <- function(versions) {

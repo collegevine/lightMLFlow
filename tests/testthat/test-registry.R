@@ -1,5 +1,4 @@
 test_that("Model registry works", {
-  skip_on_cran()
 
   experiment_name <- paste0(
     "integration-test-",
@@ -16,7 +15,7 @@ test_that("Model registry works", {
     experiment_name
   )
 
-  all_models <- list_registered_models(parse = FALSE)
+  all_models <- search_registered_models(parse = FALSE)
 
   all_model_names <- all_models$registered_models %>%
     purrr::transpose() %>%
@@ -27,7 +26,7 @@ test_that("Model registry works", {
     model$name %in% all_model_names
   )
 
-  all_models <- list_registered_models(parse = TRUE)
+  all_models <- search_registered_models(parse = TRUE)
 
   expect_true(is.data.frame(all_models$registered_models))
 
@@ -42,7 +41,7 @@ test_that("Model registry works", {
     new_name
   )
 
-  all_model_names <- list_registered_models() %>%
+  all_model_names <- search_registered_models() %>%
     purrr::pluck("registered_models") %>%
     purrr::transpose() %>%
     purrr::pluck("name") %>%

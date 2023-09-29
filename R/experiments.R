@@ -70,21 +70,24 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
 #' @importFrom purrr reduce
 #' @importFrom tibble as_tibble
 #'
+#' @param max_results Maximum number of experiments to retrieve.
 #' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
 #' @inheritParams create_experiment
 #'
 #' @return A `data.frame` of experiments, with columns `experiment_id`, `name`, `artifact_location`, `lifecycle_stage`, and `tags`
 #' @export
-list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+search_experiments <- function(max_results = 10000, view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
 
+  assert_integerish(max_results)
   view_type <- match.arg(view_type)
   assert_mlflow_client(client)
 
   response <- call_mlflow_api(
-    "experiments", "list",
+    "experiments", "search",
     client = client,
     verb = "GET",
     query = list(
+      max_results = max_results,
       view_type = view_type
     )
   )
@@ -106,6 +109,13 @@ list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL")
     result,
     bind_rows
   )
+}
+
+#' @rdname search_experiments
+#' @export
+list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+  .Deprecated("search_experiments")
+  search_experiments(view_type = view_type, client = client)
 }
 
 #' Set Experiment Tag
@@ -339,8 +349,8 @@ create_nodelete_tag <- function(experiment_id) {
 #'
 #' @return A character vector of experiment IDs without `NODELETE` flags
 #' @export
-list_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
-  all_experiments <- list_experiments(
+search_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+  all_experiments <- search_experiments(
     view_type = view_type,
     client = client
   )
@@ -351,4 +361,11 @@ list_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELE
   )
 
   all_experiments$experiment_id[without_nodelete]
+}
+
+#' @rdname search_experiments_without_nodelete
+#' @export
+list_experiments_without_nodelete <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+  .Deprecated("search_experiments_without_nodelete")
+  list_experiments_without_nodelete(view_type = view_type, client = client)
 }

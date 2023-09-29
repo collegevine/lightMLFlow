@@ -1,5 +1,4 @@
 test_that("Experiment creation / renaming / deletion / reactivation work", {
-  skip_on_cran()
 
   n1 <- paste0(
     "unit-test-",
@@ -51,7 +50,7 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
     )
   )
 
-  all_experiments <- list_experiments()
+  all_experiments <- search_experiments()
 
   all_experiments %>%
     subset(
@@ -70,7 +69,7 @@ test_that("Experiment creation / renaming / deletion / reactivation work", {
   delete_experiment(id1)
   delete_experiment(id2)
 
-  exp_list <- list_experiments()
+  exp_list <- search_experiments()
   if (!is.null(exp_list)) {
     subset(
       exp_list,

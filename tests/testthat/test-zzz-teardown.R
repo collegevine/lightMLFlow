@@ -5,9 +5,9 @@ test_that("Teardown", {
   )
 
   purrr::walk(
-    list_experiments()$experiment_id,
+    search_experiments()$experiment_id,
     delete_experiment
   )
 
-  expect_null(list_experiments())
+  expect_null(search_experiments())
 })
