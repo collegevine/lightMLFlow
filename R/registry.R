@@ -224,7 +224,7 @@ search_registered_models <- function(max_results = 100, page_token = NULL, clien
 #' @export
 list_registered_models <- function(max_results = 100, page_token = NULL, client = mlflow_client(), parse = FALSE) {
   .Deprecated("search_registered_models")
-  search_artifacts(max_results = max_results, page_token = page_token, client = client, parse = parse)
+  search_registered_models(max_results = max_results, page_token = page_token, client = client, parse = parse)
 }
 
 parse_versions <- function(versions) {

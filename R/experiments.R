@@ -112,7 +112,7 @@ search_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL
 #' @export
 list_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
   .Deprecated("search_experiments")
-  search_artifacts(view_type = view_type, client = client)
+  search_experiments(view_type = view_type, client = client)
 }
 
 #' Set Experiment Tag
