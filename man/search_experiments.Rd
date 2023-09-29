@@ -6,6 +6,7 @@
 \title{List Experiments}
 \usage{
 search_experiments(
+  max_results = 10000,
   view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"),
   client = mlflow_client()
 )
@@ -16,6 +17,8 @@ list_experiments(
 )
 }
 \arguments{
+\item{max_results}{Maximum number of experiments to retrieve.}
+
 \item{view_type}{Qualifier for type of experiments to be returned. Defaults to \code{ACTIVE_ONLY}.}
 
 \item{client}{An MLFlow client. If not provided, the client is sourced from the \code{MLFLOW_TRACKING_URI} environment variable.}

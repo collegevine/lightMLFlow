@@ -662,14 +662,14 @@ get_artifact_path <- function(run_id = get_active_run_id(), client = mlflow_clie
 #'
 #' @return A `data.frame` of the artifacts at the path provided for the run provided.
 #' @export
-search_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = mlflow_client()) {
+list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = mlflow_client()) {
 
   assert_string(path, null.ok = TRUE)
   assert_string(run_id)
   assert_mlflow_client(client)
 
   response <- call_mlflow_api(
-    "artifacts", "search",
+    "artifacts", "list",
     client = client,
     verb = "GET",
     query = list(
@@ -690,13 +690,6 @@ search_artifacts <- function(path = NULL, run_id = get_active_run_id(), client =
     transpose() %>%
     map(unlist) %>%
     as.data.frame()
-}
-
-#' @rdname search_artifacts
-#' @export
-list_artifacts <- function(path = NULL, run_id = get_active_run_id(), client = mlflow_client()) {
-  .Deprecated("search_artifacts")
-  search_artifacts(path = path, run_id = run_id, client = client)
 }
 
 set_terminated <- function(status, end_time, run_id, client) {
