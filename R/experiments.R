@@ -70,13 +70,15 @@ create_experiment <- function(name, artifact_location = "", client = mlflow_clie
 #' @importFrom purrr reduce
 #' @importFrom tibble as_tibble
 #'
+#' @param max_results Maximum number of experiments to retrieve.
 #' @param view_type Qualifier for type of experiments to be returned. Defaults to `ACTIVE_ONLY`.
 #' @inheritParams create_experiment
 #'
 #' @return A `data.frame` of experiments, with columns `experiment_id`, `name`, `artifact_location`, `lifecycle_stage`, and `tags`
 #' @export
-search_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
+search_experiments <- function(max_results = 10000, view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL"), client = mlflow_client()) {
 
+  assert_integerish(max_results)
   view_type <- match.arg(view_type)
   assert_mlflow_client(client)
 
@@ -85,6 +87,7 @@ search_experiments <- function(view_type = c("ACTIVE_ONLY", "DELETED_ONLY", "ALL
     client = client,
     verb = "GET",
     query = list(
+      max_results = max_results,
       view_type = view_type
     )
   )
