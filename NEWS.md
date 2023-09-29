@@ -1,6 +1,7 @@
 # lightMLFlow 0.7.0
 
-* Adds `search_artifacts`, `search_experiments`, `search_registered_models`, and `search_experiments_without_nodelete`. Deprecates `list_artifacts`, `list_experiments`, `list_registered_models`, and `list_experiments_without_nodelete`.
+* Adds `search_experiments`, `search_registered_models`, and `search_experiments_without_nodelete`. Deprecates  `list_experiments`, `list_registered_models`, and `list_experiments_without_nodelete`.
+
 # lightMLFlow 0.6.8
 
 * Fixes an `rbind` bug in `list_experiment`. (The same issue resolved in `seach_runs` in version `0.6.7`.) All `rbind` calls replaced with the internal "lite" version of `dplyr::bind_rows()`.
