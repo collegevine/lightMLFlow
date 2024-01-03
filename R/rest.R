@@ -42,6 +42,7 @@ get_rest_config <- function(host_creds) {
   }
 
   headers$`User-Agent` <- paste("mlflow-r-client", packageVersion("lightMLFlow"), sep = "/")
+  headers$`Content-Type` <- "application/json"
   is_insecure <- as.logical(host_creds$insecure)
 
   list(
